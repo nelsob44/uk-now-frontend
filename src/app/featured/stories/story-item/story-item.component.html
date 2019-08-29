@@ -1,0 +1,22 @@
+<ion-item>
+  <ion-thumbnail slot="start">
+    <ion-img [src]="story.storyImage"></ion-img>
+  </ion-thumbnail>
+  <ion-label>
+    <h2>{{story.storyTitle}}</h2>
+    <div class="story-details">         
+      <ion-text slot="start" small><small>Writer: {{ story.userId }}</small></ion-text> 
+      <ion-text class="space-left" slot="end"><small>{{ story.postedOn | date:'yyyy-MM-dd HH:mm:ss' }}</small></ion-text>                      
+    </div>
+    <ion-text slot="start" small>
+      <small>
+        <ion-button fill="clear"
+        color="primary"
+        [routerLink]="[
+        '/', 'featured', 'tabs', 'stories', 'story-detail',
+        story.id]"
+        >More</ion-button> 
+      </small> 
+    </ion-text>
+  </ion-label>
+</ion-item>

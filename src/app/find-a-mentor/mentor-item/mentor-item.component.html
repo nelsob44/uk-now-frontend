@@ -1,0 +1,20 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-subtitle>{{ mentor.mentorUserName }}</ion-card-subtitle>
+    <ion-card-title>Field: {{ mentor.mentorField }}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-img [src]="mentor.mentorImage"></ion-img>    
+    <ion-text slot="start" small>
+      <small>
+        <ion-button fill="clear"
+        color="primary"
+        [routerLink]="[
+        '/', 'find-a-mentor', 'mentor-details',
+        mentor.id]"
+        >More</ion-button> 
+      </small> 
+    </ion-text>
+  </ion-card-content>
+</ion-card>

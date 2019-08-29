@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/featured/tabs/local-events"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Event Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card text-wrap>
+    <ion-card-header>
+      <ion-card-subtitle>{{ event.eventDate | date:'medium' }}</ion-card-subtitle>
+      <ion-card-title>{{ event.eventName }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-img [src]="event.eventImage"></ion-img>
+      {{ event.eventDetails }}
+    </ion-card-content>
+    <ion-card-title padding>{{ event.eventLocation }}</ion-card-title>  </ion-card>
+</ion-content>
+

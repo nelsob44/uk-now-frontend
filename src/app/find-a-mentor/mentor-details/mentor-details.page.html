@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/find-a-mentor"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mentor Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>{{ mentor.mentorUserName }}</ion-card-subtitle>
+      <ion-card-title>Field: {{ mentor.mentorField }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-img [src]="mentor.mentorImage"></ion-img>
+      {{ mentor.mentorProfile }} 
+    <ion-card-subtitle>{{ ' ' }}</ion-card-subtitle>  
+    <ion-card-subtitle>Email: {{ mentor.mentorEmail }}</ion-card-subtitle> 
+    </ion-card-content>    
+  </ion-card>
+</ion-content>

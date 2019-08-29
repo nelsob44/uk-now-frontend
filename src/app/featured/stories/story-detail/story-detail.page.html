@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/featured/tabs/stories"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card text-wrap>
+    <ion-card-header>
+      <ion-card-subtitle>{{ story.userName }}</ion-card-subtitle>
+      <ion-card-title>{{ story.storyTitle }}</ion-card-title>
+      <ion-text class="space-left" slot="end"><small>{{ story.postedOn | date:'medium' }}</small></ion-text>                
+    </ion-card-header>
+    <ion-card-content>
+      <ion-img [src]="story.storyImage"></ion-img>
+      {{ story.storyDetail }}
+      <p>
+        <ion-badge slot="end" color="tertiary" (click)="addLike(story.id)">
+          <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ story.storyLikes }}
+        </ion-badge>
+      </p>
+    </ion-card-content>    
+  </ion-card>
+</ion-content>
+

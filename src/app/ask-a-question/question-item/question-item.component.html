@@ -1,0 +1,38 @@
+<ion-label>
+  <ion-label text-wrap><h1>{{question.questionTitle}}</h1></ion-label>    
+  <ion-label text-wrap>
+  {{ question.questionDetails }}
+  </ion-label>  
+      
+  <ion-item text-wrap>
+    <ion-label>    
+    <ion-text class="space-left" slot="start"><small>{{ question.questionUserName }}</small></ion-text> {{ ' ' }}               
+    <ion-text class="space-left" slot="start"><small>{{ question.questionTime | date:'yyyy-MM-dd HH:mm:ss' }}</small></ion-text>
+
+    <ion-badge slot="end" class="space-right" color="tertiary" (click)="addReply(question.id)">
+      Reply
+    </ion-badge>
+    </ion-label> 
+  </ion-item>    
+  <div *ngIf="isReplying">
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCreateReply(question.id)" [disabled]="!form?.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <form [formGroup]="form">
+      <ion-grid>
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">            
+            <ion-input type="hidden" formControlName="questionId" value="{{question.id}}"></ion-input>
+            <ion-item>
+              <ion-label position="floating">Your reply here....</ion-label>
+              <ion-textarea autocorrect formControlName="questionReply" minlength="1"></ion-textarea>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form> 
+  </div>              
+</ion-label>
+

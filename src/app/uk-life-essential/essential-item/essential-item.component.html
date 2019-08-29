@@ -1,0 +1,10 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-subtitle>{{ essential.essentialsTime }}</ion-card-subtitle>    
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-img [src]="essential.essentialsImage" *ngIf="essential.essentialsImage.length > 0"></ion-img>
+    {{ essential.essentialsDetails }}
+  </ion-card-content>
+</ion-card>

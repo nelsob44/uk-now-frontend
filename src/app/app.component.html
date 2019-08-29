@@ -1,3 +1,68 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu side="start" menuId="first">
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>UK Now</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/featured/tabs/stories">
+            <ion-icon name="people" slot="start"></ion-icon>
+            <ion-label>Stories</ion-label>
+          </ion-item>
+        </ion-menu-toggle>  
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/your-local">
+            <ion-icon name="business" slot="start"></ion-icon>
+            <ion-label>Your Local</ion-label>
+          </ion-item>
+        </ion-menu-toggle> 
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/blog">
+            <ion-icon name="business" slot="start"></ion-icon>
+            <ion-label>Blog</ion-label>
+          </ion-item>
+        </ion-menu-toggle> 
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/featured/tabs/local-events">
+            <ion-icon name="contacts" slot="start"></ion-icon>
+            <ion-label>Local Events</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/find-a-mentor">
+            <ion-icon name="search" slot="start"></ion-icon>
+            <ion-label>Find A Mentor</ion-label>
+          </ion-item>
+        </ion-menu-toggle> 
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/about">
+            <ion-icon name="information" slot="start"></ion-icon>
+            <ion-label>About Us</ion-label>
+          </ion-item>
+        </ion-menu-toggle> 
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/uk-life-essential">
+            <ion-icon name="business" slot="start"></ion-icon>
+            <ion-label>UK Life Essential + Quiz</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/ask-a-question">
+            <ion-icon name="help" slot="start"></ion-icon>
+            <ion-label>Ask A Question</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item lines="none" (click)="onLogout()">
+            <ion-icon name="exit" slot="start"></ion-icon>
+            <ion-label>Logout</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet main></ion-router-outlet>
 </ion-app>

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">UK Now</string>
+    <string name="title_activity_main">UK Now</string>
+    <string name="package_name">co.uk.uknowappand.www</string>
+    <string name="fileprovider_authority">co.uk.uknowappand.www.fileprovider</string>
+    <string name="custom_url_scheme">co.uk.uknowappand.www</string>
+</resources>

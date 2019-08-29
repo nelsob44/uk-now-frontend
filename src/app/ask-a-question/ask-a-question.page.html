@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Ask a question</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="[
+        '/', 'ask-a-question', 'edit-question',
+        '']">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>        
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-list *ngIf="questionsData.length > 0">
+          <ion-item-sliding *ngFor="let question of questionsData">
+            <app-question-item [question]="question"></app-question-item> 
+            <app-replies-item [question]="question"></app-replies-item>  
+            <ion-item-options side="start">
+              <ion-item-option color="secondary" (click)="onEdit(question.id)">
+                <ion-icon name="create" slot="icon-only"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>            
+        </ion-list>
+      </ion-col>    
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/uk-life-essential"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit Life Essentials</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCreateEssential()" [disabled]="!form?.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-grid>     
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <app-image-picker [showPreview]="form.get('theImage').value" (imagePick)="onImagePicked($event)"
+          ></app-image-picker>
+        </ion-col>
+      </ion-row>  
+
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label position="floating">Essential Details</ion-label>
+            <ion-textarea autocorrect formControlName="essentialDetails" minlength="5"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>      
+    </ion-grid>
+  </form> 
+</ion-content>

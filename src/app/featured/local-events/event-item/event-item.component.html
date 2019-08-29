@@ -1,0 +1,22 @@
+<ion-item>
+  <ion-thumbnail slot="start">
+    <ion-img [src]="event.eventImage"></ion-img>
+  </ion-thumbnail>
+  <ion-label>
+    <h2>{{event.eventName}}</h2>
+    <div class="story-details">        
+      <ion-text class="space-left" slot="end"><small>{{ event.eventDate | date:'yyyy-MM-dd HH:mm:ss' }}</small></ion-text>                      
+    </div>
+    <ion-text slot="start" small>
+      <small>
+        <ion-button fill="clear"
+        color="primary"
+        [routerLink]="[
+        '/', 'featured', 'tabs', 'local-events', 'event-details',
+        event.id]"
+        >More</ion-button> 
+      </small> 
+    </ion-text>
+  </ion-label>
+</ion-item>
+
