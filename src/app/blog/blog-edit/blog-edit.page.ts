@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { FeaturedService } from 'src/app/featured.service';
+import { switchMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -27,10 +31,11 @@ function base64toBlob(base64Data, contentType) {
   templateUrl: './blog-edit.page.html',
   styleUrls: ['./blog-edit.page.scss'],
 })
-export class BlogEditPage implements OnInit {
+export class BlogEditPage implements OnInit, OnDestroy {
   form: FormGroup;
+  private blogSub: Subscription;
 
-  constructor() { }
+  constructor(private featuredService: FeaturedService, private router: Router) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -53,7 +58,24 @@ export class BlogEditPage implements OnInit {
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
-    console.log(this.form.value);
+    return this.blogSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
+      switchMap(uploadRes => {
+        return this.featuredService.addBlog(          
+          this.form.value.blogTitle,
+          this.form.value.blogDetails,
+          uploadRes.imageUrl,
+          'Mandy',
+          'Jones',
+          new Date(),
+          0,
+          [],
+          0          
+        );
+      })
+    ).subscribe(() => {       
+      this.form.reset();
+      this.router.navigate(['/about']);
+    });
   }
 
   onImagePicked(imageData: string | File) {
@@ -69,6 +91,12 @@ export class BlogEditPage implements OnInit {
       imageFile = imageData;
     }
     this.form.patchValue({ theImage: imageFile });
+  }
+
+  ngOnDestroy() {
+    if (this.blogSub) {
+      this.blogSub.unsubscribe();
+    }
   }
   
 }

@@ -2,16 +2,29 @@ import { Injectable } from '@angular/core';
 import { Story } from './featured/stories/story.model';
 import { Event } from './featured/local-events/event.model';
 import { About, Essentials } from './about/about.model';
-import { take, map, tap, delay, switchMap } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { AuthService } from 'src/app/auth/auth.service';
+import { take, map, tap, delay, switchMap, filter } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Blog, Blogcomments, Questions, Mentor, Local } from './blog/blog.model';
+import { environment } from 'src/environments/environment';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+
+export interface AboutResponseData {  
+
+  aboutDetails: string;
+  aboutImage: string;  
+
+}
+const URL = environment.baseUrl + '/post-image';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeaturedService {
-  private _essentials: Essentials[] = [
+   
+
+  private _essentials = new BehaviorSubject<Essentials[]>([
     new Essentials(
       '1',
       'U.S. President Donald Trump and Canadian Prime Minister Justin Trudeau discussed the Hong Kong protests and the ongoing detention of two Canadians by the Chinese government, a statement from Trudeau\'s office said on Friday.',
@@ -32,9 +45,9 @@ export class FeaturedService {
       'http://www.trbimg.com/img-5863c41d/turbine/ct-boeing-777-assembly-line-20161228',
       new Date('2019-11-25 11:32:00')
     ),
-  ];
+  ]);
 
-  private _locals: Local[] = [
+  private _locals = new BehaviorSubject<Local[]>([
     new Local(
       '1',
       'Iya Basira',
@@ -74,9 +87,9 @@ export class FeaturedService {
       'sushi@gmail.com',
       5
     )
-  ];
+  ]);
 
-  private _mentors: Mentor[] = [
+  private _mentors = new BehaviorSubject<Mentor[]>([
     new Mentor(
       '1',
       'Daniel Kolenda',
@@ -112,9 +125,9 @@ export class FeaturedService {
       'https://pixel.nymag.com/imgs/daily/intelligencer/2019/04/12/12-candace-owens.w700.h700.jpg',
       'midyokoli@gmail.com'
     ),
-  ];
+  ]);
 
-  private _questions: Questions[] = [
+  private _questions = new BehaviorSubject<Questions[]>([
     new Questions(
       '1',
       'Patrick',
@@ -180,9 +193,9 @@ export class FeaturedService {
         ),        
       ]
     )
-  ];
+  ]);
 
-  private _blogs: Blog[] = [
+  private _blogs = new BehaviorSubject<Blog[]>([
     new Blog(
       '1',
       'Examples of Entreprenurship Blogs',
@@ -234,11 +247,11 @@ export class FeaturedService {
       ] ,  
       7          
     )
-  ];
+  ]);
 
   private _about: About;
 
-  private _events: Event[] = [
+  private _events = new BehaviorSubject<Event[]>([
     new Event(
       '1',
       'Northumbria Graduation',
@@ -265,9 +278,9 @@ export class FeaturedService {
       new Date('2019-09-20 11:00:00'),
       'http://www.leedsbeckett.ac.uk/assets/studentcharter/media/logo-hr.jpg'
     ),
-  ];
+  ]);
 
-  private _stories: Story[] = [
+  private _stories = new BehaviorSubject<Story[]>([
     new Story(
       '1',
       'The History of Newcastle',
@@ -298,14 +311,14 @@ export class FeaturedService {
       11
     )
 
-  ];
+  ]);
 
   get stories() {
-    return [...this._stories];
+    return this._stories.asObservable();
   }
 
   get events() {
-    return [...this._events];
+    return this._events.asObservable();
   }
 
   get about() {
@@ -317,44 +330,355 @@ export class FeaturedService {
   }
 
   get blogs() {
-    return [...this._blogs];
+    return this._blogs.asObservable();
   }
 
   get questions() {
-    return [...this._questions];
+    return this._questions.asObservable();
   }
 
   get mentors() {
-    return [...this._mentors];
+    return this._mentors.asObservable();
   }
 
   get locals() {
-    return [...this._locals];
+    return this._locals.asObservable();
   }
 
   get essentials() {
-    return [...this._essentials];
+    return this._essentials.asObservable();
   }
-  constructor() { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   fetchStories() {
     
   }
 
   getBlog(id: string) {    
-    return {...this._blogs.find(b => b.id === id)};     
+    return this.blogs.pipe(
+      take(1),
+      map(blogs => {
+        return { ...blogs.find(b => b.id === id)};
+      })
+    );     
   }
 
-  getStory(id: string) {    
-    return {...this._stories.find(s => s.id === id)};     
+  getStory(id: string) { 
+    return this.stories.pipe(
+      take(1),
+      map(stories => {
+        return { ...stories.find(s => s.id === id)};
+      })
+    );         
   }
 
   getEvent(id: string) {    
-    return {...this._events.find(ev => ev.id === id)};     
+    return this.events.pipe(
+      take(1),
+      map(events => {
+        return {...events.find(ev => ev.id === id)};
+      })
+    );     
   }
 
-  getMentor(id: string) {    
-    return {...this._mentors.find(m => m.id === id)};     
+  getMentor(id: string) {   
+    return this.mentors.pipe(
+      take(1),
+      map(mentors => {
+        return {...mentors.find(m => m.id === id)};
+      })
+    );          
+  }
+
+  uploadImage(image: any) {
+    
+    const uploadData = new FormData();
+    uploadData.append('image', image);
+    
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.put<{imageUrl: string, imagePath: string}>(URL, uploadData, 
+        {headers: {Authorization: 'Bearer ' + token}}
+        ).pipe(
+          map(data => {              
+            return data;
+          })
+        );
+      })
+    );     
+  }
+
+  addAbout(
+    aboutDetails: string,
+    aboutImage: string
+  ) {
+    
+    const uploadData = new FormData();
+    uploadData.append('aboutDetails', aboutDetails);
+    uploadData.append('aboutImage', aboutImage);
+
+    
+    const url = environment.baseUrl + '/about/add';
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<AboutResponseData>(url, uploadData, 
+        {headers: {Authorization: 'Bearer ' + token}}
+        )
+        .pipe(
+          map(data => {   
+            console.log(data);     
+            return data;
+          })
+        );
+      })
+    );
+  }
+
+  addBlog(
+    blogTitle: string,
+    blogDetails: string,
+    blogImage: string,
+    blogFirstName: string,
+    blogLastName: string,
+    blogDate: Date,
+    blogLikes: number,
+    blogComments: Blogcomments[],
+    blogNumberOfComments: number
+  ) {
+    let newBlog: Blog;
+
+    newBlog = new Blog(
+      Math.random().toString(),
+      blogTitle, 
+      blogDetails,
+      blogImage,
+      blogFirstName,
+      blogLastName,
+      blogDate,
+      blogLikes,
+      blogComments,
+      blogNumberOfComments
+    );      
+    
+    const url = environment.baseUrl + '/blog-add';
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<Blog>(url, { ...newBlog, id: null }, {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
+          })
+        })
+        .pipe(
+          map(data => {
+            return data;
+          })
+        );
+      })
+    );
+  }
+    
+  
+
+  addQuestion(
+    questionUserName: string,
+    questionTitle: string,
+    questionDetails: string,
+    questionTime: Date,
+    questionReplies: Blogcomments[]
+  ) {
+
+    let newQuestion: Questions;
+
+    newQuestion = new Questions(
+      Math.random().toString(),
+      questionUserName, 
+      questionTitle,
+      questionDetails,
+      questionTime,
+      questionReplies     
+    );     
+
+    const url = environment.baseUrl + '/question-add';
+    return this.http.post<Questions>(url, { ...newQuestion, id: null }, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    })
+    .pipe(
+      map(data => {
+        console.log(data);
+        return data;
+      })
+    ); 
+  }
+
+  addEvent(
+    eventName: string,
+    eventDetails: string,
+    eventLocation: string,
+    eventDate: Date,
+    eventImage: string
+  ) {
+
+    let newEvent: Event;
+
+    newEvent = new Event(
+      Math.random().toString(),
+      eventName, 
+      eventDetails,
+      eventLocation,
+      eventDate,
+      eventImage     
+    );     
+
+    const url = environment.baseUrl + '/event-add';
+    return this.http.post<Event>(url, { ...newEvent, id: null }, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    })
+    .pipe(
+      map(data => {
+        console.log(data);
+        return data;
+      })
+    ); 
+  }
+
+  addStory(
+    storyTitle: string,
+    storyDetail: string,
+    storyImage: string,
+    userName: string,
+    postedOn: Date,
+    storyLikes: number
+  ) {
+
+    let newStory: Story;
+
+    newStory = new Story(
+      Math.random().toString(),
+      storyTitle, 
+      storyDetail,
+      storyImage,
+      userName,
+      postedOn,
+      storyLikes     
+    );     
+        
+    const url = environment.baseUrl + '/story-add';
+    return this.http.post<Story>(url, { ...newStory, id: null }, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    })
+    .pipe(
+      map(data => {
+        console.log(data);
+        return data;
+      })
+    ); 
   }
   
+  addMentor(
+    mentorUserName: string,
+    mentorProfile: string,
+    mentorField: string,
+    mentorImage: string,
+    mentorEmail: string
+  ) {
+
+    let newMentor: Mentor;
+
+    newMentor = new Mentor(
+      Math.random().toString(),
+      mentorUserName, 
+      mentorProfile,
+      mentorField,
+      mentorImage,
+      mentorEmail   
+    );     
+
+    const url = environment.baseUrl + '/mentor-add';
+    return this.http.post<Mentor>(url, { ...newMentor, id: null }, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    })
+    .pipe(
+      map(data => {
+        console.log(data);
+        return data;
+      })
+    ); 
+  }
+
+  addEssential(
+    essentialsDetails: string,
+    essentialsImage: string,
+    essentialsTime: Date
+  ) {
+
+    let newEssential: Essentials;
+
+    newEssential = new Essentials(
+      Math.random().toString(),
+      essentialsDetails, 
+      essentialsImage,
+      essentialsTime
+    );     
+
+    const url = environment.baseUrl + '/essential-add';
+    return this.http.post<Essentials>(url, { ...newEssential, id: null }, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    })
+    .pipe(
+      map(data => {
+        console.log(data);
+        return data;
+      })
+    ); 
+  }
+
+  addLocal(
+    localName: string,
+    localType: string,
+    localAddress: string,
+    localImage: string,
+    localContact: string,
+    localRating: number
+  ) {
+
+    let newLocal: Local;
+
+    newLocal = new Local(
+      Math.random().toString(),
+      localName, 
+      localType,
+      localAddress,
+      localImage,
+      localContact,
+      localRating
+    );     
+
+    const url = environment.baseUrl + '/local-add';
+    return this.http.post<Local>(url, { ...newLocal, id: null }, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    })
+    .pipe(
+      map(data => {
+        console.log(data);
+        return data;
+      })
+    ); 
+  }
 }

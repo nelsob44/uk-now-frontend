@@ -18,11 +18,11 @@ export class ImagePickerComponent implements OnInit {
   constructor(private platform: Platform) { }
 
   ngOnInit() {
-    console.log('Mobile', this.platform.is('mobile'));
-    console.log('desktop', this.platform.is('desktop'));
-    console.log('hybrid', this.platform.is('hybrid'));
-    console.log('capacitor', this.platform.is('capacitor'));
-    console.log('android', this.platform.is('android'));
+    // console.log('Mobile', this.platform.is('mobile'));
+    // console.log('desktop', this.platform.is('desktop'));
+    // console.log('hybrid', this.platform.is('hybrid'));
+    // console.log('capacitor', this.platform.is('capacitor'));
+    // console.log('android', this.platform.is('android'));
 
     if((this.platform.is('mobile') && !this.platform.is('hybrid')) || this.platform.is('desktop')) {
       this.usePicker = true;
@@ -48,8 +48,7 @@ export class ImagePickerComponent implements OnInit {
       resultType: CameraResultType.DataUrl
     }).then(image => {
       this.selectedImage = image.dataUrl;
-      this.imagePick.emit(image.dataUrl);
-      console.log(image.dataUrl);
+      this.imagePick.emit(image.dataUrl);      
     })
     .catch(error => {
       console.log(error);
@@ -65,12 +64,15 @@ export class ImagePickerComponent implements OnInit {
     if(!pickedFile) {
       return;
     }
+    
     const fr = new FileReader();
     fr.onload = () => {
       const dataUrl = fr.result.toString();
       this.selectedImage = dataUrl;
-      this.imagePick.emit(pickedFile);
+      // console.log(this.selectedImage);
+      this.imagePick.emit(this.selectedImage);      
     }
     fr.readAsDataURL(pickedFile);
+    
   }
 }

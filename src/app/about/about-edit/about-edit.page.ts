@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FeaturedService } from 'src/app/featured.service';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -27,9 +31,10 @@ function base64toBlob(base64Data, contentType) {
   templateUrl: './about-edit.page.html',
   styleUrls: ['./about-edit.page.scss'],
 })
-export class AboutEditPage implements OnInit {
+export class AboutEditPage implements OnInit, OnDestroy {
   form: FormGroup;
-  constructor() { }
+  private aboutSub: Subscription;
+  constructor(private featuredService: FeaturedService, private router: Router) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -63,6 +68,27 @@ export class AboutEditPage implements OnInit {
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
-    console.log(this.form.value);
+    let aboutDetails = this.form.value.aboutDetails;
+    let theImage = this.form.value.theImage;
+
+    return this.aboutSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
+      switchMap(uploadRes => {
+        console.log(uploadRes.imageUrl, uploadRes.imagePath);
+        return this.featuredService.addAbout(          
+          aboutDetails,
+          uploadRes.imagePath
+        );
+      })
+    ).subscribe(() => {       
+      this.form.reset();
+      this.router.navigate(['/about']);
+    });
+    
+  }
+
+  ngOnDestroy() {
+    if (this.aboutSub) {
+      this.aboutSub.unsubscribe();
+    }
   }
 }

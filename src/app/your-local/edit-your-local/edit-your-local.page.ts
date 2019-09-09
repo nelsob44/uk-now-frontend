@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FeaturedService } from 'src/app/featured.service';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -29,8 +33,9 @@ function base64toBlob(base64Data, contentType) {
 })
 export class EditYourLocalPage implements OnInit {
 form: FormGroup;
+private localSub: Subscription;
 
-  constructor() { }
+  constructor(private featuredService: FeaturedService, private router: Router) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -48,7 +53,7 @@ form: FormGroup;
       }),
       localAddress: new FormControl(null, {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.min(5)]
+        validators: []
       }),
       localContact: new FormControl(null, {
         updateOn: 'blur',
@@ -61,7 +66,21 @@ form: FormGroup;
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
-    console.log(this.form.value);
+    return this.localSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
+      switchMap(uploadRes => {
+        return this.featuredService.addLocal(          
+          this.form.value.localName,
+          this.form.value.localType,
+          this.form.value.localAddress,
+          uploadRes.imageUrl,
+          this.form.value.localContact,          
+          0                 
+        );
+      })
+    ).subscribe(() => {       
+      this.form.reset();
+      this.router.navigate(['/about']);
+    });
   }
 
   onImagePicked(imageData: string | File) {
@@ -77,6 +96,12 @@ form: FormGroup;
       imageFile = imageData;
     }
     this.form.patchValue({ theImage: imageFile });
+  }
+
+  ngOnDestroy() {
+    if (this.localSub) {
+      this.localSub.unsubscribe();
+    }
   }
 
 }

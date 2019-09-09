@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FeaturedService } from 'src/app/featured.service';
 import { Blog } from '../blog.model';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-blog-detail',
   templateUrl: './blog-detail.page.html',
   styleUrls: ['./blog-detail.page.scss'],
 })
-export class BlogDetailPage implements OnInit {
+export class BlogDetailPage implements OnInit, OnDestroy {
   form: FormGroup;
   blog: Blog;
   isReplying = false;
+  private blogSub: Subscription;
 
   constructor(
     private featuredService: FeaturedService,
@@ -26,7 +28,9 @@ export class BlogDetailPage implements OnInit {
       if(!paramMap.has('blogId')) {
         this.navCtrl.navigateBack('/blog');
       }
-      this.blog = this.featuredService.getBlog(paramMap.get('blogId'));
+      this.blogSub = this.featuredService.getBlog(paramMap.get('blogId')).subscribe(blog => {
+        this.blog = blog;
+      });
     });
 
     this.form = new FormGroup({
@@ -56,5 +60,9 @@ export class BlogDetailPage implements OnInit {
     this.form.reset();
   }
 
-
+  ngOnDestroy() {
+    if (this.blogSub) {
+      this.blogSub.unsubscribe();
+    }
+  }
 }

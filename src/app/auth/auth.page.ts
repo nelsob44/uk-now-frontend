@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from './auth.service';
+import { AuthService, AuthResponseData } from './auth.service';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
@@ -12,9 +12,12 @@ import { Observable } from 'rxjs';
 })
 export class AuthPage implements OnInit {
   isLogin = true;
+  isLoading = false;
+
   constructor(
     private authService: AuthService, 
     private router: Router,
+    private loadingCtrl: LoadingController,
     private alertCtrl: AlertController
   ) { }
 
@@ -28,12 +31,41 @@ export class AuthPage implements OnInit {
       return;
     }
 
-    const email = form.value.email;
-    const password = form.value.password;
-    this.authService.login(email, password);
-    this.router.navigateByUrl('/featured/tabs/stories')
-    
-    form.reset();      
+    this.isLoading = true;
+    this.loadingCtrl.create({keyboardClose: true, message: this.isLogin ? 'Logging in....' : 'Signing up....' })
+    .then(loadingEl => {
+      loadingEl.present();
+      const firstname = form.value.firstname;
+      const lastname = form.value.lastname;
+      const email = form.value.email;
+      const password = form.value.password;
+      let authObs: Observable<AuthResponseData>;
+
+      if(!this.isLogin) {
+        authObs = this.authService.signup(firstname, lastname, email, password);
+      }
+      else {
+        authObs = this.authService.login(email, password);
+      }    
+      
+      authObs.subscribe(resData => {
+        
+        loadingEl.dismiss();
+        this.isLoading = false;
+        
+        this.isLogin ? this.router.navigateByUrl('/featured/tabs/stories') : this.showAlert('Account created. You can now log in');
+        this.isLogin ? '' : this.isLogin = true;
+      }, errorResponse => {
+        loadingEl.dismiss();
+        const errorCode = errorResponse.error.message;
+
+        this.showAlert(errorCode);
+        this.isLoading = false;
+      });      
+      
+      form.reset();
+    });
+          
   }  
 
   private showAlert(message: string) {

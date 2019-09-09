@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FeaturedService } from 'src/app/featured.service';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -29,8 +33,9 @@ function base64toBlob(base64Data, contentType) {
 })
 export class EditLifeEssentialPage implements OnInit {
 form: FormGroup;
+private essentialSub: Subscription;
 
-  constructor() { }
+  constructor(private featuredService: FeaturedService, private router: Router) { }
 
   ngOnInit() {
     this.form = new FormGroup({     
@@ -49,7 +54,18 @@ form: FormGroup;
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
-    console.log(this.form.value);
+    return this.essentialSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
+      switchMap(uploadRes => {
+        return this.featuredService.addEssential(          
+          this.form.value.essentialDetails,          
+          uploadRes.imageUrl,
+          new Date() 
+        );
+      })
+    ).subscribe(() => {       
+      this.form.reset();
+      this.router.navigate(['/about']);
+    });
   }
 
   onImagePicked(imageData: string | File) {
@@ -65,5 +81,11 @@ form: FormGroup;
       imageFile = imageData;
     }
     this.form.patchValue({ theImage: imageFile });
+  }
+
+  ngOnDestroy() {
+    if (this.essentialSub) {
+      this.essentialSub.unsubscribe();
+    }
   }
 }

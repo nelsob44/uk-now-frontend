@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FeaturedService } from 'src/app/featured.service';
+import { Router } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-question',
@@ -8,8 +12,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class EditQuestionPage implements OnInit {
   form: FormGroup;
+  private questionSub: Subscription;
 
-  constructor() { }
+  constructor(private featuredService: FeaturedService, private router: Router) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -28,6 +33,22 @@ export class EditQuestionPage implements OnInit {
     if(!this.form.valid) {
       return;
     }
-    console.log(this.form.value);
+    return this.questionSub = this.featuredService.addQuestion(       
+          'Mikey',
+          this.form.value.questionTitle,
+          this.form.value.questionDetails,
+          new Date(),
+          []
+    
+    ).subscribe(() => {       
+      this.form.reset();
+      this.router.navigate(['/about']);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.questionSub) {
+      this.questionSub.unsubscribe();
+    }
   }
 }

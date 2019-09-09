@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FeaturedService } from 'src/app/featured.service';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -27,10 +31,11 @@ function base64toBlob(base64Data, contentType) {
   templateUrl: './edit-local-event.page.html',
   styleUrls: ['./edit-local-event.page.scss'],
 })
-export class EditLocalEventPage implements OnInit {
+export class EditLocalEventPage implements OnInit, OnDestroy  {
   form: FormGroup;
+  private eventSub: Subscription;
 
-  constructor() { }
+  constructor(private featuredService: FeaturedService, private router: Router) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -61,7 +66,20 @@ export class EditLocalEventPage implements OnInit {
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
-    console.log(this.form.value);
+    return this.eventSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
+      switchMap(uploadRes => {
+        return this.featuredService.addEvent(          
+          this.form.value.eventTitle,
+          this.form.value.eventDetails,
+          this.form.value.eventLocation,
+          this.form.value.eventDate,
+          uploadRes.imageUrl            
+        );
+      })
+    ).subscribe(() => {       
+      this.form.reset();
+      this.router.navigate(['/about']);
+    });
   }
 
   onImagePicked(imageData: string | File) {
@@ -77,5 +95,11 @@ export class EditLocalEventPage implements OnInit {
       imageFile = imageData;
     }
     this.form.patchValue({ theImage: imageFile });
+  }
+
+  ngOnDestroy() {
+    if (this.eventSub) {
+      this.eventSub.unsubscribe();
+    }
   }
 }

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FeaturedService } from 'src/app/featured.service';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -29,8 +33,9 @@ function base64toBlob(base64Data, contentType) {
 })
 export class EditMentorPage implements OnInit {
   form: FormGroup;
+  private mentorSub: Subscription;
 
-  constructor() { }
+  constructor(private featuredService: FeaturedService, private router: Router) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -61,7 +66,20 @@ export class EditMentorPage implements OnInit {
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
-    console.log(this.form.value);
+    return this.mentorSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
+      switchMap(uploadRes => {
+        return this.featuredService.addMentor(          
+          this.form.value.mentorName,
+          this.form.value.mentorProfile,
+          this.form.value.mentorField,
+          uploadRes.imageUrl,
+          this.form.value.mentorEmail    
+        );
+      })
+    ).subscribe(() => {       
+      this.form.reset();
+      this.router.navigate(['/about']);
+    });
   }
 
   onImagePicked(imageData: string | File) {
@@ -77,6 +95,12 @@ export class EditMentorPage implements OnInit {
       imageFile = imageData;
     }
     this.form.patchValue({ theImage: imageFile });
+  }
+
+  ngOnDestroy() {
+    if (this.mentorSub) {
+      this.mentorSub.unsubscribe();
+    }
   }
 
 }

@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
-function base64toBlob(base64Data, contentType) {
+import { FeaturedService } from 'src/app/featured.service';
+import { Router } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+
+function base64toBlob(dataUrl, contentType) {
   contentType = contentType || '';
   const sliceSize = 1024;
-  const byteCharacters = window.atob(base64Data);
+  const byteCharacters = window.atob(dataUrl);
   const bytesLength = byteCharacters.length;
   const slicesCount = Math.ceil(bytesLength / sliceSize);
   const byteArrays = new Array(slicesCount);
@@ -29,8 +34,9 @@ function base64toBlob(base64Data, contentType) {
 })
 export class EditStoryPage implements OnInit {
   form: FormGroup;
+  private storySub: Subscription;
 
-  constructor() { }
+  constructor(private featuredService: FeaturedService, private router: Router) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -53,7 +59,21 @@ export class EditStoryPage implements OnInit {
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
-    console.log(this.form.value);
+    return this.storySub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
+      switchMap(uploadRes => {
+        return this.featuredService.addStory(          
+          this.form.value.storyTitle,
+          this.form.value.storyDetails,
+          uploadRes.imageUrl,
+          'Mandy',
+          new Date(),
+          0         
+        );
+      })
+    ).subscribe(() => {       
+      this.form.reset();
+      this.router.navigate(['/about']);
+    });
   }
 
   onImagePicked(imageData: string | File) {
@@ -69,6 +89,12 @@ export class EditStoryPage implements OnInit {
       imageFile = imageData;
     }
     this.form.patchValue({ theImage: imageFile });
+  }
+
+  ngOnDestroy() {
+    if (this.storySub) {
+      this.storySub.unsubscribe();
+    }
   }
 
 }
