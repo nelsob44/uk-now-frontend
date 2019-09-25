@@ -69,8 +69,7 @@ export class AuthPage implements OnInit {
   }  
 
   private showAlert(message: string) {
-    this.alertCtrl.create({
-      header: 'Authentication failed',
+    this.alertCtrl.create({      
       message: message,
       buttons: ['Okay']
     }).then(alertEl => alertEl.present());

@@ -89,7 +89,11 @@
 }
 
 ion-toolbar{
-    --background: url('../assets/background-images/uk-flags.jpg'); 
+  // --background: url('../assets/background-images/uk-flags.jpg'); 
+    --background: rgb(219, 143, 196); 
     
+}
+ion-card-header {
+    color: blue;    
 }
 }

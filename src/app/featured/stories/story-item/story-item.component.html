@@ -1,13 +1,16 @@
-<ion-item>
-  <ion-thumbnail slot="start">
-    <ion-img [src]="story.storyImage"></ion-img>
-  </ion-thumbnail>
-  <ion-label>
+<ion-card size="" size-sm="5">
+  <ion-card-header>
+    <ion-avatar>
+      <ion-img [src]="story.storyImage"></ion-img>
+    </ion-avatar>
+  </ion-card-header>    
+  
+  <ion-card-content>
     <h2>{{story.storyTitle}}</h2>
     <div class="story-details" text-wrap style="margin-bottom: 0.5rem;">         
       <ion-text slot="start" small><small>Writer: {{ story.userName }}</small></ion-text>      
     </div>
-    <div class="story-details" text-wrap slot="start">      
+    <div class="story-details" text-wrap>      
       <small>{{ story.postedOn | date:'yyyy-MM-dd HH:mm:ss' }}</small>                     
     </div>
     <ion-text slot="start" small>
@@ -20,5 +23,5 @@
         ><small>More</small></ion-button> 
       </small> 
     </ion-text>
-  </ion-label>
-</ion-item>
+  </ion-card-content>
+</ion-card>
