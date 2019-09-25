@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FeaturedService } from 'src/app/featured.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { AlertController } from '@ionic/angular';
+import { Mentor } from 'src/app/blog/blog.model';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -34,32 +36,86 @@ function base64toBlob(base64Data, contentType) {
 export class EditMentorPage implements OnInit {
   form: FormGroup;
   private mentorSub: Subscription;
+  mentor: Mentor;
+  isLoading = false;
+  isEditing = false;
+  mentorId: string;
 
-  constructor(private featuredService: FeaturedService, private router: Router) { }
+  constructor(private featuredService: FeaturedService,
+  private route: ActivatedRoute, 
+  private alertCtrl: AlertController, 
+  private router: Router
+  ) { }
 
   ngOnInit() {
-    this.form = new FormGroup({
-      mentorName: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(2)]
-      }),
-      mentorField: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(2)]
-      }),
-      theImage: new FormControl(null, {
-        updateOn: 'blur',
-        validators: []
-      }),
-      mentorEmail: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
-      }),
-      mentorProfile: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(2)]
-      })
-    });
+    this.route.paramMap.subscribe(paramMap => {
+      if(paramMap.has('mentorId') && paramMap.get('mentorId') == '') {
+
+        this.form = new FormGroup({
+          mentorName: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(2)]
+          }),
+          mentorField: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(2)]
+          }),
+          theImage: new FormControl(null, {
+            updateOn: 'blur',
+            validators: []
+          }),
+          mentorEmail: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required]
+          }),
+          mentorProfile: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(2)]
+          })
+        });
+
+      } else {
+        this.mentorId = paramMap.get('mentorId');
+        this.isLoading = true;
+        this.isEditing = true;
+        this.mentorSub = this.featuredService.getMentor(this.mentorId).subscribe(mentor => {
+          this.mentor = mentor;
+          this.form = new FormGroup({
+            mentorName: new FormControl(this.mentor.mentorUserName, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(2)]
+            }),
+            mentorField: new FormControl(this.mentor.mentorField, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(2)]
+            }),
+            theImage: new FormControl(this.mentor.mentorImage, {
+              updateOn: 'blur',
+              validators: []
+            }),
+            mentorEmail: new FormControl(this.mentor.mentorEmail, {
+              updateOn: 'blur',
+              validators: [Validators.required]
+            }),
+            mentorProfile: new FormControl(this.mentor.mentorProfile, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(2)]
+            })
+          });
+        }, error => {
+          this.alertCtrl.create({
+            header: 'An error occured!',
+            message: 'Mentor could not be fetched. Please try later',
+            buttons: [{text: 'Ok', handler: () => {
+              this.router.navigate(['/blog']);
+            }}]
+          }).then(alertEl => {
+            alertEl.present();
+          });
+        })
+      }
+      
+    });    
   }
 
   onCreateMentor() {
@@ -68,7 +124,8 @@ export class EditMentorPage implements OnInit {
     }
     return this.mentorSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
       switchMap(uploadRes => {
-        return this.featuredService.addMentor(          
+        return this.featuredService.addMentor(  
+          this.isEditing ? this.mentor.id : null,        
           this.form.value.mentorName,
           this.form.value.mentorProfile,
           this.form.value.mentorField,
@@ -78,7 +135,7 @@ export class EditMentorPage implements OnInit {
       })
     ).subscribe(() => {       
       this.form.reset();
-      this.router.navigate(['/about']);
+      this.router.navigate(['/find-a-mentor']);
     });
   }
 

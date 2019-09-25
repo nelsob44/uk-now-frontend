@@ -1,11 +1,11 @@
-<ion-item>  
-  <ion-label text-wrap>
-    <ion-list *ngFor="let comment of blogcomments">
-    <ion-card-subtitle>{{ comment.commentUserName }}</ion-card-subtitle>    
-    <ion-text class="space-left" slot="end"><small>{{ comment.commentTime | date:'medium' }}</small></ion-text>                
-    <ion-card-content>
-      {{ comment.commentDetails }} 
-    </ion-card-content>    
-    </ion-list>
-  </ion-label>
+<ion-item  text-wrap  *ngFor="let comment of blogcomments">    
+  <div  style="margin-top: 10px;">    
+      <ion-card-subtitle color="primary">{{ comment.userName }}</ion-card-subtitle>    
+      <ion-text class="space-left" slot="end"><small>{{ comment.blogDate | date:'medium' }}</small></ion-text>                
+      <ion-card-content>
+        {{ comment.commentDetails }} 
+      </ion-card-content>             
+  </div>  
 </ion-item>
+
+

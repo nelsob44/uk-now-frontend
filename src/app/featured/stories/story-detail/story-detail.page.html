@@ -3,6 +3,18 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/featured/tabs/stories"></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="primary" *ngIf="isAdmin">
+      <ion-button [routerLink]="[
+        '/', 'featured', 'tabs', 'stories', 'edit-story',
+        story.id]">
+        <ion-icon name="create" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons> 
+    <ion-buttons slot="primary" *ngIf="isAdmin">
+      <ion-button (click)="onDelete(story.id)">
+        <ion-icon name="trash" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>  
     <ion-title>Details</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -10,15 +22,18 @@
 <ion-content>
   <ion-card text-wrap>
     <ion-card-header>
-      <ion-card-subtitle>{{ story.userName }}</ion-card-subtitle>
+      <ion-card-subtitle color="primary">{{ story.userName }}</ion-card-subtitle>
       <ion-card-title>{{ story.storyTitle }}</ion-card-title>
       <ion-text class="space-left" slot="end"><small>{{ story.postedOn | date:'medium' }}</small></ion-text>                
     </ion-card-header>
     <ion-card-content>
       <ion-img [src]="story.storyImage"></ion-img>
       {{ story.storyDetail }}
-      <p>
-        <ion-badge slot="end" color="tertiary" (click)="addLike(story.id)">
+      <p>        
+        <ion-badge slot="end" color="primary" *ngIf="likedBefore">
+          <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ story.storyLikes }}
+        </ion-badge>
+        <ion-badge slot="end" color="tertiary" (click)="addLike(story.id)" *ngIf="!likedBefore">
           <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ story.storyLikes }}
         </ion-badge>
       </p>

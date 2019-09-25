@@ -8,9 +8,14 @@ import { Questions, Blogcomments } from 'src/app/blog/blog.model';
 })
 export class RepliesItemComponent implements OnInit {
   @Input() question: Questions;
+  
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    
+  }
+
+  
 
 }

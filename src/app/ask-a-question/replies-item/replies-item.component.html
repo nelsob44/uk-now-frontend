@@ -1,8 +1,8 @@
 <ion-item>  
   <ion-label text-wrap>
     <ion-list *ngFor="let replies of question.questionReplies">
-    <ion-text class="space-left" slot="start"><small>{{ replies.commentUserName }}</small></ion-text>{{ ' ' }}                
-    <ion-text class="space-left" slot="end"><small>{{ replies.commentTime | date:'yyyy-MM-dd HH:mm:ss' }}</small></ion-text>                
+    <ion-text class="space-left" slot="start"><small>{{ replies.userName }}</small></ion-text>{{ ' ' }}                
+    <ion-text class="space-left" slot="end"><small>{{ replies.blogDate | date:'yyyy-MM-dd HH:mm:ss' }}</small></ion-text>                
     <ion-item-divider>
       <ion-label text-wrap>
       {{ replies.commentDetails }} 

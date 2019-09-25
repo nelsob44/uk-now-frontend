@@ -6,6 +6,13 @@
     <ion-title>UK Life Eessentials</ion-title>
     <ion-buttons slot="end">
       <ion-button [routerLink]="[
+        '/', 'uk-life-essential', 'uk-quiz-details']">
+        <ion-badge color="tertiary" style="padding: 3px;">Quiz</ion-badge>         
+
+      </ion-button>        
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="isAdmin">
+      <ion-button [routerLink]="[
         '/', 'uk-life-essential', 'edit-life-essential',
         '']">
         <ion-icon name="add"></ion-icon>
@@ -31,4 +38,11 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-title>          
+    <ion-badge color="tertiary" (click)="onScrollFirst(firstPage)" style="padding: 3px;">{{ firstPage }}</ion-badge>         
+    <ion-badge *ngIf="previousPage != firstPage" color="warning" (click)="onScrollPrev(previousPage)" style="padding: 3px;">Prev ( {{ previousPage }} )</ion-badge>          
+  
+    <ion-badge *ngIf="lastPage > nextPage" color="primary" (click)="onScrollNext(nextPage)" style="padding: 3px;">Next ( {{ nextPage }} )</ion-badge>
+    <ion-badge color="tertiary" (click)="onScrollLast(lastPage)" style="padding: 3px;">{{ lastPage }}</ion-badge>
+  </ion-title> 
 </ion-content>

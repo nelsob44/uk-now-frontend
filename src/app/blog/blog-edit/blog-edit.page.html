@@ -4,9 +4,14 @@
       <ion-back-button defaultHref="/blog"></ion-back-button>
     </ion-buttons>
     <ion-title>Edit Blog</ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons slot="primary" *ngIf="!isEditing">
       <ion-button (click)="onCreateBlog()" [disabled]="!form?.valid">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="primary" *ngIf="isEditing">
+      <ion-button (click)="onCreateBlog()" [disabled]="!form?.valid">
+        <ion-icon name="create" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -28,6 +33,12 @@
       <ion-col size-sm="6" offset-sm="3">
         <app-image-picker [showPreview]="form.get('theImage').value" (imagePick)="onImagePicked($event)"
         ></app-image-picker>
+      </ion-col>      
+    </ion-row>
+
+    <ion-row *ngIf="isEditing">       
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-img [src]="blog.blogImage"></ion-img>
       </ion-col>
     </ion-row>
     
@@ -37,6 +48,7 @@
           <ion-item>
             <ion-label position="floating">Story details here</ion-label>
             <ion-textarea autocorrect formControlName="blogDetails" minlength="5"></ion-textarea>
+            <!-- <div [froalaEditor]>Hello, Froala!</div> -->
           </ion-item>
         </ion-col>
       </ion-row>

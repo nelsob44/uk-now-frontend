@@ -48,6 +48,18 @@ export class AuthService {
     );
   }
 
+  get userStatus() {
+    return this._user.asObservable().pipe(
+      map(user => {
+        if(user) {
+          return user.status;
+        } else {
+          return null;
+        }
+      })
+    );
+  }
+
   get token() {
     return this._user.asObservable().pipe(
       map(user => {
@@ -81,10 +93,10 @@ export class AuthService {
       
         const expirationTimeDuration = new Date(parsedData.tokenExpirationDate).getTime()  + (60 * 30 * 1000);
         if(expirationTimeDuration <= new Date().getTime()) {
-          console.log('timecheck null');
+          
           return null;
         }
-        console.log('timecheck is not null');
+        
         const user = new User(
           parsedData.userId,
           parsedData.firstname,

@@ -73,10 +73,10 @@ export class AboutEditPage implements OnInit, OnDestroy {
 
     return this.aboutSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
       switchMap(uploadRes => {
-        console.log(uploadRes.imageUrl, uploadRes.imagePath);
+        
         return this.featuredService.addAbout(          
           aboutDetails,
-          uploadRes.imagePath
+          uploadRes.imageUrl
         );
       })
     ).subscribe(() => {       

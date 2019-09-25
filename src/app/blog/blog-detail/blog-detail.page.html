@@ -3,6 +3,13 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/blog"></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="primary" *ngIf="isAdmin">
+      <ion-button [routerLink]="[
+      '/', 'blog', 'blog-edit',
+      blog.id]">
+        <ion-icon name="create" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>    
     <ion-title>Back</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -18,14 +25,26 @@
       {{ blog.blogDetails }}
     </ion-card-content>
     <ion-item>
+      <ion-badge slot="end" color="primary" *ngIf="likedBefore">
+        <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ blog.blogLikes }}
+      </ion-badge>
+      <ion-badge slot="end" color="tertiary" (click)="addLike(blog.id)" *ngIf="!likedBefore">
+        <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ blog.blogLikes }}
+      </ion-badge>
+      <ion-badge slot="end" class="space-right" color="primary" (click)="onClickComments()">
+        <small>Comments</small>
+      </ion-badge>
       <ion-badge slot="end" class="space-right" color="tertiary" (click)="addReply(blog.id)">
         Reply
+      </ion-badge>
+      <ion-badge slot="end" color="danger" (click)="onDelete(blog.id)" *ngIf="isAdmin">      
+        Delete  
       </ion-badge>
     </ion-item>
       <div *ngIf="isReplying">
       <ion-buttons slot="primary">
         <ion-button (click)="onCreateReply(blog.id)" [disabled]="!form?.valid">
-          <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+          <ion-icon name="checkmark" color="danger" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-buttons>
       <form [formGroup]="form">
@@ -41,9 +60,8 @@
           </ion-row>
         </ion-grid>
       </form> 
-    </div>   
+    </div> 
     
-    
-    <app-blogcomments-item [blogcomments]="blog.blogComments"></app-blogcomments-item>
+    <app-blogcomments-item [blogcomments]="blog.blogComments" *ngIf="showComments"></app-blogcomments-item>
   </ion-card>
 </ion-content>

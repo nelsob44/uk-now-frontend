@@ -15,13 +15,17 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid>
+  <div text-center *ngIf="isLoading">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
+  <ion-grid *ngIf="!isLoading">
     <ion-row>
       <ion-col size-sm="6" offset-sm="3">
         <ion-list *ngIf="questionsData.length > 0">
           <ion-item-sliding *ngFor="let question of questionsData">
-            <app-question-item [question]="question"></app-question-item> 
-            <app-replies-item [question]="question"></app-replies-item>  
+            <app-question-item [question]="question" (showReplies)="onRepliesClicked($event)" (oldQuestion)="onReceiveDelete($event)" (newQuestion)="onReceiveReply($event)"></app-question-item> 
+            
+            <app-replies-item [question]="question" *ngIf="showIt"></app-replies-item>  
             <ion-item-options side="start">
               <ion-item-option color="secondary" (click)="onEdit(question.id)">
                 <ion-icon name="create" slot="icon-only"></ion-icon>
@@ -32,4 +36,11 @@
       </ion-col>    
     </ion-row>
   </ion-grid>
+  <ion-title>          
+    <ion-badge color="tertiary" (click)="onScrollFirst(firstPage)" style="padding: 3px;">{{ firstPage }}</ion-badge>         
+    <ion-badge *ngIf="previousPage != firstPage" color="warning" (click)="onScrollPrev(previousPage)" style="padding: 3px;">Prev ( {{ previousPage }} )</ion-badge>          
+  
+    <ion-badge *ngIf="lastPage > nextPage" color="primary" (click)="onScrollNext(nextPage)" style="padding: 3px;">Next ( {{ nextPage }} )</ion-badge>
+    <ion-badge color="tertiary" (click)="onScrollLast(lastPage)" style="padding: 3px;">{{ lastPage }}</ion-badge>
+  </ion-title>
 </ion-content>

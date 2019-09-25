@@ -6,6 +6,7 @@ export class Story {
         public storyImage: string,
         public userName: string,
         public postedOn: Date,
-        public storyLikes: number                     
+        public storyLikes: number,
+        public storyLikers: string[]                    
     ) {}
 }

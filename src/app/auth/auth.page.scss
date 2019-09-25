@@ -1,0 +1,22 @@
+// ion-content {
+//     background-image: image('src/assets/background-images/app-background.jpeg');
+// }
+
+ion-content.background{
+    --background: url('../../assets/background-images/app-background.jpeg'); 
+    
+}
+
+ion-content.overlay{
+    width: 100%;    
+    z-index: 1;
+    bottom: 0px;
+    opacity: 0.7;
+    background-color: rgba(0,0,0,0.5);
+    color: #fff;
+
+    ion-button.b2{
+        --opacity: 10;
+        --z-index: 100;
+    }
+}

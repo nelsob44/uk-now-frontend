@@ -4,9 +4,14 @@
       <ion-back-button defaultHref="/featured/tabs/local-events"></ion-back-button>
     </ion-buttons>
     <ion-title>Edit Local Event</ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons slot="primary" *ngIf="!isEditing">
       <ion-button (click)="onCreateEvent()" [disabled]="!form?.valid">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="primary" *ngIf="isEditing">
+      <ion-button (click)="onCreateEvent()" [disabled]="!form?.valid">
+        <ion-icon name="create" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -28,6 +33,12 @@
       <ion-col size-sm="6" offset-sm="3">
         <app-image-picker [showPreview]="form.get('theImage').value" (imagePick)="onImagePicked($event)"
         ></app-image-picker>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="isEditing">       
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-img [src]="event.eventImage"></ion-img>
       </ion-col>
     </ion-row>
     

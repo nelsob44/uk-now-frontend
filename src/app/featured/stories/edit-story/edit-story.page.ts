@@ -3,8 +3,11 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { FeaturedService } from 'src/app/featured.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { Story } from '../story.model';
+import { AlertController } from '@ionic/angular';
+
 
 function base64toBlob(dataUrl, contentType) {
   contentType = contentType || '';
@@ -35,23 +38,67 @@ function base64toBlob(dataUrl, contentType) {
 export class EditStoryPage implements OnInit {
   form: FormGroup;
   private storySub: Subscription;
+  storyId: string;
+  story: Story;
+  isLoading = false;
+  isEditing = false;
 
-  constructor(private featuredService: FeaturedService, private router: Router) { }
+  constructor(private featuredService: FeaturedService, 
+  private route: ActivatedRoute,
+  private alertCtrl: AlertController, 
+  private router: Router) { }
 
   ngOnInit() {
-    this.form = new FormGroup({
-      storyTitle: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(2)]
-      }),
-      storyDetails: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(5)]
-      }),
-      theImage: new FormControl(null, {
-        updateOn: 'blur',
-        validators: []
-      })    
+
+    this.route.paramMap.subscribe(paramMap => {
+      if(paramMap.has('storyId') && paramMap.get('storyId') == '') {
+        this.form = new FormGroup({
+          storyTitle: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(2)]
+          }),
+          storyDetails: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(5)]
+          }),
+          theImage: new FormControl(null, {
+            updateOn: 'blur',
+            validators: []
+          })    
+        });
+      
+      } else {
+        this.storyId = paramMap.get('storyId');
+        this.isLoading = true;
+        this.isEditing = true;
+        this.storySub = this.featuredService.getStory(this.storyId).subscribe(story => {
+          this.story = story;
+          this.form = new FormGroup({
+            storyTitle: new FormControl(this.story.storyTitle, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(2)]
+            }),
+            storyDetails: new FormControl(this.story.storyDetail, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(5)]
+            }),
+            theImage: new FormControl(this.story.storyImage, {
+              updateOn: 'blur',
+              validators: []
+            })    
+          });
+        }, error => {
+          this.alertCtrl.create({
+            header: 'An error occured!',
+            message: 'Blog could not be fetched. Please try later',
+            buttons: [{text: 'Ok', handler: () => {
+              this.router.navigate(['/featured/tabs/stories']);
+            }}]
+          }).then(alertEl => {
+            alertEl.present();
+          });
+        })
+      }
     });
   }
 
@@ -61,18 +108,19 @@ export class EditStoryPage implements OnInit {
     }
     return this.storySub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
       switchMap(uploadRes => {
-        return this.featuredService.addStory(          
+        return this.featuredService.addStory(  
+          this.isEditing ? this.story.id : null,        
           this.form.value.storyTitle,
           this.form.value.storyDetails,
           uploadRes.imageUrl,
-          'Mandy',
-          new Date(),
-          0         
+          this.isEditing ? this.story.userName : null,
+          this.isEditing ? this.story.postedOn.toString() : new Date().toString(),
+          this.isEditing ? this.story.storyLikes.toString() : '0',         
         );
       })
     ).subscribe(() => {       
       this.form.reset();
-      this.router.navigate(['/about']);
+      this.router.navigate(['/featured/tabs/stories']);
     });
   }
 

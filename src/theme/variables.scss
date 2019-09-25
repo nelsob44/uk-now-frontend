@@ -68,10 +68,28 @@
   --ion-color-medium-tint: #a2a4ab;
 
   /** light **/
-  --ion-color-light: #f4f5f8;
+  --ion-color-light: #c9426a;
   --ion-color-light-rgb: 244, 244, 244;
   --ion-color-light-contrast: #000000;
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+
+  /** theme color **/
+  --ion-color-theme: #c26483;
+  --ion-color-theme-rgb: 244, 244, 244;
+  --ion-color-theme-contrast: #000000;
+  --ion-color-theme-contrast-rgb: 0, 0, 0;
+  --ion-color-theme-shade: #6c0b92;
+  --ion-color-theme-tint: #3a031d;
+
+  ion-icon {
+  color: brown;
+}
+
+ion-toolbar{
+    --background: url('../assets/background-images/uk-flags.jpg'); 
+    
+}
 }

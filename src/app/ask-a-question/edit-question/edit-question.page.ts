@@ -14,7 +14,8 @@ export class EditQuestionPage implements OnInit {
   form: FormGroup;
   private questionSub: Subscription;
 
-  constructor(private featuredService: FeaturedService, private router: Router) { }
+  constructor(private featuredService: FeaturedService, 
+  private router: Router) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -34,15 +35,14 @@ export class EditQuestionPage implements OnInit {
       return;
     }
     return this.questionSub = this.featuredService.addQuestion(       
-          'Mikey',
+          '',
           this.form.value.questionTitle,
           this.form.value.questionDetails,
           new Date(),
-          []
-    
+          []    
     ).subscribe(() => {       
       this.form.reset();
-      this.router.navigate(['/about']);
+      this.router.navigate(['/ask-a-question']);
     });
   }
 

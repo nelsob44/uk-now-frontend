@@ -1,9 +1,32 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/your-local"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="primary" *ngIf="isAdmin">
+      <ion-button [routerLink]="[
+        '/', 'your-local', 'edit-your-local', local.id]">
+        <ion-icon name="create" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons> 
     <ion-title>your-local-details</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+<ion-card text-wrap>
+  <ion-card-header>
+    <ion-card-subtitle>{{ local.localName }}</ion-card-subtitle>
+    <ion-card-title>{{ local.localType }}</ion-card-title>
+  </ion-card-header>
+  
+  <ion-card-content>
+    <ion-img [src]="local.localImage"></ion-img>
+    <ion-card-subtitle slot="start">Address: {{ local.localAddress }}</ion-card-subtitle>
+    <ion-card-subtitle slot="start">Contact: {{ local.localContact }}</ion-card-subtitle>
+    <ion-label>Ratings:</ion-label>{{ ' ' }}
+    
+    <ion-badge slot="end" color="tertiary">{{ local.localRating }}<ion-icon name="star-outline"></ion-icon></ion-badge>
+    </ion-card-content>        
+</ion-card>
 </ion-content>

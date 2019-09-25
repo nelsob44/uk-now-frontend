@@ -2,8 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { FeaturedService } from 'src/app/featured.service';
-import { switchMap } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { switchMap, map, take } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Blog } from '../blog.model';
+import { AlertController } from '@ionic/angular';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -34,24 +36,71 @@ function base64toBlob(base64Data, contentType) {
 export class BlogEditPage implements OnInit, OnDestroy {
   form: FormGroup;
   private blogSub: Subscription;
+  blogId: string;
+  blog: Blog;
+  isLoading = false;
+  isEditing = false;
 
-  constructor(private featuredService: FeaturedService, private router: Router) { }
+  constructor(private featuredService: FeaturedService,
+  private route: ActivatedRoute, 
+  private alertCtrl: AlertController,
+  private router: Router
+  ) { }
 
   ngOnInit() {
-    this.form = new FormGroup({
-      blogTitle: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(2)]
-      }),
-      blogDetails: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(5)]
-      }),
-      theImage: new FormControl(null, {
-        updateOn: 'blur',
-        validators: []
-      })    
-    });
+    this.route.paramMap.subscribe(paramMap => {
+      if(paramMap.has('blogId') && paramMap.get('blogId') == '') {
+
+        this.isEditing = false;
+        this.form = new FormGroup({
+          blogTitle: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(2)]
+          }),
+          blogDetails: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(5)]
+          }),
+          theImage: new FormControl(null, {
+            updateOn: 'blur',
+            validators: []
+          })    
+        });
+        
+      } else {
+        this.blogId = paramMap.get('blogId');
+        this.isLoading = true;
+        this.isEditing = true;
+        this.blogSub = this.featuredService.getBlog(this.blogId).subscribe(blog => {
+          this.blog = blog;
+          this.form = new FormGroup({
+            blogTitle: new FormControl(this.blog.blogTitle, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(2)]
+            }),
+            blogDetails: new FormControl(this.blog.blogDetails, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(5)]
+            }),
+            theImage: new FormControl(this.blog.blogImage, {
+              updateOn: 'blur',
+              validators: []
+            })    
+          });
+        }, error => {
+          this.alertCtrl.create({
+            header: 'An error occured!',
+            message: 'Blog could not be fetched. Please try later',
+            buttons: [{text: 'Ok', handler: () => {
+              this.router.navigate(['/blog']);
+            }}]
+          }).then(alertEl => {
+            alertEl.present();
+          });
+        })
+      }
+      
+    });    
   }
 
   onCreateBlog() {
@@ -59,25 +108,43 @@ export class BlogEditPage implements OnInit, OnDestroy {
       return;
     }
     return this.blogSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
+      take(1),
       switchMap(uploadRes => {
-        return this.featuredService.addBlog(          
-          this.form.value.blogTitle,
-          this.form.value.blogDetails,
-          uploadRes.imageUrl,
-          'Mandy',
-          'Jones',
-          new Date(),
-          0,
-          [],
-          0          
-        );
+        if(this.isEditing) {
+          return this.featuredService.addBlog(  
+            this.blog.id,        
+            this.form.value.blogTitle,
+            this.form.value.blogDetails,
+            uploadRes.imageUrl,
+            this.blog.blogFirstName,
+            this.blog.blogFirstName,
+            this.blog.blogDate.toString(),
+            this.blog.blogLikes.toString(),
+            this.blog.blogComments,
+            this.blog.blogNumberOfComments.toString(),          
+          );          
+        } else {
+            return this.featuredService.addBlog(  
+              null,        
+              this.form.value.blogTitle,
+              this.form.value.blogDetails,
+              uploadRes.imageUrl,
+              null,
+              null,
+              new Date().toString(),
+              '0',
+              [],
+              '0'          
+            );
+        }               
       })
     ).subscribe(() => {       
       this.form.reset();
-      this.router.navigate(['/about']);
+      this.router.navigate(['/blog']);
     });
   }
 
+  
   onImagePicked(imageData: string | File) {
     let imageFile;
     if(typeof imageData === 'string') {

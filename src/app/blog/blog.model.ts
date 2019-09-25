@@ -31,6 +31,7 @@ export class Blog {
     public blogLikes: number,
     public blogComments: Blogcomments[],
     public blogNumberOfComments: number,
+    public blogLikers: string[]
     ) {}
 }
 

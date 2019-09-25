@@ -1,16 +1,19 @@
 <ion-label>
-  <ion-label text-wrap><h1>{{question.questionTitle}}</h1></ion-label>    
+  <ion-label text-wrap color="primary"><h1>{{question.questionTitle}}</h1></ion-label>    
   <ion-label text-wrap>
   {{ question.questionDetails }}
   </ion-label>  
-      
+  <ion-badge color="tertiary" (click)="onClickReplies()" style="padding: 3px;">Show replies</ion-badge>
+
   <ion-item text-wrap>
     <ion-label>    
     <ion-text class="space-left" slot="start"><small>{{ question.questionUserName }}</small></ion-text> {{ ' ' }}               
-    <ion-text class="space-left" slot="start"><small>{{ question.questionTime | date:'yyyy-MM-dd HH:mm:ss' }}</small></ion-text>
-
-    <ion-badge slot="end" class="space-right" color="tertiary" (click)="addReply(question.id)">
+    <ion-text class="space-left" slot="start"><small>{{ question.questionTime | date:'yyyy-MM-dd HH:mm:ss' }}</small></ion-text>{{ ' ' }}
+    <ion-badge slot="end" class="space-right" color="tertiary" (click)="addReply(question.id)" *ngIf="isAdmin">
       Reply
+    </ion-badge>
+    <ion-badge slot="end" color="danger" (click)="onDelete(question.id)" *ngIf="isAdmin">      
+      Delete  
     </ion-badge>
     </ion-label> 
   </ion-item>    

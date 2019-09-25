@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FeaturedService } from 'src/app/featured.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take, map } from 'rxjs/operators';
+import { Local } from '../../blog/blog.model';
+import { AlertController } from '@ionic/angular';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -31,55 +33,124 @@ function base64toBlob(base64Data, contentType) {
   templateUrl: './edit-your-local.page.html',
   styleUrls: ['./edit-your-local.page.scss'],
 })
-export class EditYourLocalPage implements OnInit {
+export class EditYourLocalPage implements OnInit, OnDestroy {
 form: FormGroup;
 private localSub: Subscription;
+localId: string;
+local: Local;
+isLoading = false;
+isEditing = false;
 
-  constructor(private featuredService: FeaturedService, private router: Router) { }
+  constructor(private featuredService: FeaturedService, 
+  private route: ActivatedRoute, 
+  private alertCtrl: AlertController,
+  private router: Router) { }
 
   ngOnInit() {
-    this.form = new FormGroup({
-      localName: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(2)]
-      }),
-      theImage: new FormControl(null, {
-        updateOn: 'blur',
-        validators: []
-      }),
-      localType: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(2)]
-      }),
-      localAddress: new FormControl(null, {
-        updateOn: 'blur',
-        validators: []
-      }),
-      localContact: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(5)]
-      })      
+        
+    this.route.paramMap.subscribe(paramMap => {      
+            
+      if(!paramMap.has('localId')) {
+        
+        this.isEditing = false;
+        this.form = new FormGroup({
+          localName: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(2)]
+          }),
+          theImage: new FormControl(null, {
+            
+            validators: []
+          }),
+          localType: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(2)]
+          }),
+          localAddress: new FormControl(null, {
+            updateOn: 'blur',
+            validators: []
+          }),
+          localContact: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(5)]
+          })      
+        });
+        
+      } else {
+        this.localId = paramMap.get('localId');
+        
+        this.isLoading = true;
+        this.isEditing = true;
+        this.localSub = this.featuredService.getLocal(this.localId).subscribe(local => {
+          this.local = local;
+          this.form = new FormGroup({
+            localName: new FormControl(this.local.localName, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(2)]
+            }),
+            theImage: new FormControl(this.local.localImage, {
+              
+              validators: []
+            }),
+            localType: new FormControl(this.local.localType, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(2)]
+            }),
+            localAddress: new FormControl(this.local.localAddress, {
+              updateOn: 'blur',
+              validators: []
+            }),
+            localContact: new FormControl(this.local.localContact, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(5)]
+            })      
+          });
+        }, error => {
+          this.alertCtrl.create({
+            header: 'An error occured!',
+            message: 'Your Local could not be fetched. Please try later',
+            buttons: [{text: 'Ok', handler: () => {
+              this.router.navigate(['/your-local']);
+            }}]
+          }).then(alertEl => {
+            alertEl.present();
+          });
+        })
+      }
+      
     });
   }
+
+  
+  ionViewWillEnter() {
+    
+    console.log(this.isEditing);
+    
+    console.log(this.localId);
+  }
+
 
   onCreateLocal() {
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
+    
     return this.localSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
       switchMap(uploadRes => {
-        return this.featuredService.addLocal(          
+        
+        return this.featuredService.addLocal(
+          this.isEditing ? this.local.id : null,          
           this.form.value.localName,
           this.form.value.localType,
           this.form.value.localAddress,
           uploadRes.imageUrl,
           this.form.value.localContact,          
-          0                 
+          this.isEditing ? this.local.localRating.toString() : '0'                 
         );
       })
     ).subscribe(() => {       
       this.form.reset();
-      this.router.navigate(['/about']);
+      this.router.navigate(['/your-local']);
     });
   }
 

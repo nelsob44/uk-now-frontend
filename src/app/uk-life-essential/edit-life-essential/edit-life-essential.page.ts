@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FeaturedService } from 'src/app/featured.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { Essentials } from 'src/app/about/about.model';
+import { AlertController } from '@ionic/angular';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -34,20 +36,60 @@ function base64toBlob(base64Data, contentType) {
 export class EditLifeEssentialPage implements OnInit {
 form: FormGroup;
 private essentialSub: Subscription;
+essential: Essentials;
+essentialId: string;
+isLoading = false;
+isEditing = false;
 
-  constructor(private featuredService: FeaturedService, private router: Router) { }
+  constructor(private featuredService: FeaturedService, 
+  private route: ActivatedRoute, 
+  private alertCtrl: AlertController,
+  private router: Router) { }
 
   ngOnInit() {
-    this.form = new FormGroup({     
-      essentialDetails: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(5)]
-      }),
-      theImage: new FormControl(null, {
-        updateOn: 'blur',
-        validators: []
-      })
-    });
+    this.route.paramMap.subscribe(paramMap => {
+      if(paramMap.has('essentialId') && paramMap.get('essentialId') == '') {
+
+        this.form = new FormGroup({     
+          essentialDetails: new FormControl(null, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.min(5)]
+          }),
+          theImage: new FormControl(null, {
+            updateOn: 'blur',
+            validators: []
+          })
+        });
+      } else {
+        this.essentialId = paramMap.get('essentialId');
+        this.isLoading = true;
+        this.isEditing = true;
+        this.essentialSub = this.featuredService.getEssential(this.essentialId).subscribe(essential => {
+          this.essential = essential;
+          this.form = new FormGroup({     
+            essentialDetails: new FormControl(this.essential.essentialsDetails, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.min(5)]
+            }),
+            theImage: new FormControl(this.essential.essentialsImage, {
+              updateOn: 'blur',
+              validators: []
+            })
+          });
+        }, error => {
+          this.alertCtrl.create({
+            header: 'An error occured!',
+            message: 'Essentials could not be fetched. Please try later',
+            buttons: [{text: 'Ok', handler: () => {
+              this.router.navigate(['/uk-life-essential']);
+            }}]
+          }).then(alertEl => {
+            alertEl.present();
+          });
+        })
+      }
+      
+    });    
   }
 
   onCreateEssential() {
@@ -56,15 +98,16 @@ private essentialSub: Subscription;
     }
     return this.essentialSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
       switchMap(uploadRes => {
-        return this.featuredService.addEssential(          
+        return this.featuredService.addEssential(  
+          this.isEditing ? this.essential.id : null,        
           this.form.value.essentialDetails,          
           uploadRes.imageUrl,
-          new Date() 
+          new Date().toString()
         );
       })
     ).subscribe(() => {       
       this.form.reset();
-      this.router.navigate(['/about']);
+      this.router.navigate(['/uk-life-essential']);
     });
   }
 

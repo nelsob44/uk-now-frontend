@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Blog</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="isAdmin">
       <ion-button [routerLink]="[
         '/', 'blog', 'blog-edit', '']">
         <ion-icon name="add"></ion-icon>
@@ -26,8 +26,16 @@
             </ion-item-options>
           </ion-item-sliding>            
         </ion-list>
-      </ion-col>
+        <ion-title>          
+          <ion-badge color="tertiary" (click)="onScrollFirst(firstPage)" style="padding: 3px;">{{ firstPage }}</ion-badge>         
+          <ion-badge *ngIf="previousPage != firstPage" color="warning" (click)="onScrollPrev(previousPage)" style="padding: 3px;">Prev ( {{ previousPage }} )</ion-badge>          
+         
+          <ion-badge *ngIf="lastPage > nextPage" color="primary" (click)="onScrollNext(nextPage)" style="padding: 3px;">Next ( {{ nextPage }} )</ion-badge>
+          <ion-badge color="tertiary" (click)="onScrollLast(lastPage)" style="padding: 3px;">{{ lastPage }}</ion-badge>
+        </ion-title>
+        </ion-col>
     </ion-row>
-  </ion-grid>
+  </ion-grid>  
 </ion-content>
+
 

@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>About</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="isAdmin">
       <ion-button [routerLink]="[
         '/', 'about', 'about-edit']">
         <ion-icon name="add"></ion-icon>
@@ -14,12 +14,15 @@
 </ion-header>
 
 <ion-content>
+  <div text-center *ngIf="isLoading">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
   <ion-card>
     <ion-card-header>
       <ion-card-title>About Us</ion-card-title>
     </ion-card-header>
 
-    <ion-card-content>
+    <ion-card-content *ngIf="!isLoading">
       <ion-img [src]="aboutData.aboutImage"></ion-img>
       {{ aboutData.aboutDetails }}
     </ion-card-content>

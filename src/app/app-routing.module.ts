@@ -96,7 +96,7 @@ const routes: Routes = [
             canLoad: [AuthGuard]
         },
         {
-            path: 'your-local-details',
+            path: 'your-local-details/:yourLocalId',
             loadChildren: './your-local/your-local-details/your-local-details.module#YourLocalDetailsPageModule',
             canLoad: [AuthGuard]
         },

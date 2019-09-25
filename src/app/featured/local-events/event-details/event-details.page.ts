@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FeaturedService } from 'src/app/featured.service';
 import { Event } from '../event.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/auth.service';
+import { take, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-event-details',
@@ -13,11 +15,16 @@ import { Subscription } from 'rxjs';
 export class EventDetailsPage implements OnInit, OnDestroy {
   event: Event;
   private eventSub: Subscription;
+  private statusSub: Subscription;
+  isAdmin = false;
+  type = 'event';
 
   constructor(
     private featuredService: FeaturedService,
     private route: ActivatedRoute,
-    private navCtrl: NavController
+    private authService: AuthService,
+    private navCtrl: NavController,
+    private router: Router
     ) { }
 
   ngOnInit() {
@@ -31,9 +38,37 @@ export class EventDetailsPage implements OnInit, OnDestroy {
     });
   }
 
+  ionViewWillEnter() {    
+
+    this.statusSub = this.authService.userStatus.subscribe(
+      status => {
+        if(status < 3)
+        {
+          this.isAdmin = true;
+        }
+      });   
+  }
+
+  onDelete(eventId: string) {
+       
+    return this.featuredService.deleteItem(
+      eventId,
+      this.type
+    ).pipe(
+      take(1),
+      map(dataRes => {        
+        console.log(dataRes);        
+      })
+    ).subscribe(() => {      
+      this.router.navigate(['/featured/tabs/local-events']);
+    })   
+  }
+
+
   ngOnDestroy() {
     if (this.eventSub) {
       this.eventSub.unsubscribe();
+      this.statusSub.unsubscribe();
     }
   }
 
