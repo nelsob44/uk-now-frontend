@@ -1,7 +1,7 @@
-<ion-card>
+
   <ion-card-header>
-    <ion-card-subtitle>{{ mentor.mentorUserName }}</ion-card-subtitle>
-    <ion-card-title>Field: {{ mentor.mentorField }}</ion-card-title>
+    <ion-card-subtitle color="primary">{{ mentor.mentorUserName }}</ion-card-subtitle>
+    <ion-card-title text-wrap style="margin-bottom: 0.5rem;">Field: {{ mentor.mentorField }}</ion-card-title>
   </ion-card-header>
 
   <ion-card-content>
@@ -13,8 +13,12 @@
         [routerLink]="[
         '/', 'find-a-mentor', 'mentor-details',
         mentor.id]"
-        >More</ion-button> 
+        ><small>More</small></ion-button> 
       </small> 
     </ion-text>
+    <ion-item-divider>
+    <ion-label>
+      <hr>
+    </ion-label>
+  </ion-item-divider>
   </ion-card-content>
-</ion-card>

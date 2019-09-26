@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>      
+      <ion-col align-self: center [routerLink]="[
+        '/', 'blog']">
+        <ion-card class="blogBackground">              
+            
+            <ion-card-title>Blogs</ion-card-title>
+          
+        </ion-card>
+      </ion-col>
+      <ion-col align-self: center (click)="redirectLogin('International Stories', 'stories')">
+        <ion-card class="storiesBackground">              
+            
+            <ion-card-title>International Stories</ion-card-title>
+          
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>      
+      <ion-col align-self: center (click)="redirectLogin('Your Local', 'local')">
+        <ion-card class="localBackground">              
+            
+            <ion-card-title>Your Local</ion-card-title>
+          
+        </ion-card>
+      </ion-col>
+      <ion-col align-self: center (click)="redirectLogin('Local Event', 'event')">
+        <ion-card class="eventBackground">            
+            <ion-card-title>Local Events</ion-card-title>          
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>      
+      <ion-col align-self: center (click)="redirectLogin('Questions', 'question')">
+        <ion-card class="questionBackground">              
+            
+            <ion-card-title>Questions</ion-card-title>
+          
+        </ion-card>
+      </ion-col>
+      <ion-col align-self: center (click)="redirectLogin('UK Essentials', 'essential')">
+        <ion-card class="essentialsBackground">              
+            
+            <ion-card-title>UK Essentials</ion-card-title>
+          
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>      
+      <ion-col align-self: center [routerLink]="[
+        '/', 'auth']">
+        <ion-card class="loginBackground">             
+            <ion-card-title>Login/Signup</ion-card-title>          
+        </ion-card>
+      </ion-col>
+      <ion-col align-self: center [routerLink]="[
+        '/', 'contact']">
+        <ion-card class="contactBackground">              
+            
+            <ion-card-title>Contact us</ion-card-title>
+          
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

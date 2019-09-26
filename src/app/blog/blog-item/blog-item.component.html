@@ -1,8 +1,11 @@
-<ion-item>
-  <ion-thumbnail slot="start">
-    <ion-img [src]="blog.blogImage"></ion-img>
-  </ion-thumbnail>
-  <ion-label text-wrap>
+<ion-card size="" size-sm="5">
+  <ion-card-header>
+    <ion-avatar>
+      <ion-img [src]="blog.blogImage"></ion-img>
+    </ion-avatar>
+  </ion-card-header>
+
+  <ion-card-content text-wrap>
     <h2>{{blog.blogTitle}}</h2>
     <div class="story-details">         
       <ion-text slot="start" small><small>Writer: {{ blog.blogFirstName + ' ' + blog.blogLastName }}</small></ion-text> {{' '}}
@@ -18,5 +21,5 @@
         >More</ion-button> 
       </small> 
     </ion-text>
-  </ion-label>  
-</ion-item>
+  </ion-card-content>
+</ion-card>

@@ -113,8 +113,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: './blog/blog.module#BlogPageModule',
-        canLoad: [AuthGuard] 
+        loadChildren: './blog/blog.module#BlogPageModule'        
       },
       { 
         path: 'blog-edit/:blogId', 
@@ -123,11 +122,12 @@ const routes: Routes = [
       },
       { 
         path: 'blog-detail/:blogId', 
-        loadChildren: './blog/blog-detail/blog-detail.module#BlogDetailPageModule',
-        canLoad: [AuthGuard]
+        loadChildren: './blog/blog-detail/blog-detail.module#BlogDetailPageModule'
       }
     ]
-  }
+  },
+  { path: 'home', loadChildren: './home/home.module#HomePageModule' },
+  { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' }
 ];
 @NgModule({
   imports: [

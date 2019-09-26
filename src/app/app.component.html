@@ -8,9 +8,15 @@
     <ion-content>
       <ion-list>
         <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/home">
+            <ion-icon name="home" slot="start"></ion-icon>
+            <ion-label>Home</ion-label>
+          </ion-item>
+        </ion-menu-toggle>  
+        <ion-menu-toggle>
           <ion-item lines="none" routerLink="/featured/tabs/stories">
             <ion-icon name="people" slot="start"></ion-icon>
-            <ion-label>Stories</ion-label>
+            <ion-label>International Stories</ion-label>
           </ion-item>
         </ion-menu-toggle>  
         <ion-menu-toggle>
@@ -53,6 +59,12 @@
           <ion-item lines="none" routerLink="/ask-a-question">
             <ion-icon name="help" slot="start"></ion-icon>
             <ion-label>Ask A Question</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/contact">
+            <ion-icon name="contact" slot="start"></ion-icon>
+            <ion-label>Contact Us</ion-label>
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle>

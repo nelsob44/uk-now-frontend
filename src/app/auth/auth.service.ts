@@ -133,7 +133,7 @@ export class AuthService {
   }
 
   private setUserData(userData: AuthResponseData) {
-    const remainingMilliseconds = 60 * 30 * 1000;
+    const remainingMilliseconds = 60 * 60 * 2 * 1000;
     const expirationTime = new Date(
       new Date().getTime() + remainingMilliseconds
     );

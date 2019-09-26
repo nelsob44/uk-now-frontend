@@ -1,0 +1,109 @@
+ion-card.blogBackground{
+//   --background: url('../../assets/background-images/uk-flags.jpg'); 
+    --background: rgb(219, 143, 196); 
+    
+}
+ion-content {
+    ion-grid {
+        ion-row {
+            ion-col {
+                ion-card.blogBackground {
+                    --background: url('../../assets/background-images/uk-flags.jpg'); 
+                    height: 150px;
+                    padding: 60px 0 20px 10px;
+                    ion-card-title {
+                        color: white;
+                        font-stretch: expanded;
+                        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                        font-size: 2rem;
+                    }
+                }
+
+                ion-card.storiesBackground {
+                    --background: url('../../assets/background-images/stories-background.jpeg'); 
+                    height: 150px;
+                    padding: 60px 0 20px 10px;
+                    ion-card-title {
+                        color: white;
+                        font-stretch: expanded;
+                        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                        font-size: 1.5rem;
+                    }
+                }
+
+                ion-card.essentialsBackground {
+                    --background: url('../../assets/background-images/essentials-background.jpeg'); 
+                    height: 150px;
+                    padding: 60px 0 20px 10px;
+                    ion-card-title {
+                        color: white;
+                        font-stretch: expanded;
+                        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                        font-size: 2rem;
+                    }
+                }
+
+                ion-card.questionBackground {
+                    --background: url('../../assets/background-images/questions-background.jpeg'); 
+                    height: 150px;
+                    padding: 60px 0 20px 10px;
+                    ion-card-title {
+                        color: white;
+                        font-stretch: expanded;
+                        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                        font-size: 1.2rem;
+                    }
+                }
+
+                ion-card.contactBackground {
+                    --background: url('../../assets/background-images/contacts-background.jpg'); 
+                    height: 150px;
+                    padding: 60px 0 20px 10px;
+                    ion-card-title {
+                        color: white;
+                        font-stretch: expanded;
+                        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                        font-size: 1.5rem;
+                    }
+                }
+
+                ion-card.loginBackground {
+                    --background: url('../../assets/background-images/login-background.jpg'); 
+                    height: 150px;
+                    padding: 60px 0 20px 10px;
+                    ion-card-title {
+                        color: white;
+                        font-stretch: expanded;
+                        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                        font-size: 1.2rem;
+                    }
+                }
+
+                ion-card.eventBackground {
+                    --background: url('../../assets/background-images/events-background.jpeg'); 
+                    height: 150px;
+                    padding: 60px 0 20px 10px;
+                    ion-card-title {
+                        color: rgb(1, 1, 12);
+                        font-stretch: expanded;
+                        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                        font-size: 1.2rem;
+                    }
+                }
+
+                ion-card.localBackground {
+                    --background: url('../../assets/background-images/local-background.jpeg'); 
+                    height: 150px;
+                    padding: 60px 0 20px 10px;
+                    ion-card-title {
+                        color: white;
+                        font-stretch: expanded;
+                        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+            
+        }
+    }
+}

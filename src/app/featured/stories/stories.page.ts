@@ -16,7 +16,7 @@ export class StoriesPage implements OnInit, OnDestroy {
   private storiesSub: Subscription;
   private statusSub: Subscription;
   isLoading = false; 
-  isAdmin = false;
+  isAdmin = false; 
   private pageSub: Subscription;  
   pageTotal: number;
   pageNumber: number;
@@ -81,7 +81,8 @@ export class StoriesPage implements OnInit, OnDestroy {
       if(this.previousPage == 0) {
         this.previousPage = 1;
       }
-      this.isLoading = false;       
+      this.isLoading = false;   
+         
     });    
     
   }

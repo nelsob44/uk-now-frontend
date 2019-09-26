@@ -1014,4 +1014,33 @@ export class FeaturedService {
 
   }
 
+  sendEmail(
+    senderName: string,
+    senderEmail: string,
+    messageDetail: string
+  ) {
+    const uploadData = new FormData();
+    uploadData.append('senderName', senderName);
+    uploadData.append('senderEmail', senderEmail);
+    uploadData.append('messageDetail', messageDetail);
+
+    const url = environment.baseUrl + '/email/send';
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        
+        return this.http.post<any>(url, uploadData,
+                      {headers: {Authorization: 'Bearer ' + token}}
+                      )
+        .pipe(
+          map(data => {
+            
+            return data;
+          })
+        ); 
+      })
+    );
+  }
+
 }

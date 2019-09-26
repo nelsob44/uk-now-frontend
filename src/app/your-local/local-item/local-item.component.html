@@ -1,4 +1,4 @@
-<ion-card>
+
   <ion-card-header>
     <ion-card-subtitle>{{ local.localName }}</ion-card-subtitle>
     <ion-card-title>{{ local.localType }}</ion-card-title>
@@ -6,16 +6,22 @@
 
   <ion-card-content>
     <ion-img [src]="local.localImage"></ion-img>
-    <ion-card-subtitle slot="start">Address: {{ local.localAddress }}</ion-card-subtitle>
+    <ion-card-subtitle slot="start" style="margin-top: 2%;">Address: {{ local.localAddress }}</ion-card-subtitle>
     <ion-card-subtitle slot="start">Contact: {{ local.localContact }}</ion-card-subtitle>
     <ion-label>Ratings:</ion-label>{{ ' ' }}
     
-    <ion-badge slot="end" color="tertiary">{{ local.localRating }}<ion-icon name="star-outline"></ion-icon></ion-badge>
-    </ion-card-content>
-    <ion-buttons slot="end" *ngIf="isAdmin">
-      <ion-button (click)="onDelete(local.id)">
-        <ion-icon name="trash" slot="icon-only"></ion-icon>
-      </ion-button>        
-    </ion-buttons>    
-</ion-card>
+    <ion-badge slot="end" (click)="addRating(local.id)" color="tertiary">{{ local.localRating }}<ion-icon name="star-outline"></ion-icon></ion-badge>
+  </ion-card-content>
+  <ion-buttons slot="end" *ngIf="isAdmin">
+    <ion-button (click)="onDelete(local.id)">
+      <ion-icon name="trash" slot="icon-only"></ion-icon>
+    </ion-button>        
+  </ion-buttons>    
+  <ion-item-divider>
+    <ion-label>
+      <hr>
+    </ion-label>
+  </ion-item-divider>
+
+
 

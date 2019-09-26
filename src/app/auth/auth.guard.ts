@@ -26,7 +26,7 @@ export class AuthGuard implements CanLoad {
       }),
       tap(isAuthenticated => {
         if (!isAuthenticated) {
-          this.router.navigateByUrl('/auth');
+          this.router.navigateByUrl('/home');
         }
       })
     );

@@ -50,6 +50,10 @@ export class LocalItemComponent implements OnInit {
 
   }
 
+  addRating(localId: string) {
+    console.log(localId);
+  }
+
   ngOnDestroy() {
     if (this.statusSub) {      
       this.statusSub.unsubscribe();
