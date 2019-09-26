@@ -6,7 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { EditStoryPage } from './edit-story.page';
-import { FileSelectDirective } from 'ng2-file-upload';
+
 
 const routes: Routes = [
   {
@@ -23,6 +23,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     SharedModule
   ],
-  declarations: [EditStoryPage, FileSelectDirective]
+  declarations: [EditStoryPage]
 })
 export class EditStoryPageModule {}
