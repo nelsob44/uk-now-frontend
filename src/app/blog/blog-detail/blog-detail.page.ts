@@ -104,7 +104,7 @@ export class BlogDetailPage implements OnInit, OnDestroy {
                   dataRes[key]._id,
                   dataRes[key].blogTitle,
                   dataRes[key].blogDetails,
-                  environment.baseUrl + '/' + dataRes[key].blogImage,
+                  dataRes[key].blogImage,
                   dataRes[key].blogFirstName,
                   dataRes[key].blogLastName,
                   dataRes[key].blogDate,

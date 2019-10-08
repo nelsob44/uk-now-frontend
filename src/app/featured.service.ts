@@ -115,7 +115,7 @@ export class FeaturedService {
                   new About(
                     data[key]._id,
                     data[key].aboutDetails,
-                    environment.baseUrl + '/' + data[key].aboutImage
+                    data[key].aboutImage
                   )
 
                 );
@@ -206,7 +206,7 @@ export class FeaturedService {
                   data.blogs[key]._id,
                   data.blogs[key].blogTitle,
                   data.blogs[key].blogDetails,
-                  environment.baseUrl + '/' + data.blogs[key].blogImage,
+                  data.blogs[key].blogImage,
                   data.blogs[key].blogFirstName,
                   data.blogs[key].blogLastName,
                   new Date(data.blogs[key].blogDate),
@@ -260,7 +260,7 @@ export class FeaturedService {
                   data.events[key].eventDetails,
                   data.events[key].eventLocation,
                   new Date(data.events[key].eventDate),
-                  environment.baseUrl + '/' + data.events[key].eventImage                  
+                  data.events[key].eventImage                  
                 )
               );
             }
@@ -305,7 +305,7 @@ export class FeaturedService {
                   data.stories[key]._id,
                   data.stories[key].storyTitle,
                   data.stories[key].storyDetail,
-                  environment.baseUrl + '/' + data.stories[key].storyImage,
+                  data.stories[key].storyImage,
                   data.stories[key].userName,
                   new Date(data.stories[key].postedOn),
                   data.stories[key].storyLikes,
@@ -354,7 +354,7 @@ export class FeaturedService {
                   data.mentors[key].mentorUserName,
                   data.mentors[key].mentorProfile,
                   data.mentors[key].mentorField,
-                  environment.baseUrl + '/' + data.mentors[key].mentorImage,
+                  data.mentors[key].mentorImage,
                   data.mentors[key].mentorEmail                  
                 )
               );
@@ -398,7 +398,7 @@ export class FeaturedService {
                 new Essentials(
                   data.essentials[key]._id,
                   data.essentials[key].essentialDetails,
-                  environment.baseUrl + '/' + data.essentials[key].essentialsImage,
+                  data.essentials[key].essentialsImage,
                   data.essentials[key].essentialsTime                                
                 )
               );
@@ -444,7 +444,7 @@ export class FeaturedService {
                   data.locals[key].localName,
                   data.locals[key].localType,
                   data.locals[key].localAddress,
-                  environment.baseUrl + '/' + data.locals[key].localImage,
+                  data.locals[key].localImage,
                   data.locals[key].localContact, 
                   data.locals[key].localRating                             
                 )
