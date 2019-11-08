@@ -1,4 +1,7 @@
 <ion-header>
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v5.0"></script>
+
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/blog"></ion-back-button>
@@ -16,30 +19,36 @@
 
 <ion-content>
   <ion-card>
+    <ion-badge slot="end" color="primary">
+      <div class="fb-share-button" data-href="https://uknow-591ad.firebaseapp.com/blog/blog-detail/${blog.id}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fuknow-591ad.firebaseapp.com%2Fblog%2Fblog-detail%2F${blog.id}&amp;src=sdkpreparse" SameSite="None" Secure class="fb-xfbml-parse-ignore"><ion-icon name="logo-facebook"></ion-icon>{{ ' ' }}<ion-icon name="share-alt"></ion-icon></a></div>
+    </ion-badge>
     <ion-card-header>
       <ion-card-subtitle>{{ blog.blogFirstName + ' ' + blog.blogLastName }}</ion-card-subtitle>
       <ion-card-title>{{ blog.blogTitle }}</ion-card-title>
+      
     </ion-card-header>
     <ion-card-content>
       <ion-img [src]="blog.blogImage"></ion-img>
       {{ blog.blogDetails }}
     </ion-card-content>
     <ion-item>
-      <ion-badge slot="end" color="primary" *ngIf="likedBefore">
+      <ion-badge slot="start" color="primary" *ngIf="likedBefore">
         <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ blog.blogLikes }}
       </ion-badge>
-      <ion-badge slot="end" color="tertiary" (click)="addLike(blog.id)" *ngIf="!likedBefore">
+      <ion-badge slot="start" color="tertiary" (click)="addLike(blog.id)" *ngIf="!likedBefore">
         <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ blog.blogLikes }}
       </ion-badge>
-      <ion-badge slot="end" class="space-right" color="primary" (click)="onClickComments()">
-        <small>Comments</small>
+      
+      <ion-button slot="start" class="space-right" color="primary" (click)="onClickComments()">
+        <ion-icon name="chatboxes"></ion-icon><small>{{ ' ' }}({{ numberComments }})</small>
+      </ion-button>      
+      <ion-badge slot="start" class="space-right" color="tertiary" (click)="addReply(blog.id)">
+        <small>Reply{{ ' ' }}</small>
       </ion-badge>
-      <ion-badge slot="end" class="space-right" color="tertiary" (click)="addReply(blog.id)">
-        Reply
-      </ion-badge>
-      <ion-badge slot="end" color="danger" (click)="onDelete(blog.id)" *ngIf="isAdmin">      
-        Delete  
-      </ion-badge>
+      <ion-button slot="start" color="danger" (click)="onDelete(blog.id)" *ngIf="isLoggedin && isAdmin">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+            
     </ion-item>
       <div *ngIf="isReplying">
       <ion-buttons slot="primary">

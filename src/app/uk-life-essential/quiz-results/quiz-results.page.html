@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/uk-life-essential"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Quiz Results</ion-title>   
+    <ion-buttons slot="end" *ngIf="isAdmin">
+      <ion-button [routerLink]="[
+        '/', 'uk-life-essential', 'delete-quiz']">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>        
+    </ion-buttons> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content no-padding *ngIf="loadedResults.length > 0">
+  <ion-grid>
+    <ion-row no-padding>
+      <ion-col size-sm="10" offset-sm="1">
+        <table>
+          <thead>
+            <th>
+              No.
+            </th>
+            <th>
+              Name
+            </th>
+            <th>
+              Score(%)
+            </th>
+            <th>
+              Subject
+            </th>
+            <th>
+              Time
+            </th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let result of loadedResults; let i = index">
+              <td>
+                {{ i + 1 }}
+              </td>
+              <td>
+                {{ result.userName }}
+              </td>
+              <td>
+                {{ result.score }}
+              </td>
+              <td>
+                {{ result.subject }}
+              </td>
+              <td>
+                <small>{{ result.resultTime | date:'short' }}</small>
+              </td>
+            </tr>
+          </tbody>
+        </table>        
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+    
+  <div text-center>
+    <ion-spinner color="primary" *ngIf="isLoading"></ion-spinner>
+  </div>
+  
+</ion-content>

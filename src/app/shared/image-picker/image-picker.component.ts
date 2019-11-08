@@ -39,7 +39,7 @@ export class ImagePickerComponent implements OnInit {
       return;
     }
     Plugins.Camera.getPhoto({
-      quality: 70,
+      quality: 80,
       allowEditing: true,
       source: CameraSource.Prompt,
       correctOrientation: true,
@@ -70,7 +70,7 @@ export class ImagePickerComponent implements OnInit {
       const dataUrl = fr.result.toString();
       this.selectedImage = dataUrl;
       // console.log(this.selectedImage);
-      this.imagePick.emit(this.selectedImage);      
+      this.imagePick.emit(pickedFile);      
     }
     fr.readAsDataURL(pickedFile);
     

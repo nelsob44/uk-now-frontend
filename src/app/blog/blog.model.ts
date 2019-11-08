@@ -18,6 +18,16 @@ export class Questions {
     ) {}    
 }
 
+export class Results {
+    constructor(
+        public id: string,        
+        public userName: string,
+        public subject: string,
+        public score: string,
+        public resultTime: Date       
+    ) {}    
+}
+
 
 export class Blog {
     constructor(    
@@ -47,6 +57,14 @@ export class Mentor {
     ) {}    
 }
 
+export class Rating {
+    constructor(
+        public localRatingNo: number,        
+        public ratingDate: string,
+        public creator: string,              
+    ) {}   
+}
+
 export class Local {
     constructor(
         public id: string,        
@@ -55,6 +73,7 @@ export class Local {
         public localAddress: string,
         public localImage: string,
         public localContact: string,
-        public localRating: number        
+        public localRating: number,
+        public ratings: Rating[]     
     ) {}    
 }

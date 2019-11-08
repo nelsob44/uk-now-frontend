@@ -3,6 +3,7 @@ import { FeaturedService } from 'src/app/featured.service';
 import { Blogcomments, Questions } from '../blog/blog.model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-ask-a-question',
@@ -12,6 +13,7 @@ import { Router } from '@angular/router';
 export class AskAQuestionPage implements OnInit, OnDestroy {
   private questionsSub: Subscription;
   viewQuestion: Questions;
+  idQuestionShow: Questions;
   questionsData: Questions[];
   isLoading = false;
   showIt = false;
@@ -25,28 +27,37 @@ export class AskAQuestionPage implements OnInit, OnDestroy {
   lastPage: number;
   previousPage: number;
   private pageSub: Subscription;
+  private authSub: Subscription;
 
-  constructor(private router: Router, private featuredService: FeaturedService) { }
+  constructor(private router: Router, 
+  private authService: AuthService,
+  private featuredService: FeaturedService) { }
 
   ngOnInit() {
-    this.isLoading = true;
-    this.questionsSub = this.featuredService.questions.subscribe(questions => {
-      this.questionsData = questions;
+    return this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
+      if(isAuth) {
+        this.isLoading = true;
+        this.questionsSub = this.featuredService.questions.subscribe(questions => {
+          this.questionsData = questions;
 
-       this.pageSub = this.featuredService.questionTotalItems.subscribe(pageArray => {
-        this.pageTotal = pageArray[0];   
+          this.pageSub = this.featuredService.questionTotalItems.subscribe(pageArray => {
+            this.pageTotal = pageArray[0];   
 
-        this.numberOfPages = Math.ceil(this.pageTotal / 10);
-        this.lastPage = this.numberOfPages;
-        this.firstPage = 1;
-        
-        this.nextPage = this.firstPage + 1;
-        this.previousPage = this.nextPage - 1;
-                          
-      }); 
-      
-      this.isLoading = false; 
-    });     
+            this.numberOfPages = Math.ceil(this.pageTotal / 10);
+            this.lastPage = this.numberOfPages;
+            this.firstPage = 1;
+            
+            this.nextPage = this.firstPage + 1;
+            this.previousPage = this.nextPage - 1;
+                              
+          }); 
+          
+          this.isLoading = false; 
+        }); 
+      } else {
+          this.router.navigate(['/home']);
+      }
+    });    
   }
 
   ionViewWillEnter() {
@@ -83,8 +94,7 @@ export class AskAQuestionPage implements OnInit, OnDestroy {
           questions.splice(check, 1);      
         }
       });
-      console.log(questions);
-      
+            
       this.questionsData = questions;
     });   
   }
@@ -156,13 +166,22 @@ export class AskAQuestionPage implements OnInit, OnDestroy {
   }
 
   onRepliesClicked(question) {
+    
+    
+  }
+
+  onQuestionClick(idQuestion: Questions) {
+    
     this.showIt = !this.showIt;
+    this.idQuestionShow = idQuestion;
+    
   }
 
   ngOnDestroy() {
-    if (this.questionsSub) {
+    if (this.questionsSub || this.authSub) {
       this.questionsSub.unsubscribe();
       this.pageSub.unsubscribe();
+      this.authSub.unsubscribe();
     }
   }
 

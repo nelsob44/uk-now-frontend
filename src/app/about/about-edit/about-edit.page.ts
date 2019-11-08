@@ -4,6 +4,7 @@ import { FeaturedService } from 'src/app/featured.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -32,6 +33,7 @@ function base64toBlob(base64Data, contentType) {
   styleUrls: ['./about-edit.page.scss'],
 })
 export class AboutEditPage implements OnInit, OnDestroy {
+  public Editor = ClassicEditor;
   form: FormGroup;
   private aboutSub: Subscription;
   constructor(private featuredService: FeaturedService, private router: Router) { }
@@ -53,7 +55,7 @@ export class AboutEditPage implements OnInit, OnDestroy {
     let imageFile;
     if(typeof imageData === 'string') {
       try {
-        imageFile = base64toBlob(imageData.replace('data:image/jpeg;base64,', ''), 'image/jpeg');
+        imageFile = base64toBlob(imageData.replace('data:image/png;base64,', ''), 'image/jpeg');
       } catch (error) {
         console.log(error);
         return;

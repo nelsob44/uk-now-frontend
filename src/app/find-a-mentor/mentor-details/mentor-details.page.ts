@@ -39,6 +39,17 @@ export class MentorDetailsPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.route.paramMap.subscribe(paramMap => {
+      if(!paramMap.has('mentorId')) {
+        this.navCtrl.navigateBack('/find-a-mentor');
+      }
+      
+      this.mentorSub = this.featuredService.fetchmentor(paramMap.get('mentorId')).subscribe(mentor => {
+         this.mentor = mentor;       
+        
+        });     
+         
+    });  
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         if(status < 3)

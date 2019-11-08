@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 export class LocalEventsPage implements OnInit, OnDestroy {
   private eventsSub: Subscription;
   private statusSub: Subscription;
+  private authSub: Subscription;
   loadedEvents: Event[];
   isLoading = false; 
   isAdmin = false;
@@ -32,24 +33,30 @@ export class LocalEventsPage implements OnInit, OnDestroy {
   private authService: AuthService) { }
 
   ngOnInit() {
-    this.isLoading = true;
-    this.eventsSub = this.featuredService.events.subscribe(blogs => {
-      this.loadedEvents = blogs;
+    return this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
+      if(isAuth) {
+        this.isLoading = true;
+        this.eventsSub = this.featuredService.events.subscribe(events => {
+          this.loadedEvents = events;
 
-      this.pageSub = this.featuredService.eventTotalItems.subscribe(pageArray => {
-        this.pageTotal = pageArray[0];   
+          this.pageSub = this.featuredService.eventTotalItems.subscribe(pageArray => {
+            this.pageTotal = pageArray[0];   
 
-        this.numberOfPages = Math.ceil(this.pageTotal / 10);
-        this.lastPage = this.numberOfPages;
-        this.firstPage = 1;
-        
-        this.nextPage = this.firstPage + 1;
-        this.previousPage = this.nextPage - 1;
-                          
-      });
-      
-      this.isLoading = false; 
-    }); 
+            this.numberOfPages = Math.ceil(this.pageTotal / 10);
+            this.lastPage = this.numberOfPages;
+            this.firstPage = 1;
+            
+            this.nextPage = this.firstPage + 1;
+            this.previousPage = this.nextPage - 1;
+                              
+          });
+          
+          this.isLoading = false; 
+        }); 
+     } else {
+        this.router.navigate(['/home']);
+      }
+    });
     
   }
 
@@ -155,6 +162,7 @@ export class LocalEventsPage implements OnInit, OnDestroy {
       this.eventsSub.unsubscribe();
       this.statusSub.unsubscribe();
       this.pageSub.unsubscribe();
+      this.authSub.unsubscribe();
     }
   }
 

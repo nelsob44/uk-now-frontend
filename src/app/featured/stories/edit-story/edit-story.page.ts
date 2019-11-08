@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 import { FeaturedService } from 'src/app/featured.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -36,6 +37,14 @@ function base64toBlob(dataUrl, contentType) {
   styleUrls: ['./edit-story.page.scss'],
 })
 export class EditStoryPage implements OnInit {
+  public Editor = DecoupledEditor;
+  public onReady( editor ) {
+      editor.ui.getEditableElement().parentElement.insertBefore(
+          editor.ui.view.toolbar.element,
+          editor.ui.getEditableElement()
+      );
+  }
+
   form: FormGroup;
   private storySub: Subscription;
   storyId: string;
@@ -106,6 +115,29 @@ export class EditStoryPage implements OnInit {
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
+    
+    const body = this.form.value.storyDetails;
+    const splitBody = body.split(' ');
+    let bodyContainer = [];
+    let youtubeLinks = [];
+
+    splitBody.forEach(b => {
+      if(b.indexOf('url="https://www.youtube.com/watch') !== -1) {
+        bodyContainer.push(b);
+      }
+    });
+
+    bodyContainer.forEach(bc => {
+      let newBc = bc.split('v=');
+      let newBcN = newBc[1].split('">');
+     
+      let newLink = 'https://www.youtube.com/embed/' + newBcN[0];
+      youtubeLinks.push(newLink);
+    });
+
+    const youtubeLinkString = youtubeLinks.join();
+
+    
     return this.storySub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
       switchMap(uploadRes => {
         return this.featuredService.addStory(  
@@ -115,7 +147,8 @@ export class EditStoryPage implements OnInit {
           uploadRes.imageUrl,
           this.isEditing ? this.story.userName : null,
           this.isEditing ? this.story.postedOn.toString() : new Date().toString(),
-          this.isEditing ? this.story.storyLikes.toString() : '0',         
+          this.isEditing ? this.story.storyLikes.toString() : '0',   
+          youtubeLinkString
         );
       })
     ).subscribe(() => {       
@@ -128,7 +161,7 @@ export class EditStoryPage implements OnInit {
     let imageFile;
     if(typeof imageData === 'string') {
       try {
-        imageFile = base64toBlob(imageData.replace('data:image/jpeg;base64,', ''), 'image/jpeg');
+        imageFile = base64toBlob(imageData.replace('data:image/png;base64,', ''), 'image/jpeg');
       } catch (error) {
         console.log(error);
         return;

@@ -16,8 +16,8 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private authSub: Subscription;
-  private previousAuthState = false;
-  
+  public previousAuthState = false;
+   
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -45,7 +45,9 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-   
+  login() {
+    this.router.navigateByUrl('/auth');
+  }   
 
   onLogout() {
     this.authService.logout();

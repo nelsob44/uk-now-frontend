@@ -1,0 +1,21 @@
+table { 
+    border-collapse: collapse; 
+    width: 100%; 
+} 
+    
+th, td { 
+    text-align: left; 
+    padding: 8px; 
+} 
+    
+tr:nth-child(even) { 
+    background-color: Lightgreen; 
+} 
+
+ion-icon {
+    color: white;
+}
+
+ion-grid {
+    --ion-grid-padding-sm: 0 20px 0 0;
+}

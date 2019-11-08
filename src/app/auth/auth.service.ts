@@ -6,6 +6,7 @@ import { Plugins } from '@capacitor/core';
 import { environment } from 'src/environments/environment';
 import { User } from './user.model';
 import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 export interface AuthResponseData {  
   userId: string;
@@ -72,7 +73,10 @@ export class AuthService {
     );
   }
   
-  constructor(private http: HttpClient, private alertCtrl: AlertController) { }
+  constructor(private http: HttpClient, 
+  private alertCtrl: AlertController,
+  private router: Router
+  ) { }
 
   autoLogin() {
     
@@ -91,7 +95,7 @@ export class AuthService {
         };
 
       
-        const expirationTimeDuration = new Date(parsedData.tokenExpirationDate).getTime()  + (60 * 30 * 1000);
+        const expirationTimeDuration = new Date(parsedData.tokenExpirationDate).getTime()  + (60 * 120 * 1000);
         if(expirationTimeDuration <= new Date().getTime()) {
           
           return null;
@@ -205,5 +209,6 @@ export class AuthService {
     
     this._user.next(null);
     Plugins.Storage.remove({ key: 'authData' });
+    this.router.navigate(['/', 'home']);
   }
 }

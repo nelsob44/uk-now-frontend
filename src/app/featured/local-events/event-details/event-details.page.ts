@@ -38,7 +38,18 @@ export class EventDetailsPage implements OnInit, OnDestroy {
     });
   }
 
-  ionViewWillEnter() {    
+  ionViewWillEnter() {   
+    this.route.paramMap.subscribe(paramMap => {
+      if(!paramMap.has('eventId')) {
+        this.navCtrl.navigateBack('/featured/tabs/local-events');
+      }
+      
+      this.eventSub = this.featuredService.fetchevent(paramMap.get('eventId')).subscribe(event => {
+                
+        this.event = event;
+          
+      });      
+    });     
 
     this.statusSub = this.authService.userStatus.subscribe(
       status => {

@@ -26,7 +26,8 @@
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Enter details</ion-label>
-            <ion-textarea autocorrect formControlName="aboutDetails" minlength="2"></ion-textarea>
+            <ckeditor autocorrect formControlName="aboutDetails" minlength="2" [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
+           
           </ion-item>
         </ion-col>
       </ion-row>

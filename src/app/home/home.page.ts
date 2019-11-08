@@ -47,7 +47,10 @@ export class HomePage implements OnInit {
         break;
       case 'essential':
           this.router.navigateByUrl('/uk-life-essential');
-        break;      
+        break; 
+      case 'contact':
+          this.router.navigateByUrl('/contact');
+        break;       
       default:
         
     }

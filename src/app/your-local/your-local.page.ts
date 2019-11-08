@@ -27,6 +27,7 @@ export class YourLocalPage implements OnInit, OnDestroy {
   firstPage: number;
   lastPage: number;
   previousPage: number;
+  private authSub: Subscription;
 
   constructor(private featuredService: FeaturedService, 
   private router: Router,
@@ -34,24 +35,30 @@ export class YourLocalPage implements OnInit, OnDestroy {
   private authService: AuthService) { }
 
   ngOnInit() {
-    this.isLoading = true;
-    this.localsSub = this.featuredService.locals.subscribe(locals => {
-      this.loadedLocals = locals;
+    return this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
+      if(isAuth) {
+        this.isLoading = true;
+        this.localsSub = this.featuredService.locals.subscribe(locals => {
+          this.loadedLocals = locals;
 
-      this.pageSub = this.featuredService.localTotalItems.subscribe(pageArray => {
-        this.pageTotal = pageArray[0];   
+          this.pageSub = this.featuredService.localTotalItems.subscribe(pageArray => {
+            this.pageTotal = pageArray[0];   
 
-        this.numberOfPages = Math.ceil(this.pageTotal / 10);
-        this.lastPage = this.numberOfPages;
-        this.firstPage = 1;
-        
-        this.nextPage = this.firstPage + 1;
-        this.previousPage = this.nextPage - 1;
-                          
-      });
-      
-      this.isLoading = false; 
-    });    
+            this.numberOfPages = Math.ceil(this.pageTotal / 10);
+            this.lastPage = this.numberOfPages;
+            this.firstPage = 1;
+            
+            this.nextPage = this.firstPage + 1;
+            this.previousPage = this.nextPage - 1;
+                              
+          });
+          
+          this.isLoading = false; 
+        }); 
+      } else {
+        this.router.navigate(['/home']);
+      }   
+    });
   }
 
   ionViewWillEnter() {
@@ -65,7 +72,7 @@ export class YourLocalPage implements OnInit, OnDestroy {
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         
-        if(+status < 3)
+        if(status < 3)
         {          
           this.isAdmin = true;
         }

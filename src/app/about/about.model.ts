@@ -14,3 +14,13 @@ export class Essentials {
         public essentialsTime: Date      
     ) {}
 }
+
+export class QuizQuestion {
+    constructor(
+        public id: string,        
+        public questionDetail: string,
+        public questionImage: string,
+        public questionAnswer: string,
+        public questionSubject: string      
+    ) {}
+}

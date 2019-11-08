@@ -7,6 +7,7 @@ export class Story {
         public userName: string,
         public postedOn: Date,
         public storyLikes: number,
-        public storyLikers: string[]                    
+        public storyLikers: string[], 
+        public youtubeLinkString: any                
     ) {}
 }

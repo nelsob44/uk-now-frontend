@@ -68,9 +68,9 @@
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle>
-          <ion-item lines="none" (click)="onLogout()">
-            <ion-icon name="exit" slot="start"></ion-icon>
-            <ion-label>Logout</ion-label>
+          <ion-item lines="none" (click)="previousAuthState ? onLogout() : login()">
+            <ion-icon name="{{previousAuthState ? 'log-out' : 'log-in'}}" slot="start"></ion-icon>
+            <ion-label>{{ previousAuthState ? 'Logout' : 'Login'}}</ion-label>
           </ion-item>
         </ion-menu-toggle>
       </ion-list>      

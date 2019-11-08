@@ -6,7 +6,7 @@
     <ion-title>Your Local</ion-title>
     <ion-buttons slot="end" *ngIf="isAdmin">
       <ion-button [routerLink]="[
-        '/', 'your-local', 'edit-your-local', '']">
+        '/', 'your-local', 'edit-your-local', '']" *ngIf="isAdmin">
         <ion-icon name="add"></ion-icon>
       </ion-button>        
     </ion-buttons>

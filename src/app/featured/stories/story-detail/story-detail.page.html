@@ -1,4 +1,6 @@
 <ion-header>
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v5.0"></script>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/featured/tabs/stories"></ion-back-button>
@@ -28,14 +30,23 @@
     </ion-card-header>
     <ion-card-content>
       <ion-img [src]="story.storyImage"></ion-img>
-      {{ story.storyDetail }}
+      <div [innerHTML]="story.storyDetail | sanitizeHtml"></div>
+      <div *ngIf="story.youtubeLinkString && story.youtubeLinkString.length > 0">
+        <div *ngFor="let link of story.youtubeLinkString">
+          <p><iframe width="auto" height="auto" [src]="link" frameborder="0" allowfullscreen></iframe></p>
+        </div>
+
+      </div>
       <p>        
         <ion-badge slot="end" color="primary" *ngIf="likedBefore">
           <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ story.storyLikes }}
         </ion-badge>
         <ion-badge slot="end" color="tertiary" (click)="addLike(story.id)" *ngIf="!likedBefore">
           <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ story.storyLikes }}
-        </ion-badge>
+        </ion-badge>{{ ' ' }}{{ ' ' }}
+        <ion-badge slot="end" color="primary">
+          <div class="fb-share-button" data-href="https://uknow-591ad.firebaseapp.com/featured/tabs/stories/story-detail/${story.id}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fuknow-591ad.firebaseapp.com%2Ffeatured%2Ftabs%2Fstories%2Fstory-detail%2F${story.id}&amp;src=sdkpreparse" SameSite="None" Secure class="fb-xfbml-parse-ignore"><ion-icon name="logo-facebook"></ion-icon>{{ ' ' }}<ion-icon name="share-alt"></ion-icon></a></div>
+        </ion-badge>        
       </p>
     </ion-card-content>    
   </ion-card>

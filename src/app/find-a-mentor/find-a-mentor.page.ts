@@ -3,6 +3,7 @@ import { FeaturedService } from 'src/app/featured.service';
 import { Mentor } from '../blog/blog.model';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-find-a-mentor',
@@ -14,6 +15,7 @@ export class FindAMentorPage implements OnInit, OnDestroy {
   isLoading = false;
   isAdmin = false;
   private mentorsSub: Subscription;
+  private authSub: Subscription;
   private statusSub: Subscription;
   private pageSub: Subscription;  
   pageTotal: number;
@@ -26,28 +28,35 @@ export class FindAMentorPage implements OnInit, OnDestroy {
   previousPage: number;
 
   constructor(private featuredService: FeaturedService,
-  private authService: AuthService
+  private authService: AuthService,
+  private router: Router
   ) { }
 
   ngOnInit() {
-    this.isLoading = true;
-    this.mentorsSub = this.featuredService.mentors.subscribe(mentors => {
-      this.mentorsData = mentors;
+     return this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
+      if(isAuth) {
+        this.isLoading = true;
+        this.mentorsSub = this.featuredService.mentors.subscribe(mentors => {
+          this.mentorsData = mentors;
 
-      this.pageSub = this.featuredService.mentorTotalItems.subscribe(pageArray => {
-        this.pageTotal = pageArray[0];   
+          this.pageSub = this.featuredService.mentorTotalItems.subscribe(pageArray => {
+            this.pageTotal = pageArray[0];   
 
-        this.numberOfPages = Math.ceil(this.pageTotal / 10);
-        this.lastPage = this.numberOfPages;
-        this.firstPage = 1;
-        
-        this.nextPage = this.firstPage + 1;
-        this.previousPage = this.nextPage - 1;
-                          
-      }); 
-      
-      this.isLoading = false; 
-    });    
+            this.numberOfPages = Math.ceil(this.pageTotal / 10);
+            this.lastPage = this.numberOfPages;
+            this.firstPage = 1;
+            
+            this.nextPage = this.firstPage + 1;
+            this.previousPage = this.nextPage - 1;
+                              
+          }); 
+          
+          this.isLoading = false; 
+        });  
+      } else {
+        this.router.navigate(['/home']);
+      } 
+     });
   }
 
   ionViewWillEnter() {
@@ -140,6 +149,7 @@ export class FindAMentorPage implements OnInit, OnDestroy {
       this.mentorsSub.unsubscribe();
       this.statusSub.unsubscribe();
       this.pageSub.unsubscribe();
+      this.authSub.unsubscribe();
     }
   }
 

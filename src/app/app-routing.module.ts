@@ -70,6 +70,16 @@ const routes: Routes = [
             loadChildren: './uk-life-essential/uk-life-essential.module#UkLifeEssentialPageModule',
             canLoad: [AuthGuard]
         },
+        { 
+            path: 'quiz-results', 
+            loadChildren: './uk-life-essential/quiz-results/quiz-results.module#QuizResultsPageModule',
+            canLoad: [AuthGuard]
+        },
+        { 
+            path: 'delete-quiz', 
+            loadChildren: './uk-life-essential/delete-quiz/delete-quiz.module#DeleteQuizPageModule',
+            canLoad: [AuthGuard]
+        },
         {
             path: 'uk-quiz-details',
             loadChildren: './uk-life-essential/uk-quiz-details/uk-quiz-details.module#UkQuizDetailsPageModule',
@@ -127,8 +137,8 @@ const routes: Routes = [
     ]
   },
   { path: 'home', loadChildren: './home/home.module#HomePageModule' },
-  { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' }
-];
+  { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' },
+  ];
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })

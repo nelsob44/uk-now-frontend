@@ -3,11 +3,18 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>UK Life Eessentials</ion-title>
+    <ion-title>UK Eessentials</ion-title>
     <ion-buttons slot="end">
       <ion-button [routerLink]="[
         '/', 'uk-life-essential', 'uk-quiz-details']">
         <ion-badge color="tertiary" style="padding: 3px;">Quiz</ion-badge>         
+
+      </ion-button>        
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="[
+        '/', 'uk-life-essential', 'quiz-results']">
+        <ion-badge color="secondary" style="padding: 3px;">Results</ion-badge>         
 
       </ion-button>        
     </ion-buttons>

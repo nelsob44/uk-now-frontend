@@ -24,7 +24,7 @@
 
     <ion-card-content *ngIf="!isLoading">
       <ion-img [src]="aboutData.aboutImage"></ion-img>
-      {{ aboutData.aboutDetails }}
+      <div [innerHTML]="aboutData.aboutDetails"></div>
     </ion-card-content>
   </ion-card>
 </ion-content>

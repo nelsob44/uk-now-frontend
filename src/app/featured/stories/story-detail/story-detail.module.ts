@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
+import { PipeModule } from 'src/app/sanitize-html.pipe.module';
 
 import { StoryDetailPage } from './story-detail.page';
 
@@ -19,7 +20,8 @@ const routes: Routes = [
     CommonModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    PipeModule.forRoot()
   ],
   declarations: [StoryDetailPage]
 })

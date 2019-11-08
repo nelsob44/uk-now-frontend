@@ -141,7 +141,7 @@ export class EditLocalEventPage implements OnInit, OnDestroy  {
     let imageFile;
     if(typeof imageData === 'string') {
       try {
-        imageFile = base64toBlob(imageData.replace('data:image/jpeg;base64,', ''), 'image/jpeg');
+        imageFile = base64toBlob(imageData.replace('data:image/png;base64,', ''), 'image/jpeg');
       } catch (error) {
         console.log(error);
         return;

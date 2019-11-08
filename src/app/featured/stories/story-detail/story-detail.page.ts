@@ -7,6 +7,8 @@ import { Story } from '../story.model';
 import { switchMap, take, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-story-detail',
@@ -29,29 +31,83 @@ export class StoryDetailPage implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private authService: AuthService,
     private navCtrl: NavController,
-    private router: Router
+    private router: Router,
+    private sanitizer: DomSanitizer
     ) { }
 
   ngOnInit() {
+    let firstStory;
+    let videoLinks = [];
     this.route.paramMap.subscribe(paramMap => {
       if(!paramMap.has('storyId')) {
         this.navCtrl.navigateBack('/featured/tabs/stories');
       }
+      
       this.storySub = this.featuredService.getStory(paramMap.get('storyId')).subscribe(story => {
-        this.story = story;
+        
+        firstStory = story;
+
+        if(firstStory.youtubeLinkString) {
+          const firstYoutube = firstStory.youtubeLinkString.split(',');
+
+          firstYoutube.forEach(v => {
+            let newV = this.updateVideoUrl(v);
+            
+            videoLinks.push(newV);
+          
+          });
+          
+          firstStory.youtubeLinkString = videoLinks;
+        }
+        this.story = firstStory;
+        
       });      
     });
   }
 
-  ionViewWillEnter() {
+  private updateVideoUrl(dangerousVideoUrl: string) {    
     
-    this.likeSub = this.authService.userId.subscribe(userId => {
-      let check = this.story.storyLikers.indexOf(userId);
-          if (check > -1) {            
-            this.likedBefore = true;            
-          }
-    });
+      return this.sanitizer.bypassSecurityTrustResourceUrl(dangerousVideoUrl);
+    
+  }
 
+  ionViewWillEnter() {
+    let firstStory;
+    let videoLinks = [];
+    this.route.paramMap.subscribe(paramMap => {
+      if(!paramMap.has('storyId')) {
+        this.navCtrl.navigateBack('/featured/tabs/stories');
+      }
+      
+      this.storySub = this.featuredService.fetchstory(paramMap.get('storyId')).subscribe(story => {
+        
+        firstStory = story;
+
+        if(firstStory.youtubeLinkString) {
+          const firstYoutube = firstStory.youtubeLinkString.split(',');
+
+          firstYoutube.forEach(v => {
+            let newV = this.updateVideoUrl(v);
+            
+            videoLinks.push(newV);
+          
+          });
+          
+          firstStory.youtubeLinkString = videoLinks;
+        }
+        this.story = firstStory;
+
+        this.likeSub = this.authService.userId.subscribe(userId => {
+          let check = this.story.storyLikers.indexOf(userId);
+              if (check > -1) {            
+                this.likedBefore = true;            
+              }
+        });        
+      });      
+    });
+    
+    
+    
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         if(status < 3)
@@ -77,7 +133,8 @@ export class StoryDetailPage implements OnInit, OnDestroy {
   }
 
   addLike(storyId: string) {
-          
+      let firstStory;
+      let videoLinks = [];
       return this.featuredService.getStory(storyId).pipe(
         take(1),
         switchMap(storyRes => {
@@ -91,9 +148,23 @@ export class StoryDetailPage implements OnInit, OnDestroy {
             storyRes.userName,
             storyRes.postedOn,
             newLikes,
-            storyRes.storyLikers
+            storyRes.storyLikers,
+            storyRes.youtubeLinkString
           );   
 
+          if(newStory.youtubeLinkString) {
+          const firstYoutube = newStory.youtubeLinkString.split(',');
+
+          firstYoutube.forEach(v => {
+            let newV = this.updateVideoUrl(v);
+            
+            videoLinks.push(newV);
+          
+          });
+          
+          newStory.youtubeLinkString = videoLinks;
+        }
+        
           this.theStory = newStory; 
           return this.featuredService.updateStoryLike(
             storyRes.id,          
@@ -111,6 +182,7 @@ export class StoryDetailPage implements OnInit, OnDestroy {
     if (this.storySub) {
       this.storySub.unsubscribe();
       this.statusSub.unsubscribe();
+      this.likeSub.unsubscribe();
     }
   }
 

@@ -46,8 +46,9 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Story details here</ion-label>
-            <ion-textarea autocorrect formControlName="storyDetails" minlength="5"></ion-textarea>
+            
+            <ckeditor autocorrect formControlName="storyDetails" minlength="5" [editor]="Editor" (ready)="onReady($event)"></ckeditor>
+
           </ion-item>
         </ion-col>
       </ion-row>

@@ -63,7 +63,7 @@ export class UkLifeEssentialPage implements OnInit, OnDestroy {
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         
-        if(+status < 3)
+        if(status < 3)
         {          
           this.isAdmin = true;
         }

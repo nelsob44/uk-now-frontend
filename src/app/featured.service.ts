@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Story } from './featured/stories/story.model';
 import { Event } from './featured/local-events/event.model';
-import { About, Essentials } from './about/about.model';
+import { About, Essentials, QuizQuestion } from './about/about.model';
 import { AuthService } from 'src/app/auth/auth.service';
 import { take, map, tap, delay, switchMap, filter } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Blog, Blogcomments, Questions, Mentor, Local } from './blog/blog.model';
+import { Blog, Blogcomments, Questions, Mentor, Local, Results } from './blog/blog.model';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -16,13 +16,19 @@ export interface AboutResponseData {
   aboutImage: string;  
 
 }
+
 const URL = environment.baseUrl + '/post-image';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeaturedService {
+
+  private _results = new BehaviorSubject<Results[]>([]); 
+  private _resultsTotalItems = new BehaviorSubject<any[]>([]); 
    
+  private _quizzes = new BehaviorSubject<QuizQuestion[]>([]); 
+  private _quizzesTotalItems = new BehaviorSubject<any[]>([]); 
 
   private _essentials = new BehaviorSubject<Essentials[]>([]); 
   private _essentialTotalItems = new BehaviorSubject<any[]>([]); 
@@ -96,6 +102,20 @@ export class FeaturedService {
   }
   get essentialTotalItems() {
     return this._essentialTotalItems.asObservable();
+  }
+
+  get quizzes() {
+    return this._quizzes.asObservable();
+  }
+  get quizzesTotalItems() {
+    return this._quizzesTotalItems.asObservable();
+  }
+
+  get results() {
+    return this._results.asObservable();
+  }
+  get resultsTotalItems() {
+    return this._resultsTotalItems.asObservable();
   }
 
   constructor(private http: HttpClient, private authService: AuthService) { }
@@ -309,7 +329,8 @@ export class FeaturedService {
                   data.stories[key].userName,
                   new Date(data.stories[key].postedOn),
                   data.stories[key].storyLikes,
-                  data.stories[key].storyLikers
+                  data.stories[key].storyLikers,
+                  data.stories[key].youtubeLinkString
                 )
               );
             }
@@ -413,6 +434,99 @@ export class FeaturedService {
     );
   }
 
+  fetchquizzes(page=null) {
+    const url = environment.baseUrl + '/essential/get-quiz';
+    const uploadData = new FormData();
+    uploadData.append('pageNumber', page);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<{[key: string]: QuizQuestion}>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }), 
+        map(data => {     
+          let totalArray = [];
+
+          for (const key in data) {
+            if(data.hasOwnProperty(key)) {
+              totalArray.push(
+                data.totalItems
+              );
+            }
+          }     
+          const quizzes = [];
+          for (const key in data.quizzes) {
+            if(data.quizzes.hasOwnProperty(key)) {
+              quizzes.push(
+                new QuizQuestion(
+                  data.quizzes[key]._id,
+                  data.quizzes[key].questionDetail,
+                  data.quizzes[key].questionImage,
+                  data.quizzes[key].questionAnswer,
+                  data.quizzes[key].questionSubject                                
+                )
+              );
+            }
+          }
+          this._quizzesTotalItems.next(totalArray);
+           
+          return quizzes;
+        }),
+        tap(quizzes => {
+          this._quizzes.next(quizzes);
+        })     
+    );
+  }
+
+  fetchquizresults(page=null) {
+    const url = environment.baseUrl + '/essential/get-quiz-results';
+    const uploadData = new FormData();
+    uploadData.append('pageNumber', page);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<{[key: string]: Results}>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }), 
+        map(data => {     
+          let totalArray = [];
+
+          for (const key in data) {
+            if(data.hasOwnProperty(key)) {
+              totalArray.push(
+                data.totalItems
+              );
+            }
+          }     
+          const results = [];
+          for (const key in data.results) {
+            if(data.results.hasOwnProperty(key)) {
+              results.push(
+                new Results(
+                  data.results[key]._id,
+                  data.results[key].userName,                  
+                  data.results[key].subject,
+                  data.results[key].score,
+                  data.results[key].createdAt                                              
+                )
+              );
+            }
+          }
+          this._resultsTotalItems.next(totalArray);
+           
+          return results;
+        }),
+        tap(results => {
+          this._results.next(results);
+        })     
+    );
+  }
+
+
   fetchlocals(page) {
     const url = environment.baseUrl + '/local/list';
     const uploadData = new FormData();
@@ -446,7 +560,8 @@ export class FeaturedService {
                   data.locals[key].localAddress,
                   data.locals[key].localImage,
                   data.locals[key].localContact, 
-                  data.locals[key].localRating                             
+                  data.locals[key].localRating,
+                  data.locals[key].ratings                            
                 )
               );
             }
@@ -461,6 +576,88 @@ export class FeaturedService {
   }
 
 
+  fetchblog(id: string) { 
+
+    const url = environment.baseUrl + '/blog/' + id;
+    const uploadData = new FormData();
+    uploadData.append('id', id);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<any>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }),
+      map(blogData => {
+                     
+          return  new Blog(
+              blogData.blog._id,
+              blogData.blog.blogTitle,
+              blogData.blog.blogDetails,
+              blogData.blog.blogImage,
+              blogData.blog.blogFirstName,
+              blogData.blog.blogLastName,
+              new Date(blogData.blog.blogDate),
+              blogData.blog.blogLikes,
+              blogData.blog.blogComments,
+              blogData.blog.blogNumberOfComments,
+              blogData.blog.blogLikers
+            )              
+    }));       
+  }
+
+  fetchmentor(id: string) { 
+
+    const url = environment.baseUrl + '/mentor/' + id;
+    const uploadData = new FormData();
+    uploadData.append('id', id);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<any>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }),
+      map(mentorData => {                     
+          return  new Mentor(
+              mentorData.mentor._id,
+              mentorData.mentor.mentorUserName,
+              mentorData.mentor.mentorProfile,
+              mentorData.mentor.mentorField,
+              mentorData.mentor.mentorImage,
+              mentorData.mentor.mentorEmail                  
+            )
+    }));       
+  }
+
+
+  fetchevent(id: string) { 
+
+    const url = environment.baseUrl + '/event/' + id;
+    const uploadData = new FormData();
+    uploadData.append('id', id);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<any>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }),
+      map(eventData => {     
+                     
+          return  new Event(
+              eventData.event._id,
+              eventData.event.eventName,
+              eventData.event.eventDetails,
+              eventData.event.eventLocation,
+              new Date(eventData.event.eventDate),
+              eventData.event.eventImage                  
+            )
+    }));       
+  }
 
   getBlog(id: string) {    
     return this.blogs.pipe(
@@ -499,14 +696,44 @@ export class FeaturedService {
     );     
   }
 
-  getStory(id: string) { 
+  getStory(id: string) {
     return this.stories.pipe(
       take(1),
       map(stories => {
-        return { ...stories.find(s => s.id === id)};
+        return { ...stories.find(q => q.id === id)};
       })
-    );         
+    );
   }
+
+  fetchstory(id: string) { 
+
+    const url = environment.baseUrl + '/story/' + id;
+    const uploadData = new FormData();
+    uploadData.append('id', id);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<any>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }),
+      map(storyData => {
+                     
+          return  new Story(
+              storyData.story._id,
+              storyData.story.storyTitle,
+              storyData.story.storyDetail,
+              storyData.story.storyImage,
+              storyData.story.userName,
+              new Date(storyData.story.postedOn),
+              storyData.story.storyLikes,
+              storyData.story.storyLikers,
+              storyData.story.youtubeLinkString
+            )              
+    }));       
+  }
+
 
   getEvent(id: string) {    
     return this.events.pipe(
@@ -538,7 +765,7 @@ export class FeaturedService {
         {headers: {Authorization: 'Bearer ' + token}}
         ).pipe(
           map(data => {   
-            console.log(data);           
+                    
             return data;
           })
         );
@@ -565,7 +792,7 @@ export class FeaturedService {
         )
         .pipe(
           map(data => {   
-            console.log(data);     
+               
             return data;
           })
         );
@@ -587,8 +814,7 @@ export class FeaturedService {
   ) {
     
     const url = environment.baseUrl + '/blog/update/' + id;
-    
-    // console.log(blogLikes);
+        
     const uploadData = new FormData();
     uploadData.append('blogTitle', blogTitle);
     uploadData.append('blogDetails', blogDetails);
@@ -596,11 +822,11 @@ export class FeaturedService {
     uploadData.append('blogLikes', blogLikes);    
     uploadData.append('blogNumberOfComments', blogNumberOfComments);
     
-    console.log(blogLikes);
+    
     return this.authService.token.pipe(
       take(1),
       switchMap(token => {
-        console.log(' here too');
+        
         return this.http.put<Blog>(url, uploadData, 
         {headers: {Authorization: 'Bearer ' + token}}
         )
@@ -621,16 +847,15 @@ export class FeaturedService {
     
     const url = environment.baseUrl + '/blog/like/' + id;
     
-    // console.log(blogLikes);
+    
     const uploadData = new FormData();    
            
-    uploadData.append('blogLikes', blogLikes);    
-      
-    console.log(blogLikes);
+    uploadData.append('blogLikes', blogLikes);        
+   
     return this.authService.token.pipe(
       take(1),
       switchMap(token => {
-        console.log(' here too');
+        
         return this.http.put<Blog>(url, uploadData, 
         {headers: {Authorization: 'Bearer ' + token}}
         )
@@ -693,7 +918,7 @@ export class FeaturedService {
     return this.authService.token.pipe(
       take(1),
       switchMap(token => {
-        console.log(' here too');
+        
         return this.http.put<any>(url, uploadData, 
         {headers: {Authorization: 'Bearer ' + token}}
         )
@@ -741,7 +966,7 @@ export class FeaturedService {
         )
         .pipe(
           map(data => {
-            console.log(data);
+            
             return data;
           })
         );
@@ -771,7 +996,7 @@ export class FeaturedService {
             )
         .pipe(
           map(data => {
-            console.log(data);
+            
             return data;
           })
         );
@@ -808,7 +1033,7 @@ export class FeaturedService {
                 )
         .pipe(
           map(data => {
-            console.log(data);
+            
             return data;
           })
         ); 
@@ -823,7 +1048,8 @@ export class FeaturedService {
     storyImage: string,
     userName: string,
     postedOn: string,
-    storyLikes: string
+    storyLikes: string,
+    youtubeLinkString: string
   ) {
 
     const uploadData = new FormData();
@@ -832,6 +1058,7 @@ export class FeaturedService {
     uploadData.append('storyImage', storyImage);
     uploadData.append('postedOn', postedOn);
     uploadData.append('storyLikes', storyLikes);
+    uploadData.append('youtubeLinkString', youtubeLinkString);
         
     const urlAdd = environment.baseUrl + '/story/add';
     const urlEdit = environment.baseUrl + '/story/update/' + id;
@@ -845,7 +1072,7 @@ export class FeaturedService {
                 )
         .pipe(
           map(data => {
-            console.log(data);
+            
             return data;
           })
         ); 
@@ -914,7 +1141,7 @@ export class FeaturedService {
                     )
         .pipe(
           map(data => {
-            console.log(data);
+            
             return data;
           })
         ); 
@@ -952,7 +1179,7 @@ export class FeaturedService {
                       )
         .pipe(
           map(data => {
-            console.log(data);
+            
             return data;
           })
         ); 
@@ -999,7 +1226,7 @@ export class FeaturedService {
     return this.authService.token.pipe(
       take(1),
       switchMap(token => {
-        console.log(this.urlPath);
+        
         return this.http.post<any>(this.urlPath, uploadData,
                       {headers: {Authorization: 'Bearer ' + token}}
                       )
@@ -1013,6 +1240,33 @@ export class FeaturedService {
     );
 
   }
+
+  deleteQuiz(    
+    subject: string
+  ) {
+    
+    const uploadData = new FormData();
+    uploadData.append('subject', subject);
+    const url = environment.baseUrl + '/essential/delete-quiz';
+        
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        
+        return this.http.post<any>(url, uploadData,
+                {headers: {Authorization: 'Bearer ' + token}}
+                )
+        .pipe(
+          map(data => {
+            
+            return data;
+          })
+        ); 
+      })
+    );
+
+  }
+
 
   sendEmail(
     senderName: string,
@@ -1043,4 +1297,87 @@ export class FeaturedService {
     );
   }
 
+  submitQuizAnswers(quizAnswers: any) {
+    const uploadData = quizAnswers;
+
+    const url = environment.baseUrl + '/essential/quiz-submit';
+    
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<any>(url, uploadData, 
+              {headers: {Authorization: 'Bearer ' + token}}
+              )
+        .pipe(
+          map(data => {
+            
+            return data;
+          })
+        ); 
+      })
+    );
+  }
+
+  addQuiz(
+    subject: string,
+    theImage: string,
+    questionDetail: string,
+    questionAnswer: string
+  ) {
+
+    const uploadData = new FormData();
+    uploadData.append('subject', subject);
+    uploadData.append('theImage', theImage);
+    uploadData.append('questionDetail', questionDetail);
+    uploadData.append('questionAnswer', questionAnswer);
+    
+    const url = environment.baseUrl + '/essential/quiz';
+    
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<QuizQuestion>(url, uploadData, 
+                    {headers: {Authorization: 'Bearer ' + token}}
+                    )
+        .pipe(
+          map(data => {
+            
+            return data;
+          })
+        ); 
+      })
+    );
+  }
+
+
+  updateRating(
+    id: string,    
+    localRating: string,    
+  ) {
+    
+    const url = environment.baseUrl + '/local/rating/' + id;
+    
+    
+    const uploadData = new FormData();    
+           
+    uploadData.append('localRating', localRating);        
+   
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        
+        return this.http.put<Local>(url, uploadData, 
+        {headers: {Authorization: 'Bearer ' + token}}
+        )
+        .pipe(
+          map(data => {
+           
+            return data;
+          })
+        );
+      })
+    );
+  }  
+
 }
+

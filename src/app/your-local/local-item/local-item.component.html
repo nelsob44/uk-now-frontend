@@ -9,11 +9,18 @@
     <ion-card-subtitle slot="start" style="margin-top: 2%;">Address: {{ local.localAddress }}</ion-card-subtitle>
     <ion-card-subtitle slot="start">Contact: {{ local.localContact }}</ion-card-subtitle>
     <ion-label>Ratings:</ion-label>{{ ' ' }}
-    
-    <ion-badge slot="end" (click)="addRating(local.id)" color="tertiary">{{ local.localRating }}<ion-icon name="star-outline"></ion-icon></ion-badge>
+    <span style='font-size:2rem;' (mouseover)="classEnter(1)" (mouseout)="classLeave(1)" [className]="(local.localRating > 0) ? 'yellowStar' : ''" [ngClass]="{hovStyle : isHover}" (click)="addRating(local.id, 1)">&#9734;</span>
+    <span style='font-size:2rem;' (mouseover)="classEnter(2)" (mouseout)="classLeave(2)" [className]="(local.localRating > 1) ? 'yellowStar' : ''" [ngClass]="{hovStyle : isHover}" (click)="addRating(local.id, 2)">&#9734;</span>
+    <span style='font-size:2rem;' (mouseover)="classEnter(3)" (mouseout)="classLeave(3)" [className]="(local.localRating > 2) ? 'yellowStar' : ''" [ngClass]="{hovStyle : isHover}" (click)="addRating(local.id, 3)">&#9734;</span>
+    <span style='font-size:2rem;' (mouseover)="classEnter(4)" (mouseout)="classLeave(4)" [className]="(local.localRating > 3) ? 'yellowStar' : ''" [ngClass]="{hovStyle : isHover}" (click)="addRating(local.id, 4)">&#9734;</span>
+    <span style='font-size:2rem;' (mouseover)="classEnter(5)" (mouseout)="classLeave(5)" [className]="(local.localRating > 4) ? 'yellowStar' : ''" [ngClass]="{hovStyle : isHover}" (click)="addRating(local.id, 5)">&#9734;</span>    
+    <ion-card-subtitle *ngIf="local.ratings.length > 1"><small>Rated by {{ local.ratings.length }} people</small></ion-card-subtitle>
+    <ion-card-subtitle *ngIf="local.ratings.length === 1"><small>Rated by {{ local.ratings.length }} person</small></ion-card-subtitle>
+    <ion-card-subtitle *ngIf="local.ratings.length === 0"><small>There are currently no ratings for{{ ' ' }}{{ local.localName }}</small></ion-card-subtitle>
+
   </ion-card-content>
-  <ion-buttons slot="end" *ngIf="isAdmin">
-    <ion-button (click)="onDelete(local.id)">
+  <ion-buttons slot="end">
+    <ion-button (click)="onDelete(local.id)" *ngIf="isAdmin">
       <ion-icon name="trash" slot="icon-only"></ion-icon>
     </ion-button>        
   </ion-buttons>    

@@ -17,7 +17,8 @@ export class StoriesPage implements OnInit, OnDestroy {
   private statusSub: Subscription;
   isLoading = false; 
   isAdmin = false; 
-  private pageSub: Subscription;  
+  private pageSub: Subscription; 
+  private authSub: Subscription; 
   pageTotal: number;
   pageNumber: number;
   numberOfPages: number;
@@ -32,24 +33,30 @@ export class StoriesPage implements OnInit, OnDestroy {
   private authService: AuthService) { }
 
   ngOnInit() {
-    this.isLoading = true;
-    this.storiesSub = this.featuredService.stories.subscribe(stories => {
-      this.loadedStories = stories;
+    return this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
+      if(isAuth) {
+        this.isLoading = true;
+        this.storiesSub = this.featuredService.stories.subscribe(stories => {
+          this.loadedStories = stories;
 
-      this.pageSub = this.featuredService.storyTotalItems.subscribe(pageArray => {
-        this.pageTotal = pageArray[0];   
+          this.pageSub = this.featuredService.storyTotalItems.subscribe(pageArray => {
+            this.pageTotal = pageArray[0];   
 
-        this.numberOfPages = Math.ceil(this.pageTotal / 10);
-        this.lastPage = this.numberOfPages;
-        this.firstPage = 1;
-        
-        this.nextPage = this.firstPage + 1;
-        this.previousPage = this.nextPage - 1;
-                          
-      }); 
-      
-      this.isLoading = false; 
-    });    
+            this.numberOfPages = Math.ceil(this.pageTotal / 10);
+            this.lastPage = this.numberOfPages;
+            this.firstPage = 1;
+            
+            this.nextPage = this.firstPage + 1;
+            this.previousPage = this.nextPage - 1;
+                              
+          }); 
+          
+          this.isLoading = false; 
+        }); 
+      } else {
+        this.router.navigate(['/home']);
+      }  
+    }); 
   }
 
   ionViewWillEnter() {
@@ -155,6 +162,7 @@ export class StoriesPage implements OnInit, OnDestroy {
       this.storiesSub.unsubscribe();
       this.statusSub.unsubscribe();
       this.pageSub.unsubscribe();
+      this.authSub.unsubscribe();
     }
   }
 

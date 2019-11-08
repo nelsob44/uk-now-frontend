@@ -46,13 +46,14 @@ export class AuthPage implements OnInit {
         authObs = this.authService.login(email, password);
       }    
       
-      authObs.subscribe(resData => {
+      return authObs.subscribe(resData => {
         
         loadingEl.dismiss();
         this.isLoading = false;
-        
+        form.reset();
         this.isLogin ? this.router.navigateByUrl('/featured/tabs/stories') : this.showAlert('Account created. You can now log in');
         this.isLogin ? '' : this.isLogin = true;
+
       }, errorResponse => {
         loadingEl.dismiss();
         const errorCode = errorResponse.error.message;
@@ -60,8 +61,6 @@ export class AuthPage implements OnInit {
         this.showAlert(errorCode);
         this.isLoading = false;
       });      
-      
-      form.reset();
     });
           
   }  

@@ -16,6 +16,8 @@ export class QuestionItemComponent implements OnInit {
   @Output() newQuestion = new EventEmitter<Questions>();
   @Output() oldQuestion = new EventEmitter<Questions>();
   @Output() showReplies = new EventEmitter<Questions>();
+  @Output() showRepliesId = new EventEmitter<Questions>();
+
   form: FormGroup;
   isReplying = false;
   private statusSub: Subscription;
@@ -48,9 +50,10 @@ export class QuestionItemComponent implements OnInit {
       }); 
   }
 
-  onClickReplies() {
+  onClickReplies(idQuestion: Questions) {
     this.replyQuestion = this.question;
     this.showReplies.emit(this.replyQuestion);
+    this.showRepliesId.emit(idQuestion);
   }
 
   addReply(questionId: string) {

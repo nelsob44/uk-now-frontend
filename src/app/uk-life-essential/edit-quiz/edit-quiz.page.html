@@ -1,9 +1,49 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/uk-life-essential/uk-quiz-details"></ion-back-button>
+    </ion-buttons>
     <ion-title>edit-quiz</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onSubmitQuestion()" [disabled]="!form?.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-label>Choose a quiz subject</ion-label>
+      <ion-select formControlName="subject" okText="Okay" cancelText="Dismiss">
+        <ion-select-option value="currentAffairs">Current Affairs</ion-select-option>
+        <ion-select-option value="english">English</ion-select-option>
+        <ion-select-option value="maths">Maths</ion-select-option>
+        <ion-select-option value="history">History</ion-select-option>
+        <ion-select-option value="ukQuiz">UK Quiz</ion-select-option>
+        <ion-select-option value="europeanPolitics">European Politics</ion-select-option>
+        <ion-select-option value="internationalPolitics">International Politics</ion-select-option>
+        <ion-select-option value="literature">Literature</ion-select-option>
+        <ion-select-option value="sciences">Sciences</ion-select-option>
+        <ion-select-option value="generalKnowledge">General Knowledge</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">quiz question.....</ion-label>
+      <ion-input type="text" formControlName="questionDetail" minlength="2"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">answer.....</ion-label>
+      <ion-input type="text" formControlName="questionAnswer"></ion-input>
+    </ion-item>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <app-image-picker [showPreview]="form.get('theImage').value" (imagePick)="onImagePicked($event)"
+        ></app-image-picker>
+      </ion-col>
+    </ion-row>
 
+  </form>
 </ion-content>
+
