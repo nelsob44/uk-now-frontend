@@ -61,7 +61,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       }
       this.isLoading = false; 
     }); 
-    this.scrollContent();
+    // this.scrollContent();
     this.form = new FormGroup({
       messageDetails: new FormControl(null, {
         updateOn: 'blur',
@@ -104,7 +104,7 @@ export class ProfilePage implements OnInit, OnDestroy {
           }                
           this.profileUserEmail = user.email;
           this.profile = user;  
-          this.scrollContent();                     
+          // this.scrollContent();                     
         });
       }            
     });     
@@ -150,11 +150,11 @@ export class ProfilePage implements OnInit, OnDestroy {
           this.nextPage = 2;
           
           this.loadedMessages.push(messages);
-          this.scrollContent();
+          // this.scrollContent();
           this.form.reset();
         } else {         
           this.loadedMessages.push(messages);
-          this.scrollContent();
+          // this.scrollContent();
           this.form.reset();
         }        
       });
@@ -181,11 +181,11 @@ export class ProfilePage implements OnInit, OnDestroy {
           this.nextPage = 2;
           
           this.loadedMessages.push(messages);
-          this.scrollContent();
+          // this.scrollContent();
           this.form.reset();
         } else {         
           this.loadedMessages.push(messages);
-          this.scrollContent();
+          // this.scrollContent();
           this.form.reset();
         }
       });
@@ -193,16 +193,16 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
   }
 
-  scrollContent(): void {
-    setTimeout(() => {
-      this.ionContentRef.scrollToBottom(1000);
-    }, 1000);
-  }
+  // scrollContent(): void {
+  //   setTimeout(() => {
+  //     this.ionContentRef.scrollToBottom(1000);
+  //   }, 1000);
+  // }
 
   onScrollNext(page: number) {
     
     this.isLoading = true;
-    this.ionContentRef.scrollToBottom(1000);
+    // this.ionContentRef.scrollToBottom(1000);
     this.messageSub = this.featuredService.getMessages(
       page,
       this.profileUserEmail,
@@ -225,7 +225,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         this.previousPage = 1;
       }      
       this.isLoading = false; 
-      this.scrollContent();
+      // this.scrollContent();
     });
   }
 
@@ -251,7 +251,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       if(this.previousPage == 0) {
         this.previousPage = 1;
       }
-      this.scrollContent();
+      // this.scrollContent();
       this.isLoading = false;       
     });    
   }
