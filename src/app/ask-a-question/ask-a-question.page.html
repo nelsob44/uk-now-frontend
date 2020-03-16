@@ -18,6 +18,16 @@
   <div text-center *ngIf="isLoading">
     <ion-spinner color="primary"></ion-spinner>
   </div>
+  <ion-grid>
+    <ion-row align-items-start>
+      <ion-col *ngIf="userName" size-sm="6">
+        <ion-card-subtitle color="primary">Hi, <i>{{userName | titlecase}}!</i></ion-card-subtitle> 
+      </ion-col>
+      <ion-col *ngIf="totalUsers"size-sm="6">
+        <ion-card-subtitle color="primary">{{ totalUsers }}{{' '}}Users on Platform</ion-card-subtitle> 
+      </ion-col>
+    </ion-row>        
+  </ion-grid>
   <ion-grid *ngIf="!isLoading && questionsData.length > 0">
     <div *ngFor="let question of questionsData">
       <ion-row>
@@ -38,11 +48,13 @@
       </ion-row>
     </div>    
   </ion-grid>
-  <ion-title>          
-    <ion-badge color="tertiary" (click)="onScrollFirst(firstPage)" style="padding: 3px;">{{ firstPage }}</ion-badge>         
-    <ion-badge *ngIf="previousPage != firstPage" color="warning" (click)="onScrollPrev(previousPage)" style="padding: 3px;">Prev ( {{ previousPage }} )</ion-badge>          
-  
-    <ion-badge *ngIf="lastPage > nextPage" color="primary" (click)="onScrollNext(nextPage)" style="padding: 3px;">Next ( {{ nextPage }} )</ion-badge>
-    <ion-badge color="tertiary" (click)="onScrollLast(lastPage)" style="padding: 3px;">{{ lastPage }}</ion-badge>
-  </ion-title>
+  <ion-row> 
+    <ion-col>
+      <ion-badge color="tertiary" (click)="onScrollFirst(firstPage)" style="padding: 3px;">{{ firstPage }}</ion-badge>         
+      <ion-badge *ngIf="previousPage != firstPage" color="warning" (click)="onScrollPrev(previousPage)" style="padding: 3px;">Prev ( {{ previousPage }} )</ion-badge>          
+    
+      <ion-badge *ngIf="lastPage > nextPage" color="primary" (click)="onScrollNext(nextPage)" style="padding: 3px;">Next ( {{ nextPage }} )</ion-badge>
+      <ion-badge color="tertiary" (click)="onScrollLast(lastPage)" style="padding: 3px;">{{ lastPage }}</ion-badge>
+    </ion-col>         
+  </ion-row> 
 </ion-content>

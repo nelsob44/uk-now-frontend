@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FeaturedService } from 'src/app/featured.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Local } from '../blog/blog.model';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -28,6 +29,12 @@ export class YourLocalPage implements OnInit, OnDestroy {
   lastPage: number;
   previousPage: number;
   private authSub: Subscription;
+  private totalUserSub: Subscription;
+  private totalUsers: number;
+  private userName: string;
+  private userNameSub: Subscription;  
+  myGroup: FormGroup;
+  private loadedLocalTypes = [];
 
   constructor(private featuredService: FeaturedService, 
   private router: Router,
@@ -35,6 +42,9 @@ export class YourLocalPage implements OnInit, OnDestroy {
   private authService: AuthService) { }
 
   ngOnInit() {
+    this.myGroup = new FormGroup({
+       localType: new FormControl()
+    });
     return this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
       if(isAuth) {
         this.isLoading = true;
@@ -58,7 +68,7 @@ export class YourLocalPage implements OnInit, OnDestroy {
       } else {
         this.router.navigate(['/home']);
       }   
-    });
+    });    
   }
 
   ionViewWillEnter() {
@@ -72,12 +82,30 @@ export class YourLocalPage implements OnInit, OnDestroy {
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         
-        if(status < 3)
+        if(status != null && (status < 3))
         {          
           this.isAdmin = true;
         }
+    });
+
+    setTimeout(() => {
+      for(let i = 0; i < this.loadedLocals.length; i++) {
+      
+        if(!this.loadedLocalTypes.includes(this.loadedLocals[i].localType)) {
+          this.loadedLocalTypes.push(this.loadedLocals[i].localType);          
+        }
+      };
+    }, 1500)
+    
+    this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        this.totalUsers = totalusers;        
+      });
+
+      this.userNameSub = this.authService.userName.subscribe(userName => {
+        this.userName = userName;        
       });   
   }
+
 
   onEdit(localId: string, slidingItem: IonItemSliding) {
     slidingItem.close();
@@ -92,6 +120,11 @@ export class YourLocalPage implements OnInit, OnDestroy {
   transferId(localId: Local) {
     
     this.transferIdLocal = localId;  
+  }
+
+  refreshFilter() {
+    this.myGroup.reset();
+    this.ionViewWillEnter();
   }
 
   onScrollNext(page: number) {
@@ -160,12 +193,35 @@ export class YourLocalPage implements OnInit, OnDestroy {
     
   }
 
+  onSearchLocal() {
+    if(!this.myGroup.value) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.localsSub = this.featuredService.fetchlocalsFilter(this.currentPage, this.myGroup.value.localType).subscribe(locals => {
+      this.loadedLocals = locals;
+      
+      this.isLoading = false; 
+    });
+  }
+
+  onSearchLocalFilter(localType: string) {
+    this.isLoading = true;
+    this.localsSub = this.featuredService.fetchlocalsFilter(this.currentPage, localType).subscribe(locals => {
+      this.loadedLocals = locals;
+      
+      this.isLoading = false; 
+    });
+  }
 
   ngOnDestroy() {
     if (this.localsSub) {
       this.localsSub.unsubscribe();
       this.statusSub.unsubscribe();
       this.pageSub.unsubscribe();
+      this.totalUserSub.unsubscribe();
+      this.userNameSub.unsubscribe();
     }
   }
 }

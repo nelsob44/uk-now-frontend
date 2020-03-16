@@ -57,7 +57,7 @@ isEditing = false;
           localName: new FormControl(null, {
             updateOn: 'blur',
             validators: [Validators.required, Validators.min(2)]
-          }),
+          }),          
           theImage: new FormControl(null, {
             
             validators: []

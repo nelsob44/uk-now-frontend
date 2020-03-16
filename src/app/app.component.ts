@@ -16,7 +16,9 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private authSub: Subscription;
+  private totalUserSub: Subscription;
   public previousAuthState = false;
+  public totalUsers: number;
    
   constructor(
     private platform: Platform,
@@ -40,9 +42,17 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
       if(!isAuth && this.previousAuthState !== isAuth) {
         this.router.navigateByUrl('/home');
-      }
+      }   
       this.previousAuthState = isAuth;      
     });
+  }
+
+  ionWiewWillEnter() {
+      
+      this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        
+        this.totalUsers = totalusers;
+      }); 
   }
 
   login() {
@@ -57,6 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if(this.authSub) {
       this.authSub.unsubscribe();
+      this.totalUserSub.unsubscribe();
     }
   }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FeaturedService } from 'src/app/featured.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Mentor } from '../blog/blog.model';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -26,6 +27,12 @@ export class FindAMentorPage implements OnInit, OnDestroy {
   firstPage: number;
   lastPage: number;
   previousPage: number;
+  private totalUserSub: Subscription;
+  private totalUsers: number;
+  myGroup: FormGroup;
+  private userName: string;
+  private userNameSub: Subscription;
+  private loadedMentorFields = [];
 
   constructor(private featuredService: FeaturedService,
   private authService: AuthService,
@@ -33,6 +40,9 @@ export class FindAMentorPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.myGroup = new FormGroup({
+      mentorField: new FormControl()
+    });
      return this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
       if(isAuth) {
         this.isLoading = true;
@@ -70,11 +80,54 @@ export class FindAMentorPage implements OnInit, OnDestroy {
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         
-        if(+status < 3)
+        if(status != null && (status < 3))
         {          
           this.isAdmin = true;
         }
+      });
+
+    setTimeout(() => {
+      for(let i = 0; i < this.mentorsData.length; i++) {
+      
+        if(!this.loadedMentorFields.includes(this.mentorsData[i].mentorField)) {
+          this.loadedMentorFields.push(this.mentorsData[i].mentorField);          
+        }
+      };
+    }, 1000)
+
+      this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        this.totalUsers = totalusers;        
+      });
+
+      this.userNameSub = this.authService.userName.subscribe(userName => {
+        this.userName = userName;        
       });    
+  }
+
+  onSearchMentor() {
+    if(!this.myGroup.value) {
+      return;
+    }
+
+    this.mentorsSub = this.featuredService.fetchmentorsFilter(this.currentPage, this.myGroup.value.mentorField).subscribe(mentors => {
+      this.mentorsData = mentors;
+      
+      this.isLoading = false;       
+    });    
+  }
+
+  refreshFilter() {
+    this.myGroup.reset();
+    this.ionViewWillEnter();
+  }
+
+  onSearchMentorFilter(mentorField: string) {
+    this.isLoading = true;
+    this.mentorsSub = this.featuredService.fetchmentorsFilter(this.currentPage, mentorField).subscribe(mentors => {
+      this.mentorsData = mentors;
+      
+      this.isLoading = false; 
+    });
   }
 
   onScrollNext(page: number) {
@@ -150,6 +203,8 @@ export class FindAMentorPage implements OnInit, OnDestroy {
       this.statusSub.unsubscribe();
       this.pageSub.unsubscribe();
       this.authSub.unsubscribe();
+      this.totalUserSub.unsubscribe();
+      this.userNameSub.unsubscribe();
     }
   }
 

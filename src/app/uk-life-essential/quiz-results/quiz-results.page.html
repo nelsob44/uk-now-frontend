@@ -16,7 +16,7 @@
 <ion-content no-padding *ngIf="loadedResults.length > 0">
   <ion-grid>
     <ion-row no-padding>
-      <ion-col size-sm="10" offset-sm="1">
+      <ion-col size-sm="9" offset-sm="1">
         <table>
           <thead>
             <th>
@@ -41,7 +41,9 @@
                 {{ i + 1 }}
               </td>
               <td>
-                {{ result.userName }}
+                <ion-item lines="none" (click)="getUser(result.userId)">
+                  <ion-text>{{ result.userName }}</ion-text>
+                </ion-item>                
               </td>
               <td>
                 {{ result.score }}

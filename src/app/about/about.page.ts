@@ -19,6 +19,10 @@ export class AboutPage implements OnInit {
   aboutData: About;
   isLoading = false;
   isAdmin = false;  
+  private totalUserSub: Subscription;
+  private totalUsers: number;
+  private userName: string;
+  private userNameSub: Subscription;
 
   constructor(private http: HttpClient, 
   private featuredService: FeaturedService,
@@ -37,17 +41,27 @@ export class AboutPage implements OnInit {
   ionViewWillEnter() {
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
-        if(status < 3)
+        if(status != null && (status < 3))
         {
           this.isAdmin = true;
         }
-      });       
+      }); 
+
+      this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        this.totalUsers = totalusers;        
+      });
+
+      this.userNameSub = this.authService.userName.subscribe(userName => {
+        this.userName = userName;        
+      });      
   }
 
   ngOnDestroy() {
     if (this.aboutDataSub || this.statusSub) {
       this.aboutDataSub.unsubscribe();
       this.statusSub.unsubscribe();
+      this.totalUserSub.unsubscribe();
+      this.userNameSub.unsubscribe();
     }
   }
 

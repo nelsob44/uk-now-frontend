@@ -8,6 +8,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Blog, Blogcomments, Questions, Mentor, Local, Results } from './blog/blog.model';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { User } from './auth/user.model';
+import { Message } from './profile/message.model';
 
 
 export interface AboutResponseData {  
@@ -508,7 +510,8 @@ export class FeaturedService {
               results.push(
                 new Results(
                   data.results[key]._id,
-                  data.results[key].userName,                  
+                  data.results[key].userName,
+                  data.results[key].userId,                  
                   data.results[key].subject,
                   data.results[key].score,
                   data.results[key].createdAt                                              
@@ -531,6 +534,55 @@ export class FeaturedService {
     const url = environment.baseUrl + '/local/list';
     const uploadData = new FormData();
     uploadData.append('pageNumber', page);
+    
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<{[key: string]: Local}>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }), 
+        map(data => {     
+          let totalArray = [];
+
+          for (const key in data) {
+            if(data.hasOwnProperty(key)) {
+              totalArray.push(
+                data.totalItems
+              );
+            }
+          }  
+          const locals = [];
+          for (const key in data.locals) {
+            if(data.locals.hasOwnProperty(key)) {
+              locals.push(
+                new Local(
+                  data.locals[key]._id,
+                  data.locals[key].localName,
+                  data.locals[key].localType,
+                  data.locals[key].localAddress,
+                  data.locals[key].localImage,
+                  data.locals[key].localContact, 
+                  data.locals[key].localRating,
+                  data.locals[key].ratings                            
+                )
+              );
+            }
+          }
+          this._localTotalItems.next(totalArray);
+          return locals;
+        }),
+        tap(locals => {
+          this._locals.next(locals);
+        })     
+    );
+  }
+
+  fetchlocalsFilter(page, localType: string = null) {
+    const url = environment.baseUrl + '/local/list-filter';
+    const uploadData = new FormData();
+    uploadData.append('pageNumber', page);
+    uploadData.append('localType', localType);
 
     return this.authService.token.pipe(
       take(1),
@@ -574,6 +626,187 @@ export class FeaturedService {
         })     
     );
   }
+
+  fetchBlogsFilter(page, blogTitle: string = null) {
+    const url = environment.baseUrl + '/blog/list-filter';
+    const uploadData = new FormData();
+    uploadData.append('pageNumber', page);
+    uploadData.append('blogTitle', blogTitle);
+    
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<{[key: string]: Blog}>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }), 
+        map(data => {     
+          let totalArray = [];
+
+          for (const key in data) {
+            if(data.hasOwnProperty(key)) {
+              totalArray.push(
+                data.totalItems
+              );
+            }
+          }         
+            
+          const blogs = [];
+          for (const key in data.blogs) {
+            if(data.blogs.hasOwnProperty(key)) {
+              blogs.push(
+                new Blog(
+                  data.blogs[key]._id,
+                  data.blogs[key].blogTitle,
+                  data.blogs[key].blogDetails,
+                  data.blogs[key].blogImage,
+                  data.blogs[key].blogFirstName,
+                  data.blogs[key].blogLastName,
+                  new Date(data.blogs[key].blogDate),
+                  data.blogs[key].blogLikes,
+                  data.blogs[key].blogComments,                  
+                  data.blogs[key].blogNumberOfComments,
+                  data.blogs[key].blogLikers
+                )
+              );
+            }
+          }                 
+          this._blogTotalItems.next(totalArray);
+          return blogs;
+        }),
+        tap(blogs => {
+          this._blogs.next(blogs);
+        })     
+    );
+  }
+
+  fetchStoriesFilter(page, storyTitle: string = null) {
+    const url = environment.baseUrl + '/story/list-filter';
+    const uploadData = new FormData();
+    uploadData.append('pageNumber', page);
+    uploadData.append('storyTitle', storyTitle);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<{[key: string]: Story}>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }), 
+        map(data => {     
+            let totalArray = [];
+
+          for (const key in data) {
+            if(data.hasOwnProperty(key)) {
+              totalArray.push(
+                data.totalItems
+              );
+            }
+          }     
+          const stories = [];
+          for (const key in data.stories) {
+            if(data.stories.hasOwnProperty(key)) {
+              stories.push(
+                new Story(
+                  data.stories[key]._id,
+                  data.stories[key].storyTitle,
+                  data.stories[key].storyDetail,
+                  data.stories[key].storyImage,
+                  data.stories[key].userName,
+                  new Date(data.stories[key].postedOn),
+                  data.stories[key].storyLikes,
+                  data.stories[key].storyLikers,
+                  data.stories[key].youtubeLinkString
+                )
+              );
+            }
+          }
+          this._storyTotalItems.next(totalArray);
+          return stories;
+        }),
+        tap(stories => {
+          this._stories.next(stories);
+        })     
+    );
+  }
+
+  fetchmentorsFilter(page, mentorField: string = null) {
+    const url = environment.baseUrl + '/mentor/list-filter';
+    const uploadData = new FormData();
+    uploadData.append('pageNumber', page);
+    uploadData.append('mentorField', mentorField);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<{[key: string]: Mentor}>(url, uploadData, 
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }), 
+        map(data => {     
+            let totalArray = [];
+
+          for (const key in data) {
+            if(data.hasOwnProperty(key)) {
+              totalArray.push(
+                data.totalItems
+              );
+            }
+          }     
+          const mentors = [];
+          for (const key in data.mentors) {
+            if(data.mentors.hasOwnProperty(key)) {
+              mentors.push(
+                new Mentor(
+                  data.mentors[key]._id,
+                  data.mentors[key].mentorUserName,
+                  data.mentors[key].mentorProfile,
+                  data.mentors[key].mentorField,
+                  data.mentors[key].mentorImage,
+                  data.mentors[key].mentorEmail                  
+                )
+              );
+            }
+          }
+          this._mentorTotalItems.next(totalArray);
+          return mentors;
+        }),
+        tap(mentors => {
+          this._mentors.next(mentors);
+        })     
+    );
+  }
+
+  fetchuser(userId: string) { 
+
+    const url = environment.baseUrl + '/auth/user';
+    const uploadData = new FormData();
+    uploadData.append('userId', userId);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<any>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }),
+      map(blogData => {
+            
+          return  new User(
+              blogData.userId,
+              blogData.firstname,
+              blogData.lastname,
+              blogData.status,
+              '',
+              0,
+              blogData.details,
+              blogData.email,
+              blogData.profilePic,
+              new Date()             
+            )              
+    }));       
+  }
+
 
 
   fetchblog(id: string) { 
@@ -897,6 +1130,89 @@ export class FeaturedService {
     );
   }  
 
+  addMessage(
+    messageFrom: string,
+    messageTo: string,    
+    messageDetails: string,
+    messageImage: string
+  ) {
+    
+    const url = environment.baseUrl + '/message/add';
+    const uploadData = new FormData();    
+           
+    uploadData.append('messageFrom', messageFrom);
+    uploadData.append('messageTo', messageTo);
+    uploadData.append('messageDetails', messageDetails);
+    uploadData.append('messageImage', messageImage);       
+    
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        
+        return this.http.post<any>(url, uploadData, 
+        {headers: {Authorization: 'Bearer ' + token}}
+        )
+        .pipe(
+          map(data => {
+            
+           return  new Message(
+              data.message._id,
+              data.message.messageFrom,
+              data.message.messageTo,
+              data.message.messageDetails,
+              data.message.messageImage,
+              new Date(data.message.messageTime).toString()              
+            )
+          })
+        );
+      })
+    );
+  }
+
+  getMessages(
+    page,
+    messageFrom: string,
+    messageTo: string
+  ) {
+    
+    const url = environment.baseUrl + '/message/read';
+    const uploadData = new FormData();
+    uploadData.append('pageNumber', page);    
+           
+    uploadData.append('messageFrom', messageFrom);
+    uploadData.append('messageTo', messageTo);
+        
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        
+        return this.http.post<any>(url, uploadData, 
+        {headers: {Authorization: 'Bearer ' + token}}
+        )
+        .pipe(
+          map(data => {
+                        
+           const returnedMessages = [];
+          for (const key in data.messages) {
+            if(data.messages.hasOwnProperty(key)) {
+              returnedMessages.push(
+                new Message(
+                  data.messages[key]._id,
+                  data.messages[key].messageFrom,
+                  data.messages[key].messageTo,
+                  data.messages[key].messageDetails,
+                  data.messages[key].messageImage,
+                  new Date(data.messages[key].messageTime).toString()
+                )
+              );
+            }
+          }          
+          return returnedMessages.reverse();       
+          })
+        );
+      })
+    );
+  }
 
   addComment(
     id: string,    

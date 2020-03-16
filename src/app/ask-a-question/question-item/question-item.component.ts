@@ -43,7 +43,7 @@ export class QuestionItemComponent implements OnInit {
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         
-        if(+status < 3)
+        if(status != null && (status < 3))
         {          
           this.isAdmin = true;
         }

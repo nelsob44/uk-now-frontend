@@ -24,7 +24,7 @@
 <ion-content>
   <ion-card text-wrap>
     <ion-card-header>
-      <ion-card-subtitle color="primary">{{ story.userName }}</ion-card-subtitle>
+      <ion-card-subtitle color="primary">Writer: <i>{{ story.userName }}</i></ion-card-subtitle>
       <ion-card-title>{{ story.storyTitle }}</ion-card-title>
       <ion-text class="space-left" slot="end"><small>{{ story.postedOn | date:'medium' }}</small></ion-text>                
     </ion-card-header>

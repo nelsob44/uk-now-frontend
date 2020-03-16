@@ -4,14 +4,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
-
-import { FindAMentorPage } from './find-a-mentor.page';
-import { MentorItemComponent } from './mentor-item/mentor-item.component';
+import {ProfileItemComponent} from './profile-item/profile-item.component';
+import { ProfilePage } from './profile.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: FindAMentorPage
+    component: ProfilePage
   }
 ];
 
@@ -22,6 +21,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [FindAMentorPage, MentorItemComponent]
+  declarations: [ProfilePage, ProfileItemComponent]
 })
-export class FindAMentorPageModule {}
+export class ProfilePageModule {}

@@ -1,12 +1,3 @@
-ion-icon {
-  font-size: 1.5rem;
-  color: white;
-}
-
-ion-badge {
-    margin: 3px;
-}
-
 ion-col.first-column {
     
     @media only screen and (max-width: 768px) {
@@ -17,7 +8,16 @@ ion-col.first-column {
 ion-button.buttonRight {
     float: right;
 }
+.content-class {
+    height: 250px;
+}
 
-ion-col.second-column {
-  min-width: 310px;
+.single-messageright {
+    padding: 5px;
+}
+.single-messageleft {
+    padding: 5px;
+}
+.end {
+    float: right;
 }

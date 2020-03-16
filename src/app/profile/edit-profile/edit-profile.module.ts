@@ -1,17 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
+import { SharedModule } from 'src/app/shared/shared.module';
 
-import { FindAMentorPage } from './find-a-mentor.page';
-import { MentorItemComponent } from './mentor-item/mentor-item.component';
+import { EditProfilePage } from './edit-profile.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: FindAMentorPage
+    component: EditProfilePage
   }
 ];
 
@@ -20,8 +21,9 @@ const routes: Routes = [
     CommonModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    SharedModule
   ],
-  declarations: [FindAMentorPage, MentorItemComponent]
+  declarations: [EditProfilePage]
 })
-export class FindAMentorPageModule {}
+export class EditProfilePageModule {}

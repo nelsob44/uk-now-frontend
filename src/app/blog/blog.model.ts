@@ -22,6 +22,7 @@ export class Results {
     constructor(
         public id: string,        
         public userName: string,
+        public userId: string,
         public subject: string,
         public score: string,
         public resultTime: Date       

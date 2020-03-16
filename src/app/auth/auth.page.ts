@@ -29,39 +29,62 @@ export class AuthPage implements OnInit {
       return;
     }
 
-    this.isLoading = true;
-    this.loadingCtrl.create({keyboardClose: true, message: this.isLogin ? 'Logging in....' : 'Signing up....' })
-    .then(loadingEl => {
-      loadingEl.present();
-      const firstname = form.value.firstname;
-      const lastname = form.value.lastname;
-      const email = form.value.email;
-      const password = form.value.password;
-      let authObs: Observable<AuthResponseData>;
+    const data = [
+        {
+           'firstname' : 'Omoniyi',
+           'lastname' : 'Abel'
+        },
+        {
+           'firstname' : 'Israel',
+           'lastname' : 'Koki'
+        },
+        {
+           'firstname' : 'Boyle',
+           'lastname' : 'Akali'
+        },
+    ];
 
-      if(!this.isLogin) {
-        authObs = this.authService.signup(firstname, lastname, email, password);
-      }
-      else {
-        authObs = this.authService.login(email, password);
-      }    
-      
-      return authObs.subscribe(resData => {
+    // for(let i = 0; i < data.length; i++ ){
+    //   const firstname = data[i].firstname.toLowerCase();
+    //   const lastname = data[i].lastname.toLowerCase();
+    //   const email = firstname + lastname + '@yahoo.com';
+    //   const password = 'northumbria';
+
+      this.isLoading = true;
+      this.loadingCtrl.create({keyboardClose: true, message: this.isLogin ? 'Logging in....' : 'Signing up....' })
+      .then(loadingEl => {
+        loadingEl.present();
+        const firstname = form.value.firstname;
+        const lastname = form.value.lastname;
+        const email = form.value.email;
+        const password = form.value.password;
+        let authObs: Observable<AuthResponseData>;
+
+        if(!this.isLogin) {
+          
+          authObs = this.authService.signup(firstname, lastname, email, password);
+        }
+        else {
+          authObs = this.authService.login(email, password);
+        }    
         
-        loadingEl.dismiss();
-        this.isLoading = false;
-        form.reset();
-        this.isLogin ? this.router.navigateByUrl('/featured/tabs/stories') : this.showAlert('Account created. You can now log in');
-        this.isLogin ? '' : this.isLogin = true;
+        return authObs.subscribe(resData => {
+          
+          loadingEl.dismiss();
+          this.isLoading = false;
+          form.reset();
+          this.isLogin ? this.router.navigateByUrl('/featured/tabs/stories') : this.showAlert('Account created. You can now log in');
+          this.isLogin ? '' : this.isLogin = true;
 
-      }, errorResponse => {
-        loadingEl.dismiss();
-        const errorCode = errorResponse.error.message;
+        }, errorResponse => {
+          loadingEl.dismiss();
+          const errorCode = errorResponse.error.message;
 
-        this.showAlert(errorCode);
-        this.isLoading = false;
-      });      
-    });
+          this.showAlert(errorCode);
+          this.isLoading = false;
+        });      
+      });
+    // };
           
   }  
 

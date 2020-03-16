@@ -39,7 +39,7 @@ export class YourLocalDetailsPage implements OnInit, OnDestroy {
 
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
-        if(status < 3)
+        if(status != null && (status < 3))
         {
           this.isAdmin = true;
         }

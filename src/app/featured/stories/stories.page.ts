@@ -27,6 +27,11 @@ export class StoriesPage implements OnInit, OnDestroy {
   firstPage: number;
   lastPage: number;
   previousPage: number;
+  private totalUserSub: Subscription;
+  private totalUsers: number;
+  private userName: string;
+  private userNameSub: Subscription;
+  private loadedStoryTitles = [];
 
   constructor(private featuredService: FeaturedService, 
   private router: Router,
@@ -70,11 +75,28 @@ export class StoriesPage implements OnInit, OnDestroy {
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         
-        if(+status < 3)
+        if(status != null && (status < 3))
         {          
           this.isAdmin = true;
         }
-      });    
+      });  
+
+      setTimeout(() => {
+        for(let i = 0; i < this.loadedStories.length; i++) {
+        
+          if(!this.loadedStoryTitles.includes(this.loadedStories[i].storyTitle)) {
+            this.loadedStoryTitles.push(this.loadedStories[i].storyTitle);          
+          }
+        };
+      }, 1500) 
+
+      this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        this.totalUsers = totalusers;        
+      });
+
+      this.userNameSub = this.authService.userName.subscribe(userName => {
+        this.userName = userName;        
+      }); 
   }
 
   onScrollNext(page: number) {
@@ -137,14 +159,33 @@ export class StoriesPage implements OnInit, OnDestroy {
       this.previousPage = page;
       if(this.previousPage == 0) {
         this.previousPage = 1;
-      }
-           
+      }           
       this.isLoading = false;       
     });    
     
   }
 
+  refreshFilter() {    
+    this.ionViewWillEnter();
+  }
 
+  onSearchStoryFilter(storyTitle: string) {
+    this.isLoading = true;
+    this.storiesSub = this.featuredService.fetchStoriesFilter(this.currentPage, storyTitle).subscribe(stories => {
+      this.loadedStories = stories;
+      
+      this.isLoading = false; 
+    });
+  }
+
+  onCreateStory() {    
+    if(this.isAdmin) {
+      this.router.navigate(['/', 'featured', 'tabs', 'stories', 'edit-story', '']);
+    } else {
+      this.router.navigate(['/', 'featured', 'tabs', 'stories']);
+
+    }    
+  }
 
   onEdit(storyId: string, slidingItem: IonItemSliding) {
     slidingItem.close();
@@ -163,6 +204,8 @@ export class StoriesPage implements OnInit, OnDestroy {
       this.statusSub.unsubscribe();
       this.pageSub.unsubscribe();
       this.authSub.unsubscribe();
+      this.totalUserSub.unsubscribe();
+      this.userNameSub.unsubscribe();
     }
   }
 

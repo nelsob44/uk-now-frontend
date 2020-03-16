@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>edit-profile</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onUpdate()" [disabled]="!form?.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content no-padding>
+  <ion-row>
+    <ion-col size="4" class="first-column">
+      <div>
+        <ion-card>
+          <ion-item (click)="onCancelEditing()">
+            <ion-chip color="tertiary">
+              <ion-label color="dark"><ion-card-title>Cancel Editing</ion-card-title></ion-label>
+            </ion-chip>
+          </ion-item>                    
+        </ion-card>
+        
+      </div>
+    </ion-col>
+    <ion-col size-sm="12" size-md="8" size-lg="8"> 
+      <form [formGroup]="form">
+        <ion-row>
+          <ion-col size-lg="8">
+            <ion-item>
+              <ion-label position="floating">New Password</ion-label>
+              <ion-input autocorrect formControlName="newPassword"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>  
+
+        <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <app-image-picker [showPreview]="form.get('theImage').value" (imagePick)="onImagePicked($event)"
+            ></app-image-picker>
+          </ion-col>      
+        </ion-row>
+
+        <ion-grid>      
+          <ion-row>
+            <ion-col size-lg="8">
+              <ion-item>
+                <ion-label position="floating">Details</ion-label>
+                <ion-textarea autocorrect formControlName="details"></ion-textarea>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>      
+    </ion-col>
+  </ion-row>  
+</ion-content>
+

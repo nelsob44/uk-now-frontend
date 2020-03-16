@@ -26,6 +26,10 @@ export class UkLifeEssentialPage implements OnInit, OnDestroy {
   firstPage: number;
   lastPage: number;
   previousPage: number;
+  private totalUserSub: Subscription;
+  private totalUsers: number;
+  private userName: string;
+  private userNameSub: Subscription;
 
   constructor(private authService: AuthService, 
   private router: Router,
@@ -63,10 +67,18 @@ export class UkLifeEssentialPage implements OnInit, OnDestroy {
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         
-        if(status < 3)
+        if(status != null && (status < 3))
         {          
           this.isAdmin = true;
         }
+    });
+
+    this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        this.totalUsers = totalusers;        
+      });
+
+      this.userNameSub = this.authService.userName.subscribe(userName => {
+        this.userName = userName;        
       });     
   }
 
@@ -152,6 +164,8 @@ export class UkLifeEssentialPage implements OnInit, OnDestroy {
       this.essentialsSub.unsubscribe();
       this.statusSub.unsubscribe();
       this.pageSub.unsubscribe();
+      this.totalUserSub.unsubscribe();
+      this.userNameSub.unsubscribe();
     }
   }
 

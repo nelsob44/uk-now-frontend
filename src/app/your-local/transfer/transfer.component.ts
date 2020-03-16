@@ -16,10 +16,8 @@ export class TransferComponent implements OnInit {
 
   ngOnInit() {
     this.theLocal = this.transferIdLocal;
-    console.log(this.theLocal);
-    this.newLocal.emit(this.theLocal);
     
-    // this.router.navigate(['/', 'your-local', 'your-local-details', this.theLocal.id]);
+    this.newLocal.emit(this.theLocal);
   }
 
 }

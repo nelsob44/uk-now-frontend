@@ -14,24 +14,131 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="mentorsData.length > 0">
-  <ion-grid >    
-    <ion-row>
-      <ion-col *ngFor="let mentor of mentorsData">
-        <app-mentor-item [mentor]="mentor"></app-mentor-item>  
-          <ion-item-options side="start">
-            <ion-item-option color="secondary" (click)="onEdit(mentor.id, slidingItem)">
-              <ion-icon name="create" slot="icon-only"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-      </ion-col>      
-    </ion-row>
-  </ion-grid>
-  <ion-title>          
-    <ion-badge color="tertiary" (click)="onScrollFirst(firstPage)" style="padding: 3px;">{{ firstPage }}</ion-badge>         
-    <ion-badge *ngIf="previousPage != firstPage" color="warning" (click)="onScrollPrev(previousPage)" style="padding: 3px;">Prev ( {{ previousPage }} )</ion-badge>          
-  
-    <ion-badge *ngIf="lastPage > nextPage" color="primary" (click)="onScrollNext(nextPage)" style="padding: 3px;">Next ( {{ nextPage }} )</ion-badge>
-    <ion-badge color="tertiary" (click)="onScrollLast(lastPage)" style="padding: 3px;">{{ lastPage }}</ion-badge>
-  </ion-title> 
+<ion-content class="ion-no-padding">
+  <ion-row>
+    <ion-col size="4" class="first-column">
+      <div>
+        <ion-card>
+          <ion-item>
+            <ion-chip color="tertiary">
+              <ion-label color="dark"><ion-card-title>Available Fields</ion-card-title></ion-label>
+            </ion-chip>
+          </ion-item>                    
+        </ion-card>
+        <ion-card *ngFor="let mentorField of loadedMentorFields">          
+          <ion-item (click)="onSearchMentorFilter(mentorField)">
+            <ion-chip color="tertiary">
+              <ion-label color="dark">{{mentorField}}</ion-label>
+            </ion-chip>
+          </ion-item>          
+        </ion-card>
+      </div>
+    </ion-col>
+    <ion-col size-sm="12" size-md="8" size-lg="8" class="second-column"> 
+      <ion-grid>
+        <ion-row align-items-start>
+          <ion-col *ngIf="userName" size-sm="4">
+            <ion-card-subtitle color="primary">Hi, <i>{{userName | titlecase}}!</i></ion-card-subtitle> 
+          </ion-col>
+          <ion-col *ngIf="totalUsers"size-sm="4">
+            <ion-card-subtitle color="primary">{{ totalUsers }}{{' '}}Users on Platform</ion-card-subtitle> 
+                  
+          </ion-col>
+          <ion-col *ngIf="totalUsers"size-sm="4">
+            <ion-card-subtitle color="primary">Refresh search</ion-card-subtitle> 
+            <ion-toggle (ionChange)="refreshFilter()"></ion-toggle>     
+          </ion-col>
+        </ion-row>        
+      </ion-grid>
+      <ion-grid>    
+        <ion-row>
+          <ion-col size="9">
+            <ion-list>
+            
+            <ion-item>
+              <form [formGroup]="myGroup">
+                <ion-label>Select search category</ion-label>
+                <ion-select formControlName="mentorField" cancelText="Cancel" okText="Okay!">            
+                  <ion-select-option value="Accounting">Accounting</ion-select-option>
+                  <ion-select-option value="Management">Management</ion-select-option>
+                  <ion-select-option value="Business">Business</ion-select-option>
+                  <ion-select-option value="Medicine">Medicine</ion-select-option>
+                  <ion-select-option value="Health Sciences">Health Sciences</ion-select-option>
+                  <ion-select-option value="Botany">Botany</ion-select-option>
+                  <ion-select-option value="Chemistry">Chemistry</ion-select-option>
+                  <ion-select-option value="Physics">Physics</ion-select-option>
+                  <ion-select-option value="Zoology">Zoology</ion-select-option>
+                  <ion-select-option value="Pharmacy">Pharmacy</ion-select-option>
+                  <ion-select-option value="Bio Engineering">Bio Engineering</ion-select-option>
+                  <ion-select-option value="Engineering">Engineering</ion-select-option>
+                  <ion-select-option value="Data Sciences">Data Sciences</ion-select-option>
+                  <ion-select-option value="Law">Law</ion-select-option>
+                  <ion-select-option value="Linguistics">Linguistics</ion-select-option>
+                  <ion-select-option value="Software Development">Software Development</ion-select-option>
+                  <ion-select-option value="Journalism">Journalism</ion-select-option>
+                  <ion-select-option value="Political Science">Political Science</ion-select-option>
+                  <ion-select-option value="Intl Relations">Intl Relations</ion-select-option>
+                  <ion-select-option value="Humanities">Humanities</ion-select-option>
+                  <ion-select-option value="Economics">Economics</ion-select-option>
+                  <ion-select-option value="Manufacturing">Manufacturing</ion-select-option>
+                  <ion-select-option value="Banking And Finance">Banking And Finance</ion-select-option>
+                  <ion-select-option value="Others">Others</ion-select-option>
+                </ion-select>
+              </form>          
+            </ion-item>        
+          </ion-list>
+          </ion-col> 
+          <ion-col size="2">
+            <ion-button (click)="onSearchLocal()">
+              <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-col>     
+        </ion-row>
+        <ion-grid  *ngIf="mentorsData.length > 0">
+          <ion-row>
+            <ion-col>
+              <ion-grid>
+                <ion-row align-items-start>
+                  <ion-col *ngIf="userName" size-sm="6">
+                    <ion-card-subtitle color="primary">Hi, <i>{{userName | titlecase}}!</i></ion-card-subtitle> 
+                  </ion-col>
+                  <ion-col *ngIf="totalUsers"size-sm="6">
+                    <ion-card-subtitle color="primary">{{ totalUsers }}{{' '}}Users on Platform</ion-card-subtitle> 
+                  </ion-col>
+                </ion-row>        
+              </ion-grid>
+              <ion-grid >    
+                <ion-row>
+                  <ion-col *ngFor="let mentor of mentorsData">
+                    <app-mentor-item [mentor]="mentor"></app-mentor-item>  
+                      <ion-item-options side="start">
+                        <ion-item-option color="secondary" (click)="onEdit(mentor.id, slidingItem)">
+                          <ion-icon name="create" slot="icon-only"></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+                  </ion-col>      
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-grid>
+      <ion-grid *ngIf="mentorsData.length < 1">
+        <ion-row align-items-start>
+          <ion-col *ngIf="userName" size-sm="6">
+            <ion-card-subtitle color="primary">Sorry, there are no results for this category</ion-card-subtitle> 
+          </ion-col>      
+        </ion-row>        
+      </ion-grid>
+      <ion-row *ngIf="mentorsData.length > 0"> 
+        <ion-col>        
+          <ion-badge color="tertiary" (click)="onScrollFirst(firstPage)" style="padding: 3px;">{{ firstPage }}</ion-badge>         
+          <ion-badge *ngIf="previousPage != firstPage" color="warning" (click)="onScrollPrev(previousPage)" style="padding: 3px;">Prev ( {{ previousPage }} )</ion-badge>          
+        
+          <ion-badge *ngIf="lastPage > nextPage" color="primary" (click)="onScrollNext(nextPage)" style="padding: 3px;">Next ( {{ nextPage }} )</ion-badge>
+          <ion-badge color="tertiary" (click)="onScrollLast(lastPage)" style="padding: 3px;">{{ lastPage }}</ion-badge>
+        </ion-col> 
+      </ion-row>
+    </ion-col>
+  </ion-row>  
 </ion-content>

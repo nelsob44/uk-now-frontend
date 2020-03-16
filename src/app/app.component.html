@@ -2,7 +2,7 @@
   <ion-menu side="start" menuId="first">
     <ion-header>
       <ion-toolbar class="background">
-        <ion-title>UK Now</ion-title>
+        <ion-title>UK Now {{' '}}{{ totalUsers }}{{' '}} Users</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
@@ -59,6 +59,12 @@
           <ion-item lines="none" routerLink="/ask-a-question">
             <ion-icon name="help" slot="start"></ion-icon>
             <ion-label>Ask A Question</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/profile">
+            <ion-icon name="contact" slot="start"></ion-icon>
+            <ion-label>User Profile</ion-label>
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle>

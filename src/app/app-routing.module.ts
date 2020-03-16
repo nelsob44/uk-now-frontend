@@ -137,7 +137,26 @@ const routes: Routes = [
     ]
   },
   { path: 'home', loadChildren: './home/home.module#HomePageModule' },
-  { path: 'contact', loadChildren: './contact/contact.module#ContactPageModule' },
+  { 
+    path: 'contact', 
+    loadChildren: './contact/contact.module#ContactPageModule',
+    canLoad: [AuthGuard]
+  },
+  { 
+    path: 'profile', 
+    loadChildren: './profile/profile.module#ProfilePageModule',
+    canLoad: [AuthGuard]
+  },
+  { 
+    path: 'profile/:userId', 
+    loadChildren: './profile/profile.module#ProfilePageModule',
+    canLoad: [AuthGuard]
+  },
+  { 
+    path: 'edit-profile/:userId', 
+    loadChildren: './profile/edit-profile/edit-profile.module#EditProfilePageModule',
+    canLoad: [AuthGuard]
+  },
   ];
 @NgModule({
   imports: [

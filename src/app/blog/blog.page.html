@@ -13,56 +13,101 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content no-padding *ngIf="loadedBlogs.length > 0">
-  <ion-card>
-    <ion-card-header>{{loadedBlogs[0].blogTitle}}</ion-card-header>
-    <ion-card-header>
-      <ion-img [src]="loadedBlogs[0].blogImage"></ion-img>
-    </ion-card-header>
 
-    <ion-card-content text-wrap>
-      
-      <div class="story-details">         
-        <ion-text slot="start" small><small>Writer: {{ loadedBlogs[0].blogFirstName + ' ' + loadedBlogs[0].blogLastName }}</small></ion-text> {{' '}}
-        <ion-text class="space-left" slot="end"><small>{{ loadedBlogs[0].blogDate | date:'yyyy-MM-dd HH:mm:ss' }}</small></ion-text>                      
-      </div>
-      <ion-text slot="start" small>
-        <small>
-          <ion-button fill="clear"
-          color="primary"
-          [routerLink]="[
-          '/', 'blog', 'blog-detail',
-          loadedBlogs[0].id]"
-          >More</ion-button> 
-        </small> 
-      </ion-text>
-    </ion-card-content>  
-  </ion-card>
-
+<ion-content *ngIf="loadedBlogs.length > 0">
   <ion-grid>
-    <ion-row align-items-start>
-      <ion-col *ngFor="let blog of loadedBlogs">
-        <app-blog-item [blog]="blog"></app-blog-item>  
-          <ion-item-options side="start">
-            <ion-item-option color="secondary" (click)="onEdit(blog.id, slidingItem)">
-              <ion-icon name="create" slot="icon-only"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-      </ion-col>
-      
-    </ion-row>        
     <ion-row>
-      <ion-col>
-        <ion-title>          
-          <ion-badge color="tertiary" (click)="onScrollFirst(firstPage)" style="padding: 3px;">{{ firstPage }}</ion-badge>         
-          <ion-badge *ngIf="previousPage != firstPage" color="warning" (click)="onScrollPrev(previousPage)" style="padding: 3px;">Prev ( {{ previousPage }} )</ion-badge>          
-         
-          <ion-badge *ngIf="lastPage > nextPage" color="primary" (click)="onScrollNext(nextPage)" style="padding: 3px;">Next ( {{ nextPage }} )</ion-badge>
-          <ion-badge color="tertiary" (click)="onScrollLast(lastPage)" style="padding: 3px;">{{ lastPage }}</ion-badge>
-        </ion-title>
+      <ion-col size="4" class="first-column">
+        <div>
+          <ion-card *ngIf="isAdmin">
+            <ion-item (click)="onCreateBlog()">
+              <ion-chip color="tertiary">
+                <ion-label color="dark"><ion-card-title>Create New Blog</ion-card-title></ion-label>
+              </ion-chip>
+            </ion-item>                    
+          </ion-card>
+          <ion-card>
+            <ion-item>
+              <ion-chip color="tertiary">
+                <ion-label color="dark"><ion-card-title>Latest Blogs</ion-card-title></ion-label>
+              </ion-chip>
+            </ion-item>                    
+          </ion-card>
+          
+          <ion-card *ngFor="let blogTitle of loadedBlogTitles">          
+            <ion-item (click)="onSearchBlogFilter(blogTitle)">
+              <ion-chip color="primary">
+                <ion-label color="dark">{{blogTitle}}</ion-label>
+              </ion-chip>
+            </ion-item>          
+          </ion-card>
+        </div>
+      </ion-col>
+      <ion-col size-sm="12" size-md="8" size-lg="8" class="second-column">
+        <ion-grid>
+          <ion-row align-items-start>
+            <ion-col *ngIf="userName" size-sm="4">
+              <ion-card-subtitle color="primary">Hi, <i>{{userName | titlecase}}!</i></ion-card-subtitle> 
+            </ion-col>
+            <ion-col *ngIf="totalUsers"size-sm="4">
+              <ion-card-subtitle color="primary">{{ totalUsers }}{{' '}}Users on Platform</ion-card-subtitle> 
+            </ion-col>
+            <ion-col *ngIf="totalUsers"size-sm="4">
+              <ion-card-subtitle color="primary">Refresh blogs</ion-card-subtitle> 
+              <ion-toggle (ionChange)="refreshFilter()"></ion-toggle>     
+            </ion-col>
+          </ion-row>        
+        </ion-grid>
+        <ion-card>
+          <ion-card-header>{{loadedBlogs[0].blogTitle}}</ion-card-header>
+          <ion-card-header>
+            <ion-img [src]="loadedBlogs[0].blogImage"></ion-img>
+          </ion-card-header>
+
+          <ion-card-content text-wrap>
+            
+            <div class="story-details">         
+              <ion-text slot="start" small><small>Writer: {{ loadedBlogs[0].blogFirstName + ' ' + loadedBlogs[0].blogLastName }}</small></ion-text> {{' '}}
+              <ion-text class="space-left" slot="end"><small>{{ loadedBlogs[0].blogDate | date:'yyyy-MM-dd HH:mm:ss' }}</small></ion-text>                      
+            </div>
+            <ion-text slot="start" small>
+              <small>
+                <ion-button fill="clear"
+                color="primary"
+                [routerLink]="[
+                '/', 'blog', 'blog-detail',
+                loadedBlogs[0].id]"
+                >More</ion-button> 
+              </small> 
+            </ion-text>
+          </ion-card-content>  
+        </ion-card>
+
+        <ion-grid>
+          <ion-row align-items-start>
+            <ion-col *ngFor="let blog of loadedBlogs">
+              <app-blog-item [blog]="blog"></app-blog-item>  
+                <ion-item-options side="start">
+                  <ion-item-option color="secondary" (click)="onEdit(blog.id, slidingItem)">
+                    <ion-icon name="create" slot="icon-only"></ion-icon>
+                  </ion-item-option>
+                </ion-item-options>
+            </ion-col>
+            
+          </ion-row>        
+          <ion-row>
+            <ion-col>
+              <ion-title>          
+                <ion-badge color="tertiary" (click)="onScrollFirst(firstPage)" style="padding: 3px;">{{ firstPage }}</ion-badge>         
+                <ion-badge *ngIf="previousPage != firstPage" color="warning" (click)="onScrollPrev(previousPage)" style="padding: 3px;">Prev ( {{ previousPage }} )</ion-badge>          
+              
+                <ion-badge *ngIf="lastPage > nextPage" color="primary" (click)="onScrollNext(nextPage)" style="padding: 3px;">Next ( {{ nextPage }} )</ion-badge>
+                <ion-badge color="tertiary" (click)="onScrollLast(lastPage)" style="padding: 3px;">{{ lastPage }}</ion-badge>
+              </ion-title>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-col>
     </ion-row>
-  </ion-grid>  
+  </ion-grid>   
 </ion-content>
-
-

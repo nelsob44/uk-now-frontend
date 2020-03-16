@@ -5,6 +5,10 @@ export class User {
         public lastname: string,
         public status: number,
         private _token: string,
+        public totalUsers: number,
+        public details: string,
+        public email: string,
+        public profilePic: string,
         private tokenExpirationDate: Date
     ) {}
 

@@ -1,0 +1,45 @@
+<ion-list lines="inset">
+  <ion-buttons slot="primary">
+    <ion-avatar slot="start" class="avatar">
+      <ion-img [src]="profile.profilePic"></ion-img>       
+    </ion-avatar>
+    <ion-button [routerLink]="[
+      '/', 'edit-profile',
+      profile.id]">
+      <ion-icon name="create" slot="icon-only" *ngIf="isRightUser || isAdmin"></ion-icon>
+    </ion-button>  
+  </ion-buttons>
+  
+  <ion-item>
+    <ion-label>
+      First Name:
+    </ion-label>
+    <ion-card-title>{{profile.firstname}}</ion-card-title>
+  </ion-item>
+  <ion-item>
+    <ion-label>
+      Last Name:
+    </ion-label>
+    <ion-card-title>{{profile.lastname}}</ion-card-title>
+  </ion-item>
+  <ion-item *ngIf="isRightUser || isAdmin">
+    <ion-label>
+      Email:
+    </ion-label>
+    <ion-card-title>{{profile.email}}</ion-card-title>
+  </ion-item>
+  
+  <ion-item>
+    <ion-label>
+      Status:
+    </ion-label>
+    <ion-card-title>{{profile.status === 3 ? 'Basic user' : 'Admin'}}</ion-card-title>
+  </ion-item>
+  <ion-item *ngIf="isRightUser || isAdmin">
+    <span slot="start" style="float: left;">
+      Details:
+    </span>
+    <p><ion-text>{{profile.details}}</ion-text></p>
+  </ion-item>
+</ion-list>
+

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { tap, catchError, map } from 'rxjs/operators';
+import { tap, catchError, map, take, switchMap } from 'rxjs/operators';
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { Plugins } from '@capacitor/core';
 import { environment } from 'src/environments/environment';
@@ -14,6 +14,10 @@ export interface AuthResponseData {
   lastname: string;
   status: number;
   token: string;
+  totalUsers: number;
+  details: string;
+  email: string;
+  profilePic: string;
 }
 
 @Injectable({
@@ -22,8 +26,12 @@ export interface AuthResponseData {
 
 
 export class AuthService {
-  
+  private activeLogoutTimer: any;
   private _user = new BehaviorSubject<User>(null);
+
+  get user() {
+    return this._user.asObservable();
+  }
   
   get userAuthenticated() {
     return this._user.asObservable().pipe(
@@ -32,6 +40,18 @@ export class AuthService {
           return !!user.token;
         } else {
           return false;
+        }
+      })
+    );
+  }
+
+  get userName() {
+    return this._user.asObservable().pipe(
+      map(user => {
+        if(user) {
+          return user.firstname + ' ' + user.lastname;
+        } else {
+          return null;
         }
       })
     );
@@ -49,11 +69,35 @@ export class AuthService {
     );
   }
 
+  get userEmail() {
+    return this._user.asObservable().pipe(
+      map(user => {
+        if(user) {
+          return user.email;
+        } else {
+          return null;
+        }
+      })
+    );
+  }
+
   get userStatus() {
     return this._user.asObservable().pipe(
       map(user => {
         if(user) {
           return user.status;
+        } else {
+          return null;
+        }
+      })
+    );
+  }
+
+  get totalUsers() {
+    return this._user.asObservable().pipe(
+      map(user => {
+        if(user) {
+          return user.totalUsers;
         } else {
           return null;
         }
@@ -91,6 +135,10 @@ export class AuthService {
           lastname: string,
           status: number,
           token: string,
+          totalUsers: number,
+          details: string,
+          email: string,
+          profilePic: string,
           tokenExpirationDate: string
         };
 
@@ -107,6 +155,10 @@ export class AuthService {
           parsedData.lastname,
           parsedData.status,
           parsedData.token,
+          parsedData.totalUsers,
+          parsedData.details,
+          parsedData.email,
+          parsedData.profilePic,
           new Date(expirationTimeDuration)
         );
         return user;
@@ -136,6 +188,25 @@ export class AuthService {
     .pipe(tap(this.setUserData.bind(this)));
   }
 
+  updateProfile(userId: string, password: string, details: string, profilePic: string) {
+    
+    const url = environment.baseUrl + '/auth/update-profile';
+    const uploadData = new FormData();
+    uploadData.append('userId', userId);
+    uploadData.append('password', password);
+    uploadData.append('details', details);
+    uploadData.append('profilePic', profilePic);
+
+    return this.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<AuthResponseData>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+        .pipe(tap(this.setUserData.bind(this)));
+      }));
+  }
+  
   private setUserData(userData: AuthResponseData) {
     const remainingMilliseconds = 60 * 60 * 2 * 1000;
     const expirationTime = new Date(
@@ -148,6 +219,10 @@ export class AuthService {
       userData.lastname,
       userData.status,
       userData.token,
+      userData.totalUsers,
+      userData.details,
+      userData.email,
+      userData.profilePic,
       expirationTime
     );
     
@@ -159,6 +234,10 @@ export class AuthService {
       userData.lastname,
       userData.status,
       userData.token,
+      userData.totalUsers,
+      userData.details,
+      userData.email,
+      userData.profilePic,
       expirationTime.toISOString()
     );
   }
@@ -169,6 +248,10 @@ export class AuthService {
     lastname: string,
     status: number,
     token: string,
+    totalUsers: number,
+    details: string,
+    email: string,
+    profilePic: string,
     tokenExpirationDate: string
   ) {
     const data = JSON.stringify({
@@ -177,6 +260,10 @@ export class AuthService {
       lastname: lastname,
       status: status,
       token: token,
+      totalUsers: totalUsers,
+      details: details,
+      email: email,
+      profilePic: profilePic,
       tokenExpirationDate: tokenExpirationDate
     });
 
@@ -189,6 +276,7 @@ export class AuthService {
   signup(firstname: string, lastname: string, email: string, password: string){
     let newUser = {firstname: firstname, lastname: lastname, email: email, password: password };
     const url = environment.baseUrl + '/auth/signup';
+    console.log(newUser);
     return this.http.post<AuthResponseData>(url, JSON.stringify(newUser), {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -199,16 +287,40 @@ export class AuthService {
     }));
   }
 
-  private autoLogout(duration: number) {    
-    setTimeout(() => {
+  // private autoLogout(duration: number) {    
+  //   setTimeout(() => {
+  //     this.logout();
+  //   }, duration);
+  // }
+
+  // logout() {    
+    
+  //   Plugins.Storage.remove({ key: 'authData' });
+  //   this._user.next(null);
+  //   this.router.navigate(['/', 'home']);
+  // }
+
+  private autoLogout(duration: number) {
+    if(this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
+    this.activeLogoutTimer = setTimeout(() => {
       this.logout();
     }, duration);
   }
 
   logout() {
-    
+    if(this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
     this._user.next(null);
     Plugins.Storage.remove({ key: 'authData' });
-    this.router.navigate(['/', 'home']);
   }
+
+  ngOnDestroy() {
+    if(this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
+  }
+
 }

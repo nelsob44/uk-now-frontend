@@ -28,6 +28,10 @@ export class AskAQuestionPage implements OnInit, OnDestroy {
   previousPage: number;
   private pageSub: Subscription;
   private authSub: Subscription;
+  private totalUserSub: Subscription;
+  private totalUsers: number;
+  private userName: string;
+  private userNameSub: Subscription;
 
   constructor(private router: Router, 
   private authService: AuthService,
@@ -65,7 +69,14 @@ export class AskAQuestionPage implements OnInit, OnDestroy {
     this.questionsSub = this.featuredService.fetchquestions(this.currentPage).subscribe(questions => {
       this.questionsData = questions;
       this.isLoading = false; 
-    });     
+    });  
+    this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        this.totalUsers = totalusers;        
+      });
+
+      this.userNameSub = this.authService.userName.subscribe(userName => {
+        this.userName = userName;        
+      });   
   }
 
   onReceiveReply(newQuestion: Questions) {
@@ -182,6 +193,8 @@ export class AskAQuestionPage implements OnInit, OnDestroy {
       this.questionsSub.unsubscribe();
       this.pageSub.unsubscribe();
       this.authSub.unsubscribe();
+      this.totalUserSub.unsubscribe();
+      this.userNameSub.unsubscribe();
     }
   }
 

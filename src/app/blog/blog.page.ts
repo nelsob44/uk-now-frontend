@@ -26,6 +26,11 @@ export class BlogPage implements OnInit, OnDestroy {
   firstPage: number;
   lastPage: number;
   previousPage: number;
+  private totalUserSub: Subscription;
+  private totalUsers: number;
+  private userName: string;
+  private userNameSub: Subscription;
+  private loadedBlogTitles = [];
 
   constructor(private featuredService: FeaturedService, 
   private authService: AuthService,
@@ -59,17 +64,43 @@ export class BlogPage implements OnInit, OnDestroy {
       this.loadedBlogs = blogs;
       
       this.isLoading = false; 
+      this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        this.totalUsers = totalusers;        
+      });
+
+      this.userNameSub = this.authService.userName.subscribe(userName => {
+        this.userName = userName;        
+      });
       
     }); 
 
     this.statusSub = this.authService.userStatus.subscribe(
       status => {
         
-        if(+status < 3)
+        if(status != null && (status < 3))
         {          
           this.isAdmin = true;
         }
-      });       
+      }); 
+
+      setTimeout(() => {
+        for(let i = 0; i < this.loadedBlogs.length; i++) {
+        
+          if(!this.loadedBlogTitles.includes(this.loadedBlogs[i].blogTitle)) {
+            this.loadedBlogTitles.push(this.loadedBlogs[i].blogTitle);          
+          }
+        };
+      }, 1500);
+            
+  }
+
+  onSearchBlogFilter(blogTitle: string) {
+    this.isLoading = true;
+    this.blogsSub = this.featuredService.fetchBlogsFilter(this.currentPage, blogTitle).subscribe(blogs => {
+      this.loadedBlogs = blogs;
+      
+      this.isLoading = false; 
+    });
   }
 
   onEdit(blogId: string, slidingItem: IonItemSliding) {
@@ -78,8 +109,15 @@ export class BlogPage implements OnInit, OnDestroy {
       this.router.navigate(['/', 'blog', 'blog-edit', blogId]);
     } else {
       this.router.navigate(['/', 'blog']);
+    }    
+  }
+
+  onCreateBlog() {
+    if(this.isAdmin) {
+      this.router.navigate(['/', 'blog', 'blog-edit', '']);
+    } else {
+      this.router.navigate(['/', 'blog']);
     }
-    
   }
 
   ionViewWillLeave() {
@@ -104,6 +142,10 @@ export class BlogPage implements OnInit, OnDestroy {
       this.isLoading = false;       
     });    
     
+  }
+
+  refreshFilter() {    
+    this.ionViewWillEnter();
   }
 
   onScrollPrev(page: number) {
@@ -161,6 +203,8 @@ export class BlogPage implements OnInit, OnDestroy {
       this.blogsSub.unsubscribe();
       this.statusSub.unsubscribe();
       this.pageSub.unsubscribe();
+      this.totalUserSub.unsubscribe();
+      this.userNameSub.unsubscribe();
     }
   }
 }
