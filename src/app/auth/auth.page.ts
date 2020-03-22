@@ -24,7 +24,8 @@ export class AuthPage implements OnInit {
   ngOnInit() {
   }
 
- onSubmit(form: NgForm) {
+  //Begin action to process submitted login or signup form
+  onSubmit(form: NgForm) {
     if (!form.valid) {
       return;
     }
@@ -74,6 +75,7 @@ export class AuthPage implements OnInit {
               
   }  
 
+  //Prepare alert message
   private showAlert(message: string) {
     this.alertCtrl.create({      
       message: message,
@@ -81,7 +83,7 @@ export class AuthPage implements OnInit {
     }).then(alertEl => alertEl.present());
   }
 
-
+  //Toggle signup and login forms
   onSwitchAuthMode() {
     this.isLogin = !this.isLogin;
   }  

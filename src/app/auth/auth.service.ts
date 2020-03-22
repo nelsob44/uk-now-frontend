@@ -24,7 +24,6 @@ export interface AuthResponseData {
   providedIn: 'root'
 })
 
-
 export class AuthService {
   private activeLogoutTimer: any;
   private _user = new BehaviorSubject<User>(null);
@@ -122,8 +121,8 @@ export class AuthService {
   private router: Router
   ) { }
 
-  autoLogin() {
-    
+  //Perform auto login function
+  autoLogin() {    
     return from(Plugins.Storage.get({key: 'authData'})).pipe(
       map(storedData => {
         if(!storedData || !storedData.value) {
@@ -177,6 +176,7 @@ export class AuthService {
     );
   }
   
+  //Perform login request
   login(email: string, password: string){
     let oldUser = { email: email, password: password };
     const url = environment.baseUrl + '/auth/login';
@@ -188,6 +188,7 @@ export class AuthService {
     .pipe(tap(this.setUserData.bind(this)));
   }
 
+  //Update userprofile function
   updateProfile(userId: string, password: string, details: string, profilePic: string) {
     
     const url = environment.baseUrl + '/auth/update-profile';
@@ -204,9 +205,11 @@ export class AuthService {
           {headers: {Authorization: 'Bearer ' + token}}
         )
         .pipe(tap(this.setUserData.bind(this)));
-      }));
+      })
+    );
   }
   
+  //Prepare user data for storage
   private setUserData(userData: AuthResponseData) {
     const remainingMilliseconds = 60 * 60 * 2 * 1000;
     const expirationTime = new Date(
@@ -242,6 +245,7 @@ export class AuthService {
     );
   }
 
+  //Store auth data in device storage
   private storeAuthData(
     userId: string,
     firstname: string,
@@ -273,6 +277,7 @@ export class AuthService {
     });
   }
 
+  //Send signup request
   signup(firstname: string, lastname: string, email: string, password: string){
     let newUser = {firstname: firstname, lastname: lastname, email: email, password: password };
     const url = environment.baseUrl + '/auth/signup';
@@ -287,19 +292,7 @@ export class AuthService {
     }));
   }
 
-  // private autoLogout(duration: number) {    
-  //   setTimeout(() => {
-  //     this.logout();
-  //   }, duration);
-  // }
-
-  // logout() {    
-    
-  //   Plugins.Storage.remove({ key: 'authData' });
-  //   this._user.next(null);
-  //   this.router.navigate(['/', 'home']);
-  // }
-
+  //Autologout function
   private autoLogout(duration: number) {
     if(this.activeLogoutTimer) {
       clearTimeout(this.activeLogoutTimer);
@@ -309,12 +302,14 @@ export class AuthService {
     }, duration);
   }
 
+  //Perform logout action
   logout() {
     if(this.activeLogoutTimer) {
       clearTimeout(this.activeLogoutTimer);
-    }
-    this._user.next(null);
+    }    
     Plugins.Storage.remove({ key: 'authData' });
+    this._user.next(null);
+    this.router.navigateByUrl('/home');
   }
 
   ngOnDestroy() {
