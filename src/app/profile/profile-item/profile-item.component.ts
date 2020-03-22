@@ -13,7 +13,7 @@ export class ProfileItemComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log(this.profile);
+    
   }
 
 }

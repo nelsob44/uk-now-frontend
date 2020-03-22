@@ -276,7 +276,7 @@ export class AuthService {
   signup(firstname: string, lastname: string, email: string, password: string){
     let newUser = {firstname: firstname, lastname: lastname, email: email, password: password };
     const url = environment.baseUrl + '/auth/signup';
-    console.log(newUser);
+    
     return this.http.post<AuthResponseData>(url, JSON.stringify(newUser), {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'

@@ -31,6 +31,7 @@ export class LocalEventsPage implements OnInit, OnDestroy {
   private totalUsers: number;
   private userName: string;
   private userNameSub: Subscription;
+  private loadedEventTitles = [];
 
   constructor(private featuredService: FeaturedService, 
   private router: Router,
@@ -81,6 +82,15 @@ export class LocalEventsPage implements OnInit, OnDestroy {
         }
       });
 
+    setTimeout(() => {
+        for(let i = 0; i < this.loadedEvents.length; i++) {
+        
+          if(!this.loadedEventTitles.includes(this.loadedEvents[i].eventName)) {
+            this.loadedEventTitles.push(this.loadedEvents[i].eventName);          
+          }
+        };
+      }, 1500) 
+
       this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
         this.totalUsers = totalusers;        
       });
@@ -89,6 +99,29 @@ export class LocalEventsPage implements OnInit, OnDestroy {
         this.userName = userName;        
       });  
     
+  }
+
+  refreshFilter() {    
+    this.ionViewWillEnter();
+  }
+
+  onSearchEventFilter(eventName: string) {
+    this.isLoading = true;
+    this.eventsSub = this.featuredService.fetchEventsFilter(this.currentPage, eventName).subscribe(events => {
+      this.loadedEvents = events;
+      
+      this.isLoading = false; 
+    });
+  }
+
+  onCreateEvent() {    
+    if(this.isAdmin) {
+      this.router.navigate(['/', 'featured', 'tabs', 'local-events', 'edit-local-event',
+        '']);
+    } else {
+      this.router.navigate(['/', 'featured', 'tabs', 'local-events']);
+
+    }    
   }
 
   onEdit(eventId: string, slidingItem: IonItemSliding) {

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/uk-life-essential"></ion-back-button>
     </ion-buttons>
-    <ion-title>Quiz Results</ion-title>   
+    <ion-title>Results</ion-title>   
     <ion-buttons slot="end" *ngIf="isAdmin">
       <ion-button [routerLink]="[
         '/', 'uk-life-essential', 'delete-quiz']">
@@ -13,56 +13,100 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content no-padding *ngIf="loadedResults.length > 0">
+<ion-content class="no-padding">
   <ion-grid>
-    <ion-row no-padding>
-      <ion-col size-sm="9" offset-sm="1">
-        <table>
-          <thead>
-            <th>
-              No.
-            </th>
-            <th>
-              Name
-            </th>
-            <th>
-              Score(%)
-            </th>
-            <th>
-              Subject
-            </th>
-            <th>
-              Time
-            </th>
-          </thead>
-          <tbody>
-            <tr *ngFor="let result of loadedResults; let i = index">
-              <td>
-                {{ i + 1 }}
-              </td>
-              <td>
-                <ion-item lines="none" (click)="getUser(result.userId)">
-                  <ion-text>{{ result.userName }}</ion-text>
-                </ion-item>                
-              </td>
-              <td>
-                {{ result.score }}
-              </td>
-              <td>
-                {{ result.subject }}
-              </td>
-              <td>
-                <small>{{ result.resultTime | date:'short' }}</small>
-              </td>
-            </tr>
-          </tbody>
-        </table>        
+    <ion-row>
+      <ion-col size="4" class="first-column">
+        <div>
+          <ion-card *ngIf="isAdmin">
+            <ion-item (click)="onCreateStory()">
+              <ion-chip color="tertiary">
+                <ion-label color="dark"><ion-card-title>Create New Essentials</ion-card-title></ion-label>
+              </ion-chip>
+            </ion-item>                    
+          </ion-card>
+          <ion-card *ngIf="isAdmin">
+            <ion-item (click)="onAddQuiz()">
+              <ion-chip color="tertiary">
+                <ion-label color="dark"><ion-card-title>Add Quiz</ion-card-title></ion-label>
+              </ion-chip>
+            </ion-item>                    
+          </ion-card>
+          
+          <ion-card>
+            <ion-item (click)="onTakeQuiz()">
+              <ion-chip color="tertiary">
+                <ion-label color="dark"><ion-card-title>Take Quiz</ion-card-title></ion-label>
+              </ion-chip>
+            </ion-item>                    
+          </ion-card>
+                    
+        </div>
+      </ion-col>
+      <ion-col size-sm="12" size-md="8" size-lg="8" class="second-column">
+        <ion-grid>
+          <ion-row align-items-start>
+            <ion-col *ngIf="userName" size-sm="4">
+              <ion-card-subtitle color="primary">Hi, <i>{{userName | titlecase}}!</i></ion-card-subtitle> 
+            </ion-col>
+            <ion-col *ngIf="totalUsers"size-sm="4">
+              <ion-card-subtitle color="primary">{{ totalUsers }}{{' '}}Users on Platform</ion-card-subtitle> 
+            </ion-col>            
+          </ion-row>
+                  
+        </ion-grid>
+        <ion-grid no-padding *ngIf="loadedResults.length > 0">
+          <ion-row no-padding>
+            <ion-col size-sm="9" offset-sm="1">
+              <table>
+                <thead>
+                  <th>
+                    No.
+                  </th>
+                  <th>
+                    Name
+                  </th>
+                  <th>
+                    Score(%)
+                  </th>
+                  
+                  <th>
+                    Time
+                  </th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let result of loadedResults; let i = index">
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+                    <td>                      
+                      <ion-button (click)="getUser(result.userId)" size="small" color="secondary" 
+                      *ngIf="(result.userName.length > 11) || (result.userName.length == 11)">
+                        {{ result.userName | slice:0:9}}{{'...'}}
+                      </ion-button>
+                      
+                      <ion-button (click)="getUser(result.userId)" size="small" color="secondary" *ngIf="result.userName.length < 11">
+                        {{ result.userName | slice:0:10}}
+                      </ion-button>                                                       
+                    </td>
+                    <td>
+                      {{ result.score }}
+                    </td>
+                    
+                    <td>
+                      <small>{{ result.resultTime | date:'short' }}</small>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>        
+            </ion-col>
+          </ion-row>
+          <div text-center>
+            <ion-spinner color="primary" *ngIf="isLoading"></ion-spinner>
+          </div>
+        </ion-grid>        
       </ion-col>
     </ion-row>
-  </ion-grid>
-    
-  <div text-center>
-    <ion-spinner color="primary" *ngIf="isLoading"></ion-spinner>
-  </div>
-  
+  </ion-grid>   
 </ion-content>
+

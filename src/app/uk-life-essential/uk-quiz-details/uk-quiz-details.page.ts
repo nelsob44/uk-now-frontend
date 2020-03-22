@@ -83,6 +83,10 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
       
   }
 
+  onSeeResults() {
+    this.router.navigate(['/', 'uk-life-essential', 'quiz-results']);
+  }
+
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;

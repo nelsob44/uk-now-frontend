@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { IonItemSliding } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-blog',

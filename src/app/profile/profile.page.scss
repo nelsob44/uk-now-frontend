@@ -11,13 +11,38 @@ ion-button.buttonRight {
 .content-class {
     height: 250px;
 }
+.text-class {
+    color: rgb(71, 6, 6);
+}
+.text-class-two {
+    color: rgb(200, 219, 196);
+}
+.button-send {
+    --background: rgb(87, 7, 63);
+    --background-hover: rgb(87, 7, 63);;
+}
 
 .single-messageright {
     padding: 5px;
+    --background: rgb(2, 129, 19);
+    
 }
 .single-messageleft {
     padding: 5px;
+    --background: rgb(48, 45, 236);
+    
 }
 .end {
     float: right;
+}
+
+.send-button-class {
+    margin-right: 10px;
+}
+
+.hide-class {
+    display: none;
+    @media only screen and (max-width: 768px) {
+        display: block;        
+    }
 }

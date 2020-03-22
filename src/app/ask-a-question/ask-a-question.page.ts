@@ -69,6 +69,7 @@ export class AskAQuestionPage implements OnInit, OnDestroy {
     this.questionsSub = this.featuredService.fetchquestions(this.currentPage).subscribe(questions => {
       this.questionsData = questions;
       this.isLoading = false; 
+      
     });  
     this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
         this.totalUsers = totalusers;        

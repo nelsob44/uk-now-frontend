@@ -6,3 +6,18 @@ ion-icon {
 ion-badge {
     margin: 3px;
 }
+
+ion-col.first-column {
+    
+    @media only screen and (max-width: 768px) {
+        display: none;        
+    }
+}
+
+ion-button.buttonRight {
+    float: right;
+}
+
+ion-col.second-column {
+  min-width: 310px;
+}

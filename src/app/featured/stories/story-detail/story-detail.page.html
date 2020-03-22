@@ -22,33 +22,59 @@
 </ion-header>
 
 <ion-content>
-  <ion-card text-wrap>
-    <ion-card-header>
-      <ion-card-subtitle color="primary">Writer: <i>{{ story.userName }}</i></ion-card-subtitle>
-      <ion-card-title>{{ story.storyTitle }}</ion-card-title>
-      <ion-text class="space-left" slot="end"><small>{{ story.postedOn | date:'medium' }}</small></ion-text>                
-    </ion-card-header>
-    <ion-card-content>
-      <ion-img [src]="story.storyImage"></ion-img>
-      <div [innerHTML]="story.storyDetail | sanitizeHtml"></div>
-      <div *ngIf="story.youtubeLinkString && story.youtubeLinkString.length > 0">
-        <div *ngFor="let link of story.youtubeLinkString">
-          <p><iframe width="auto" height="auto" [src]="link" frameborder="0" allowfullscreen></iframe></p>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="4" class="first-column">
+        <div>
+          <ion-card *ngIf="isAdmin">
+            <ion-item (click)="onCreateStory()">
+              <ion-chip color="tertiary">
+                <ion-label color="dark"><ion-card-title>Create New Story</ion-card-title></ion-label>
+              </ion-chip>
+            </ion-item>                    
+          </ion-card>
+          <ion-card>
+            <ion-item>
+              <ion-chip color="tertiary" (click)="onBackToStory()">
+                <ion-label color="dark"><ion-card-title>Latest Stories</ion-card-title></ion-label>
+              </ion-chip>
+            </ion-item>                    
+          </ion-card>         
+          
         </div>
+      </ion-col>
+      <ion-col size-sm="12" size-md="8" size-lg="8" class="second-column">
+        <ion-card text-wrap>
+          <ion-card-header>
+            <ion-card-subtitle color="primary">Writer: <i>{{ story.userName }}</i></ion-card-subtitle>
+            <ion-card-title>{{ story.storyTitle }}</ion-card-title>
+            <ion-text class="space-left" slot="end"><small>{{ story.postedOn | date:'medium' }}</small></ion-text>                
+          </ion-card-header>
+          <ion-card-content>
+            <ion-img [src]="story.storyImage"></ion-img>
+            <div [innerHTML]="story.storyDetail | sanitizeHtml"></div>
+            <div *ngIf="story.youtubeLinkString && story.youtubeLinkString.length > 0">
+              <div *ngFor="let link of story.youtubeLinkString">
+                <p><iframe width="auto" height="auto" [src]="link" frameborder="0" allowfullscreen></iframe></p>
+              </div>
 
-      </div>
-      <p>        
-        <ion-badge slot="end" color="primary" *ngIf="likedBefore">
-          <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ story.storyLikes }}
-        </ion-badge>
-        <ion-badge slot="end" color="tertiary" (click)="addLike(story.id)" *ngIf="!likedBefore">
-          <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ story.storyLikes }}
-        </ion-badge>{{ ' ' }}{{ ' ' }}
-        <ion-badge slot="end" color="primary">
-          <div class="fb-share-button" data-href="https://uknow-591ad.firebaseapp.com/featured/tabs/stories/story-detail/${story.id}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fuknow-591ad.firebaseapp.com%2Ffeatured%2Ftabs%2Fstories%2Fstory-detail%2F${story.id}&amp;src=sdkpreparse" SameSite="None" Secure class="fb-xfbml-parse-ignore"><ion-icon name="logo-facebook"></ion-icon>{{ ' ' }}<ion-icon name="share-alt"></ion-icon></a></div>
-        </ion-badge>        
-      </p>
-    </ion-card-content>    
-  </ion-card>
+            </div>
+            <p>        
+              <ion-badge slot="end" color="primary" *ngIf="likedBefore">
+                <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ story.storyLikes }}
+              </ion-badge>
+              <ion-badge slot="end" color="tertiary" (click)="addLike(story.id)" *ngIf="!likedBefore">
+                <ion-icon name="thumbs-up"></ion-icon>{{ ' ' }}{{ story.storyLikes }}
+              </ion-badge>{{ ' ' }}{{ ' ' }}
+              <ion-badge slot="end" color="primary">
+                <div class="fb-share-button" data-href="https://uknow-591ad.firebaseapp.com/featured/tabs/stories/story-detail/${story.id}" data-layout="button_count" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fuknow-591ad.firebaseapp.com%2Ffeatured%2Ftabs%2Fstories%2Fstory-detail%2F${story.id}&amp;src=sdkpreparse" SameSite="None" Secure class="fb-xfbml-parse-ignore"><ion-icon name="logo-facebook"></ion-icon>{{ ' ' }}<ion-icon name="share-alt"></ion-icon></a></div>
+              </ion-badge>        
+            </p>
+          </ion-card-content>    
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>   
 </ion-content>
+
 

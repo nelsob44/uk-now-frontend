@@ -175,6 +175,9 @@ export class StoryDetailPage implements OnInit, OnDestroy {
       });      
    
   }
+  onBackToStory() {
+    this.router.navigate(['/featured/tabs/stories']);
+  }
 
   ngOnDestroy() {
     if (this.storySub) {

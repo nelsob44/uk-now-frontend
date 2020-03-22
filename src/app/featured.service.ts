@@ -172,7 +172,7 @@ export class FeaturedService {
               );
             }
           }   
-            
+          
           const questions = [];
           for (const key in data.questions) {
             if(data.questions.hasOwnProperty(key)) {
@@ -623,6 +623,54 @@ export class FeaturedService {
         }),
         tap(locals => {
           this._locals.next(locals);
+        })     
+    );
+  }
+
+  fetchEventsFilter(page, eventName: string = null) {
+    const url = environment.baseUrl + '/event/list-filter';
+    const uploadData = new FormData();
+    uploadData.append('pageNumber', page);
+    uploadData.append('eventName', eventName);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<{[key: string]: Event}>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }), 
+        map(data => {  
+          let totalArray = [];
+
+          for (const key in data) {
+            if(data.hasOwnProperty(key)) {
+              totalArray.push(
+                data.totalItems
+              );
+            }
+          }       
+           
+          const events = [];
+          for (const key in data.events) {
+            if(data.events.hasOwnProperty(key)) {
+              events.push(
+                new Event(
+                  data.events[key]._id,
+                  data.events[key].eventName,
+                  data.events[key].eventDetails,
+                  data.events[key].eventLocation,
+                  new Date(data.events[key].eventDate),
+                  data.events[key].eventImage                  
+                )
+              );
+            }
+          }
+          this._eventTotalItems.next(totalArray);
+          return events;
+        }),
+        tap(events => {
+          this._events.next(events);
         })     
     );
   }
@@ -1161,6 +1209,7 @@ export class FeaturedService {
               data.message.messageTo,
               data.message.messageDetails,
               data.message.messageImage,
+              data.message.messageRead,
               new Date(data.message.messageTime).toString()              
             )
           })
@@ -1202,6 +1251,78 @@ export class FeaturedService {
                   data.messages[key].messageTo,
                   data.messages[key].messageDetails,
                   data.messages[key].messageImage,
+                  data.messages[key].messageRead,
+                  new Date(data.messages[key].messageTime).toString()
+                )
+              );
+            }
+          }          
+          return returnedMessages.reverse();       
+          })
+        );
+      })
+    );
+  }
+
+  getUnreadMessages(
+    messageTo: string
+  ) {
+    
+    const url = environment.baseUrl + '/message/get-unread';
+    const uploadData = new FormData();
+    
+    uploadData.append('messageTo', messageTo);
+        
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        
+        return this.http.post<any>(url, uploadData, 
+        {headers: {Authorization: 'Bearer ' + token}}
+        )
+        .pipe(
+          map(data => {
+                             
+          return data;       
+          })
+        );
+      })
+    );
+  }
+
+  updateReadMessages(  
+    page,  
+    messageFrom: string,
+    messageTo: string
+  ) {
+    
+    const url = environment.baseUrl + '/message/read-update';
+    const uploadData = new FormData();
+    uploadData.append('pageNumber', page);
+    uploadData.append('messageFrom', messageFrom);
+    uploadData.append('messageTo', messageTo);
+        
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        
+        return this.http.post<any>(url, uploadData, 
+        {headers: {Authorization: 'Bearer ' + token}}
+        )
+        .pipe(
+          map(data => {
+                        
+           const returnedMessages = [];
+          for (const key in data.messages) {
+            if(data.messages.hasOwnProperty(key)) {
+              returnedMessages.push(
+                new Message(
+                  data.messages[key]._id,
+                  data.messages[key].messageFrom,
+                  data.messages[key].messageTo,
+                  data.messages[key].messageDetails,
+                  data.messages[key].messageImage,
+                  data.messages[key].messageRead,
                   new Date(data.messages[key].messageTime).toString()
                 )
               );

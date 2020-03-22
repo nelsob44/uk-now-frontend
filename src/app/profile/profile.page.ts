@@ -8,6 +8,9 @@ import { User } from '../auth/user.model';
 import { NavController, IonContent } from '@ionic/angular';
 import { FeaturedService } from '../featured.service';
 import { Message } from './message.model';
+// import { SocketioService } from '../socketio.service';
+import * as io from 'socket.io-client';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -17,12 +20,15 @@ import { Message } from './message.model';
 
 export class ProfilePage implements OnInit, OnDestroy {
   @ViewChild('ionContent', {static: false}) ionContentRef: IonContent;
+  socket;
   form: FormGroup;
   isLoading = false;
   isRightUser = true;
   private userId: string;
   isAdmin = false;
+  viewUnread = false;
   private emailSub: Subscription;
+  private unreadSub: Subscription;
   private userSub: Subscription;
   private messageSub: Subscription;
   profile: User;
@@ -32,7 +38,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   private profileUserEmail: string;
   private loadedMessages: Message[] = [];
   private pageSub: Subscription;  
-  
+  unreadMessages: number = 0;
   pageNumber: number;
   numberOfPages: number;
   nextPage: number;
@@ -41,13 +47,15 @@ export class ProfilePage implements OnInit, OnDestroy {
   lastPage = false;
   previousPage: number;
   totalMessages: number;
-
+  loadedUnreadUsers = [];
+  loadedUnreadUsersEmail = [];
   
 
   constructor(private featuredService: FeaturedService,
     private router: Router, 
     private authService: AuthService,
     private route: ActivatedRoute,
+    
     private navCtrl: NavController) { }
 
   ngOnInit() {
@@ -59,9 +67,21 @@ export class ProfilePage implements OnInit, OnDestroy {
       if(this.profile.status != null && (this.profile.status < 3)) {
         this.isAdmin = true;
       }
+      
+      this.unreadSub = this.featuredService.getUnreadMessages(
+        this.loggedInUserEmail
+        ).subscribe(data => {
+          this.unreadMessages = data.messagesFrom.length;
+          this.loadedUnreadUsers = data.messagesFrom;
+          data.messagesFrom.forEach(msgF => {
+            let email = msgF.split('/')[0];
+            this.loadedUnreadUsersEmail.push(email);
+          });
+          
+        });
       this.isLoading = false; 
     }); 
-    // this.scrollContent();
+    
     this.form = new FormGroup({
       messageDetails: new FormControl(null, {
         updateOn: 'blur',
@@ -72,7 +92,27 @@ export class ProfilePage implements OnInit, OnDestroy {
         validators: []
       })  
     }); 
-    
+
+    this.socket = io(environment.baseUrl);
+
+    this.socket.on('message', data => {
+      if ((data.action === 'addMessage') && 
+      (data.message.messageTo === this.loggedInUserEmail) && 
+      (data.message.messageFrom === this.profileUserEmail)) {
+        const newMessage = new Message (
+          data.message._id,
+          data.message.messageFrom,
+          data.message.messageTo,
+          data.message.messageDetails,
+          data.message.messageImage,
+          data.message.messageRead,
+          new Date(data.message.messageTime).toString()
+        );
+
+        this.loadedMessages.push(newMessage);
+      }
+    });
+   
   }
 
   ionViewWillEnter() {   
@@ -104,8 +144,9 @@ export class ProfilePage implements OnInit, OnDestroy {
           }                
           this.profileUserEmail = user.email;
           this.profile = user;  
-          // this.scrollContent();                     
+                               
         });
+                
       }            
     });     
   }
@@ -116,6 +157,46 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   toggleMessage(profileId: string) {
     this.isMessaging = !this.isMessaging;
+    if(this.isMessaging) {
+      return this.messageSub = this.featuredService.updateReadMessages(
+        this.currentPage,
+        this.loggedInUserEmail,
+        this.profileUserEmail
+      ).subscribe(messages => {        
+        this.messageSub = this.featuredService.getMessages(
+          this.currentPage,
+          this.profileUserEmail,
+          this.loggedInUserEmail
+          ).subscribe(messages => {
+          this.loadedMessages = messages;
+          this.totalMessages = this.loadedMessages.length;  
+                  
+          this.firstPage = 1;
+          this.nextPage = this.firstPage + 1;
+          if(this.totalMessages < 10) {
+            this.lastPage = true;
+          }
+          this.previousPage = this.nextPage - 1;                         
+        });
+        this.isLoading = false;       
+      });      
+    }
+  }
+
+  checkMessages() {
+    this.viewUnread = !this.viewUnread;
+  }
+
+  onClickViewMessage(email: string) {
+    for(let i = 0; i < this.loadedUnreadUsers.length; i++) {
+      let userId = this.loadedUnreadUsers[i].split('/');
+
+       if(userId[0] === email) {
+        this.router.navigateByUrl('/profile/' + userId[1]);
+        break;
+      }
+    }
+    
   }
 
   onSendMessage() {
@@ -181,11 +262,10 @@ export class ProfilePage implements OnInit, OnDestroy {
           this.nextPage = 2;
           
           this.loadedMessages.push(messages);
-          // this.scrollContent();
+          
           this.form.reset();
         } else {         
-          this.loadedMessages.push(messages);
-          // this.scrollContent();
+          this.loadedMessages.push(messages);          
           this.form.reset();
         }
       });
@@ -193,16 +273,9 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
   }
 
-  // scrollContent(): void {
-  //   setTimeout(() => {
-  //     this.ionContentRef.scrollToBottom(1000);
-  //   }, 1000);
-  // }
-
-  onScrollNext(page: number) {
-    
+  onScrollNext(page: number) {    
     this.isLoading = true;
-    // this.ionContentRef.scrollToBottom(1000);
+   
     this.messageSub = this.featuredService.getMessages(
       page,
       this.profileUserEmail,
@@ -224,8 +297,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       if(this.previousPage == 0) {
         this.previousPage = 1;
       }      
-      this.isLoading = false; 
-      // this.scrollContent();
+      this.isLoading = false;       
     });
   }
 
@@ -270,8 +342,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.previousPage = page - 1;
       if(this.previousPage == 0) {
         this.previousPage = 1;
-      }
-           
+      }           
       this.isLoading = false;       
     });    
     
@@ -292,7 +363,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       if(this.previousPage == 0) {
         this.previousPage = 1;
       }
-           console.log(this.loadedMessages);
+       
       this.isLoading = false;       
     });
   }
@@ -300,7 +371,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.userSub) {
       this.userSub.unsubscribe();
-      
+      this.unreadSub.unsubscribe();
     }
     if (this.emailSub) {      
       this.emailSub.unsubscribe();

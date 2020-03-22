@@ -18,6 +18,10 @@ export class QuizResultsPage implements OnInit, OnDestroy {
   loadedResults: Results[];
   isLoading = false;
   isAdmin = false;
+  private totalUserSub: Subscription;
+  private totalUsers: number;
+  private userName: string;
+  private userNameSub: Subscription;
 
   constructor(private featuredService: FeaturedService,
   private alertCtrl: AlertController,
@@ -43,6 +47,19 @@ export class QuizResultsPage implements OnInit, OnDestroy {
     this.router.navigateByUrl('/profile/' + userId);
   }
 
+  onTakeQuiz() {    
+    this.router.navigate(['/', 'uk-life-essential', 'uk-quiz-details']);    
+  }
+
+  onAddQuiz() {
+    if(this.isAdmin) {
+      this.router.navigate(['/', 'uk-life-essential', 'edit-quiz',
+        '']);
+    } else {
+      this.router.navigate(['/', 'uk-life-essential']);
+    }
+  }
+
   ionViewWillEnter() {
     this.isLoading = true; 
     this.quizResultsSub = this.featuredService.fetchquizresults().subscribe(results => {
@@ -55,7 +72,15 @@ export class QuizResultsPage implements OnInit, OnDestroy {
           {          
             this.isAdmin = true;
           }
-        });       
+      });  
+
+      this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        this.totalUsers = totalusers;        
+      });
+
+      this.userNameSub = this.authService.userName.subscribe(userName => {
+        this.userName = userName;        
+      });     
   
       this.isLoading = false; 
         

@@ -30,6 +30,7 @@ export class UkLifeEssentialPage implements OnInit, OnDestroy {
   private totalUsers: number;
   private userName: string;
   private userNameSub: Subscription;
+  private loadedEssentialsTitles = [];
 
   constructor(private authService: AuthService, 
   private router: Router,
@@ -90,6 +91,14 @@ export class UkLifeEssentialPage implements OnInit, OnDestroy {
       this.router.navigate(['/', 'uk-life-essential']);
     }
     
+  }
+
+  onSeeResults() {   
+    this.router.navigate(['/', 'uk-life-essential', 'quiz-results']);    
+  }
+
+  onTakeQuiz() {    
+    this.router.navigate(['/', 'uk-life-essential', 'uk-quiz-details']);    
   }
 
   onScrollNext(page: number) {

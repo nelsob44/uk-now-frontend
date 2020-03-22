@@ -147,8 +147,16 @@ export class EditQuizPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.authSub) {
-      this.quizSub.unsubscribe();
+      
       this.authSub.unsubscribe();
+      
+    }
+    if (this.quizSub) {
+      this.quizSub.unsubscribe();
+      
+    }
+    if (this.statusSub) {
+      
       this.statusSub.unsubscribe();
     }
   }

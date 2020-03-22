@@ -29,20 +29,7 @@ export class AuthPage implements OnInit {
       return;
     }
 
-    const data = [
-        {
-           'firstname' : 'Omoniyi',
-           'lastname' : 'Abel'
-        },
-        {
-           'firstname' : 'Israel',
-           'lastname' : 'Koki'
-        },
-        {
-           'firstname' : 'Boyle',
-           'lastname' : 'Akali'
-        },
-    ];
+    
 
     // for(let i = 0; i < data.length; i++ ){
     //   const firstname = data[i].firstname.toLowerCase();
@@ -84,8 +71,7 @@ export class AuthPage implements OnInit {
           this.isLoading = false;
         });      
       });
-    // };
-          
+              
   }  
 
   private showAlert(message: string) {

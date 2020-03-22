@@ -1,15 +1,22 @@
 table { 
     border-collapse: collapse; 
     width: 100%; 
+    border: 2px solid purple;
 } 
+tr {
+  border: 2px solid purple;  
+}
     
 th, td { 
     text-align: left; 
     padding: 8px; 
+    .smallText {
+        font-size: 0.3rem;
+    }
 } 
     
 tr:nth-child(even) { 
-    background-color: Lightgreen; 
+    background-color: rgb(172, 113, 176); 
 } 
 
 ion-icon {
@@ -18,4 +25,30 @@ ion-icon {
 
 ion-grid {
     --ion-grid-padding-sm: 0 20px 0 0;
+}
+
+ion-icon {
+  font-size: 1.5rem;
+  color: white;
+}
+
+ion-badge {
+    margin: 3px;
+}
+
+
+
+ion-col.first-column {
+    
+    @media only screen and (max-width: 768px) {
+        display: none;        
+    }
+}
+
+ion-button.buttonRight {
+    float: right;
+}
+
+ion-col.second-column {
+  min-width: 310px;
 }

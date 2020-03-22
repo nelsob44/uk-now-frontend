@@ -74,6 +74,10 @@ export class BlogDetailPage implements OnInit, OnDestroy {
     
   }
 
+  onBackToBlogs() {
+    this.router.navigate(['/blog']);
+  }
+
   ionViewWillEnter() {
     this.route.paramMap.subscribe(paramMap => {
       if(!paramMap.has('blogId')) {
