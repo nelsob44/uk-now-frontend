@@ -61,13 +61,14 @@ export class ProfilePage implements OnInit, OnDestroy {
   ngOnInit() {
     this.isLoading = true;
     this.userSub = this.authService.user.subscribe(user => {
-      this.loggedInUserEmail = user.email;
-      this.profile = user;
-      
-      if(this.profile.status != null && (this.profile.status < 3)) {
-        this.isAdmin = true;
+      if(user) {
+        this.loggedInUserEmail = user.email;
+        this.profile = user;
+        if(this.profile.status != null && (this.profile.status < 3)) {
+          this.isAdmin = true;
+        }
       }
-      
+          
       this.unreadSub = this.featuredService.getUnreadMessages(
         this.loggedInUserEmail
         ).subscribe(data => {
