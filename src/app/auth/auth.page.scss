@@ -1,24 +1,77 @@
-// ion-content {
-//     background-image: image('src/assets/background-images/app-background.jpeg');
-// }
-
 ion-content.background{
-    --background: url('../../assets/background-images/app-background.jpeg'); 
+    --background: url('../../assets/background-images/cloud.jpg'); 
     
 }
 
-ion-content.overlay{
-    width: 100%;    
-    z-index: 1;
-    bottom: 0px;
-    opacity: 0.7;
-    background-color: rgba(0,0,0,0.5);
-    color: #fff;
-
-    ion-button.b2{
-        --opacity: 10;
-        --z-index: 100;
+.decorate {
+    border-radius: 10px;
+    background-color: rgb(87, 7, 63);
+    ion-label {
+        font-size: small;
+        font-family: cursive;
+        color: rgb(87, 7, 63);
     }
+}
+
+.description {
+    ion-item {
+        color: deepskyblue;
+    }    
+}
+
+ion-icon {
+  font-size: 1.5rem;
+  
+}
+
+ion-badge {
+    margin: 3px;
+}
+
+ion-col.first-column {
+    background-color:  rgb(87, 7, 63);
+    @media only screen and (max-width: 768px) {
+        display: none;        
+    }
+}
+.terms-class {
+    height: 200px;
+}
+ion-card.background-class {
+    
+    background-color: rgb(8, 0, 255);
+}
+
+ion-button.buttonRight {
+    float: right;
+}
+
+ion-col.second-column {
+  min-width: 310px;
+}
+
+.b2 {
+    --background: rgb(87, 7, 63);
+    z-index: 10;   
+  }
+.b1 {
+   
+    color:  rgb(87, 7, 63);  
+}
+.blue-class {
+    color: blue;
+}
+
+.hide-class {
+    display: none;
+    
+    @media only screen and (max-width: 768px) {
+        display: block;        
+    }
+}
+
+a {
+    text-decoration: none;
 }
 
 

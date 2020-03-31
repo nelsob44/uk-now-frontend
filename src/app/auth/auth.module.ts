@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
-
+import {TermsComponent} from './terms/terms.component';
 import { AuthPage } from './auth.page';
 
 const routes: Routes = [
@@ -21,6 +21,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AuthPage]
+  declarations: [AuthPage, TermsComponent]
 })
 export class AuthPageModule {}

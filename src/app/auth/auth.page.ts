@@ -29,6 +29,25 @@ export class AuthPage implements OnInit {
     if (!form.valid) {
       return;
     }
+    const terms = form.value.terms;
+    const firstname = form.value.firstname;
+    const lastname = form.value.lastname;
+    const email = form.value.email;
+    const password = form.value.password;
+    const confirmpassword = form.value.confirmpassword;
+    
+
+    if (!this.isLogin) {
+      if(!terms) {
+        this.showAlert('You need to agree to terms and conditions to proceed');
+        return;
+      }
+
+      if(password !== confirmpassword) {
+        this.showAlert('Your passwords do not match. Please enter and confirm your password again');
+        return;
+      }
+    }
 
     // const data = [
     //   {
@@ -783,10 +802,7 @@ export class AuthPage implements OnInit {
       this.loadingCtrl.create({keyboardClose: true, message: this.isLogin ? 'Logging in....' : 'Signing up....' })
       .then(loadingEl => {
         loadingEl.present();
-        const firstname = form.value.firstname;
-        const lastname = form.value.lastname;
-        const email = form.value.email;
-        const password = form.value.password;
+        
         let authObs: Observable<AuthResponseData>;
 
         if(!this.isLogin) {

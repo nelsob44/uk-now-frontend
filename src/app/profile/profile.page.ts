@@ -58,6 +58,19 @@ export class ProfilePage implements OnInit, OnDestroy {
     
     private navCtrl: NavController) { }
 
+  getContent() {
+    return document.querySelector('ion-content');
+  }
+
+  scrollToBottom() {
+    this.getContent().scrollToBottom(500);
+  }
+
+  scrollToTop() {
+    this.getContent().scrollToTop(500);
+  }
+
+
   ngOnInit() {
     this.isLoading = true;
     this.userSub = this.authService.user.subscribe(user => {
@@ -133,7 +146,7 @@ export class ProfilePage implements OnInit, OnDestroy {
               ).subscribe(messages => {
               this.loadedMessages = messages;
               this.totalMessages = this.loadedMessages.length;  
-                     
+              this.scrollToTop();
               this.firstPage = 1;
               this.nextPage = this.firstPage + 1;
               if(this.totalMessages < 10) {
@@ -232,11 +245,11 @@ export class ProfilePage implements OnInit, OnDestroy {
           this.nextPage = 2;
           
           this.loadedMessages.push(messages);
-          // this.scrollContent();
+          this.scrollToTop();
           this.form.reset();
         } else {         
           this.loadedMessages.push(messages);
-          // this.scrollContent();
+          this.scrollToTop();
           this.form.reset();
         }        
       });
@@ -324,7 +337,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       if(this.previousPage == 0) {
         this.previousPage = 1;
       }
-      // this.scrollContent();
+      this.scrollToTop();
       this.isLoading = false;       
     });    
   }
@@ -344,6 +357,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       if(this.previousPage == 0) {
         this.previousPage = 1;
       }           
+      this.scrollToTop();
       this.isLoading = false;       
     });    
     
@@ -364,7 +378,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       if(this.previousPage == 0) {
         this.previousPage = 1;
       }
-       
+      this.scrollToTop();
       this.isLoading = false;       
     });
   }
