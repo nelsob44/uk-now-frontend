@@ -15,13 +15,18 @@ import { QuizQuestion } from 'src/app/about/about.model';
 })
 export class UkQuizDetailsPage implements OnInit, OnDestroy {
     
-  loadedQuizzes: QuizQuestion[];
+  loadedQuizzes: QuizQuestion[] = [];
   private authSub: Subscription;
   private statusSub: Subscription;
   private answerSub: Subscription;
   private quizViewSub: Subscription;
   isAdmin = false;
   isLoading = false;
+  private totalUserSub: Subscription;
+  private totalUsers: number;
+  private userName: string;
+  private userNameSub: Subscription;
+
 
   constructor(private featuredService: FeaturedService,
   private alertCtrl: AlertController,
@@ -30,21 +35,22 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
   private router: Router) {}
 
   ngOnInit() {    
+      this.totalUserSub = this.authService.totalUsers.subscribe(totalusers => {
+        this.totalUsers = totalusers;        
+      });
+
+      this.userNameSub = this.authService.userName.subscribe(userName => {
+        this.userName = userName;        
+      });
 
     return this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
+      
       if(isAuth) {
         this.quizViewSub = this.featuredService.quizzes.subscribe(quizzes => {
-      
-          this.loadedQuizzes = quizzes;     
+          if(quizzes && quizzes.length > 0) {
+            this.loadedQuizzes = quizzes;  
 
-          setTimeout( () => {
-            
-            if(this.loadedQuizzes.length < 1) {       
-              
-              this.showAlertTwo("Sorry, you can\'t take the quiz more than once per session");
-              this.router.navigate(['/uk-life-essential']);
-            } 
-          }, 300);    
+          }              
           
         });
         
@@ -58,16 +64,18 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
   ionViewWillEnter() {
     this.isLoading = true; 
     this.quizViewSub = this.featuredService.fetchquizzes().subscribe(quizzes => {
-      
-      this.loadedQuizzes = quizzes;
-      setTimeout( () => {
-        
-        if(this.loadedQuizzes.length < 1) {       
+      if(quizzes && quizzes.length > 0) {
+        this.loadedQuizzes = quizzes;
+        setTimeout( () => {
           
-          this.showAlertTwo("Sorry, you can\'t take the quiz more than once per session");
-          this.router.navigate(['/uk-life-essential']);
-        } 
-      }, 300); 
+          if(this.loadedQuizzes.length < 1) {       
+            
+            this.showAlertTwo("Sorry, you can\'t take the quiz more than once per session");
+            this.router.navigate(['/uk-life-essential']);
+          } 
+        }, 300);
+      }
+       
       this.statusSub = this.authService.userStatus.subscribe(
       status => {
         
@@ -81,10 +89,6 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
         
     });   
       
-  }
-
-  onSeeResults() {
-    this.router.navigate(['/', 'uk-life-essential', 'quiz-results']);
   }
 
   onSubmit(form: NgForm) {
@@ -133,9 +137,24 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.answerSub) {
       this.answerSub.unsubscribe();
+      
+    }
+    if (this.statusSub) {
+     
       this.statusSub.unsubscribe();
-      this.quizViewSub.unsubscribe();
+      
+    }
+    if (this.quizViewSub) {     
+      this.quizViewSub.unsubscribe();      
+    }
+    if (this.authSub) {      
       this.authSub.unsubscribe();
+    }
+    if (this.totalUserSub) {      
+      this.totalUserSub.unsubscribe();
+    }
+    if (this.userNameSub) {      
+      this.userNameSub.unsubscribe();
     }
   }
 

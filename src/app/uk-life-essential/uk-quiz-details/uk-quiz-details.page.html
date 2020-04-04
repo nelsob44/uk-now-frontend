@@ -90,6 +90,16 @@
               <ion-spinner color="primary" *ngIf="isLoading"></ion-spinner>
             </div>
           </form>
+        </ion-grid>
+        <ion-grid class="no-padding" *ngIf="loadedQuizzes.length < 1">          
+          <ion-row>
+            <ion-col>
+              <div>                    
+                <p>Sorry, there no available quiz questions at this time. Check again later</p>                 
+                    
+              </div>                        
+            </ion-col>                
+          </ion-row>        
         </ion-grid>        
       </ion-col>
     </ion-row>
