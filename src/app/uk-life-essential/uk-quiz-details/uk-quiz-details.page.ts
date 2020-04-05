@@ -47,6 +47,7 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
       
       if(isAuth) {
         this.quizViewSub = this.featuredService.quizzes.subscribe(quizzes => {
+           
           if(quizzes && quizzes.length > 0) {
             this.loadedQuizzes = quizzes;  
 
@@ -63,9 +64,13 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.isLoading = true; 
+    
     this.quizViewSub = this.featuredService.fetchquizzes().subscribe(quizzes => {
+      
       if(quizzes && quizzes.length > 0) {
+        
         this.loadedQuizzes = quizzes;
+        
         setTimeout( () => {
           
           if(this.loadedQuizzes.length < 1) {       
@@ -89,6 +94,10 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
         
     });   
       
+  }
+
+  onSeeResults() {
+    this.router.navigate(['/', 'uk-life-essential', 'quiz-results']);
   }
 
   onSubmit(form: NgForm) {
