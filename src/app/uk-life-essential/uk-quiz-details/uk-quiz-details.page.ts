@@ -66,19 +66,15 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
     this.isLoading = true; 
     
     this.quizViewSub = this.featuredService.fetchquizzes().subscribe(quizzes => {
-      
-      if(quizzes && quizzes.length > 0) {
+      if(quizzes && quizzes.length == 0) {        
+        this.loadedQuizzes = quizzes;        
         
-        this.loadedQuizzes = quizzes;
+      } else if(quizzes && quizzes.length > 0) {        
+        this.loadedQuizzes = quizzes;        
         
-        setTimeout( () => {
-          
-          if(this.loadedQuizzes.length < 1) {       
-            
-            this.showAlertTwo("Sorry, you can\'t take the quiz more than once per session");
-            this.router.navigate(['/uk-life-essential']);
-          } 
-        }, 300);
+      } else {                      
+        this.showAlertTwo("Sorry, you can\'t take the quiz more than once per session");
+        this.router.navigate(['/uk-life-essential']);        
       }
        
       this.statusSub = this.authService.userStatus.subscribe(
