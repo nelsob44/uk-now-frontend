@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { FeaturedService } from 'src/app/featured.service';
 import { switchMap, map, take } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
+import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+
 import { Blog } from '../blog.model';
 import { AlertController } from '@ionic/angular';
 
@@ -34,6 +36,14 @@ function base64toBlob(base64Data, contentType) {
   styleUrls: ['./blog-edit.page.scss'],
 })
 export class BlogEditPage implements OnInit, OnDestroy {
+  public Editor = DecoupledEditor;
+  public onReady( editor ) {
+      editor.ui.getEditableElement().parentElement.insertBefore(
+          editor.ui.view.toolbar.element,
+          editor.ui.getEditableElement()
+      );
+  }
+
   form: FormGroup;
   private blogSub: Subscription;
   blogId: string;
@@ -107,6 +117,28 @@ export class BlogEditPage implements OnInit, OnDestroy {
     if(!this.form.value || !this.form.get('theImage').value) {
       return;
     }
+
+    const body = this.form.value.blogDetails;
+    const splitBody = body.split(' ');
+    let bodyContainer = [];
+    let youtubeLinks = [];
+
+    splitBody.forEach(b => {
+      if(b.indexOf('url="https://www.youtube.com/watch') !== -1) {
+        bodyContainer.push(b);
+      }
+    });
+
+    bodyContainer.forEach(bc => {
+      let newBc = bc.split('v=');
+      let newBcN = newBc[1].split('">');
+     
+      let newLink = 'https://www.youtube.com/embed/' + newBcN[0];
+      youtubeLinks.push(newLink);
+    });
+
+    const youtubeLinkString = youtubeLinks.join();
+
     return this.blogSub = this.featuredService.uploadImage(this.form.get('theImage').value).pipe(
       take(1),
       switchMap(uploadRes => {
@@ -121,7 +153,8 @@ export class BlogEditPage implements OnInit, OnDestroy {
             this.blog.blogDate.toString(),
             this.blog.blogLikes.toString(),
             this.blog.blogComments,
-            this.blog.blogNumberOfComments.toString(),          
+            this.blog.blogNumberOfComments.toString(),
+            youtubeLinkString
           );          
         } else {
             return this.featuredService.addBlog(  
@@ -134,7 +167,8 @@ export class BlogEditPage implements OnInit, OnDestroy {
               new Date().toString(),
               '0',
               [],
-              '0'          
+              '0',
+              youtubeLinkString         
             );
         }               
       })

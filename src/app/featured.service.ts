@@ -235,7 +235,8 @@ export class FeaturedService {
                   data.blogs[key].blogLikes,
                   data.blogs[key].blogComments,                  
                   data.blogs[key].blogNumberOfComments,
-                  data.blogs[key].blogLikers
+                  data.blogs[key].blogLikers,
+                  data.blogs[key].youtubeLinkString
                 )
               );
             }
@@ -714,7 +715,8 @@ export class FeaturedService {
                   data.blogs[key].blogLikes,
                   data.blogs[key].blogComments,                  
                   data.blogs[key].blogNumberOfComments,
-                  data.blogs[key].blogLikers
+                  data.blogs[key].blogLikers,
+                  data.blogs[key].youtubeLinkString
                 )
               );
             }
@@ -883,7 +885,8 @@ export class FeaturedService {
               blogData.blog.blogLikes,
               blogData.blog.blogComments,
               blogData.blog.blogNumberOfComments,
-              blogData.blog.blogLikers
+              blogData.blog.blogLikers,
+              blogData.blog.youtubeLinkString
             )              
     }));       
   }
@@ -1380,19 +1383,21 @@ export class FeaturedService {
     blogDate: string,
     blogLikes: string,
     blogComments: Blogcomments[],
-    blogNumberOfComments: string
+    blogNumberOfComments: string,
+    youtubeLinkString: string
   ) {
     
     const urlAdd = environment.baseUrl + '/blog/add';
     const urlEdit = environment.baseUrl + '/blog/update/' + id;
     const url = (id != null) ? urlEdit : urlAdd;
-        
+    console.log(youtubeLinkString);
     const uploadData = new FormData();
     uploadData.append('blogTitle', blogTitle);
     uploadData.append('blogDetails', blogDetails);
     uploadData.append('blogImage', blogImage);       
     uploadData.append('blogLikes', blogLikes);    
     uploadData.append('blogNumberOfComments', blogNumberOfComments);
+    uploadData.append('youtubeLinkString', youtubeLinkString);
     
     return this.authService.token.pipe(
       take(1),

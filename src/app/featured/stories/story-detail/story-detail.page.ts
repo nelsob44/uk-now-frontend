@@ -179,10 +179,20 @@ export class StoryDetailPage implements OnInit, OnDestroy {
     this.router.navigate(['/featured/tabs/stories']);
   }
 
+  onCreateStory() {
+    this.router.navigate(['/', 'featured', 'tabs', 'stories', 'edit-story', '']);
+  }
+
   ngOnDestroy() {
     if (this.storySub) {
       this.storySub.unsubscribe();
-      this.statusSub.unsubscribe();
+      
+    }
+    if (this.statusSub) {     
+      this.statusSub.unsubscribe();      
+    }
+    if (this.likeSub) {
+      
       this.likeSub.unsubscribe();
     }
   }

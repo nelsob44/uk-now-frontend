@@ -51,7 +51,14 @@
           </ion-card-header>
           <ion-card-content>
             <ion-img [src]="blog.blogImage"></ion-img>
-            {{ blog.blogDetails }}
+            <!-- {{ blog.blogDetails }} -->
+            <div [innerHTML]="blog.blogDetails | sanitizeHtml"></div>
+            <div *ngIf="blog.youtubeLinkString && blog.youtubeLinkString.length > 0">
+              <div *ngFor="let link of blog.youtubeLinkString">
+                <p><iframe width="auto" height="auto" [src]="link" frameborder="0" allowfullscreen></iframe></p>
+              </div>
+
+            </div>
           </ion-card-content>
           <ion-item>
             <ion-badge slot="start" color="primary" *ngIf="likedBefore">

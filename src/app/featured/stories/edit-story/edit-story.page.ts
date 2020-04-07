@@ -99,7 +99,7 @@ export class EditStoryPage implements OnInit {
         }, error => {
           this.alertCtrl.create({
             header: 'An error occured!',
-            message: 'Blog could not be fetched. Please try later',
+            message: 'Story could not be fetched. Please try later',
             buttons: [{text: 'Ok', handler: () => {
               this.router.navigate(['/featured/tabs/stories']);
             }}]

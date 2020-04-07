@@ -7,7 +7,7 @@ import { NavController, AlertController } from '@ionic/angular';
 import { Subscription, pipe } from 'rxjs';
 import { switchMap, take, map, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
-import { environment } from 'src/environments/environment';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-blog-detail',
@@ -38,17 +38,34 @@ export class BlogDetailPage implements OnInit, OnDestroy {
     private authService: AuthService,
     private navCtrl: NavController,
     private router: Router,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private sanitizer: DomSanitizer
     ) { }
 
   ngOnInit() {
+    let firstStory;
+    let videoLinks = [];
     this.route.paramMap.subscribe(paramMap => {
       if(!paramMap.has('blogId')) {
         this.navCtrl.navigateBack('/blog');
       }
       this.blogSub = this.featuredService.getBlog(paramMap.get('blogId')).subscribe(blog => {
         
-        this.blog = blog;
+        firstStory = blog;
+
+        if(firstStory.youtubeLinkString) {
+          const firstYoutube = firstStory.youtubeLinkString.split(',');
+
+          firstYoutube.forEach(v => {
+            let newV = this.updateVideoUrl(v);
+            
+            videoLinks.push(newV);
+          
+          });
+          
+          firstStory.youtubeLinkString = videoLinks;
+        }
+        this.blog = firstStory;
         
       });
     });
@@ -78,14 +95,35 @@ export class BlogDetailPage implements OnInit, OnDestroy {
     this.router.navigate(['/blog']);
   }
 
+  private updateVideoUrl(dangerousVideoUrl: string) {    
+    
+      return this.sanitizer.bypassSecurityTrustResourceUrl(dangerousVideoUrl);
+    
+  }
+
   ionViewWillEnter() {
+    let firstStory;
+    let videoLinks = [];
     this.route.paramMap.subscribe(paramMap => {
       if(!paramMap.has('blogId')) {
         this.navCtrl.navigateBack('/blog');
       }
       
       this.blogSub = this.featuredService.fetchblog(paramMap.get('blogId')).subscribe(blog => {
-                
+        firstStory = blog;
+
+        if(firstStory.youtubeLinkString) {
+          const firstYoutube = firstStory.youtubeLinkString.split(',');
+
+          firstYoutube.forEach(v => {
+            let newV = this.updateVideoUrl(v);
+            
+            videoLinks.push(newV);
+          
+          });
+          
+          firstStory.youtubeLinkString = videoLinks;
+        }     
         this.blog = blog;
         this.numberComments = this.blog.blogComments.length;
 
@@ -147,6 +185,7 @@ export class BlogDetailPage implements OnInit, OnDestroy {
                   dataRes[key].blogComments,
                   dataRes[key].blogNumberOfComments,
                   dataRes[key].blogLikers,
+                  dataRes[key].youtubeLinkString
                 )
               );
             }
@@ -192,7 +231,8 @@ export class BlogDetailPage implements OnInit, OnDestroy {
   }
 
   addLike(blogId: string) {
-    
+        let firstStory;
+        let videoLinks = [];
         if(!this.isLoggedin)
         {
           this.showAlert('Like');
@@ -215,8 +255,22 @@ export class BlogDetailPage implements OnInit, OnDestroy {
               newLikes,
               blogRes.blogComments,
               blogRes.blogNumberOfComments,
-              blogRes.blogLikers
+              blogRes.blogLikers,
+              blogRes.youtubeLinkString
             );
+
+            if(newBlog.youtubeLinkString) {
+              const firstYoutube = newBlog.youtubeLinkString.split(',');
+
+              firstYoutube.forEach(v => {
+                let newV = this.updateVideoUrl(v);
+                
+                videoLinks.push(newV);
+              
+              });
+              
+              newBlog.youtubeLinkString = videoLinks;
+            }
 
             this.theBlog = newBlog;
 
@@ -259,9 +313,15 @@ export class BlogDetailPage implements OnInit, OnDestroy {
   
   ngOnDestroy() {
     if (this.blogSub || this.authSub) {
-      this.blogSub.unsubscribe();
+      this.blogSub.unsubscribe();      
+    }
+    if (this.statusSub) {     
+      this.statusSub.unsubscribe();      
+    }
+    if (this.likeSub) {      
       this.likeSub.unsubscribe();
-      this.statusSub.unsubscribe();
+    }
+    if (this.authSub) {      
       this.authSub.unsubscribe();
     }
   }

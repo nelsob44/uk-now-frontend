@@ -45,19 +45,18 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
 
     return this.authSub = this.authService.userAuthenticated.subscribe(isAuth => {
       
-      if(isAuth) {
-        this.quizViewSub = this.featuredService.quizzes.subscribe(quizzes => {
-           
-          if(quizzes && quizzes.length > 0) {
-            this.loadedQuizzes = quizzes;  
-
-          }              
-          
-        });
-        
-      } else {
+      if(!isAuth) {
         this.router.navigate(['/home']);
-      }           
+        // this.quizViewSub = this.featuredService.quizzes.subscribe(quizzes => {
+           
+        //   if(quizzes && quizzes.length > 0) {
+        //     this.loadedQuizzes = quizzes;  
+
+        //   }              
+          
+        // });
+        
+      }         
     });     
   }
   
