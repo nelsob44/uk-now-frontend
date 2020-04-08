@@ -132,7 +132,6 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
         });      
       });  
   }  
-
   
   private showAlert(data: any) {
     this.alertCtrl.create({       
