@@ -1,12 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 // import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { FeaturedService } from 'src/app/featured.service';
 import { AlertController, ActionSheetController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { QuizQuestion } from 'src/app/about/about.model';
+
+export interface QuizResponseData {  
+  message: string,
+  score: number 
+}
 
 @Component({
   selector: 'app-uk-quiz-details',
@@ -99,28 +104,36 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
     if (!form.valid) {
       return;
     }
-    this.presentLoading();
-    
-    return this.answerSub = this.featuredService.submitQuizAnswers(
-      form.value       
-    ).subscribe(data => { 
-      this.showAlert(data);      
-      form.reset();      
-      this.router.navigate(['/uk-life-essential/quiz-results']);
-    });    
+
+    this.isLoading = true;
+      this.loadingCtrl.create({keyboardClose: true, message: 'Processing your quiz, please wait...' })
+      .then(loadingEl => {
+        loadingEl.present();
+        
+        let quizObs: Observable<QuizResponseData>;
+       
+        quizObs = this.featuredService.submitQuizAnswers(form.value);        
+        
+        return quizObs.subscribe(resData => {
+          
+          loadingEl.dismiss();
+          
+          this.showAlert(resData);  
+          this.isLoading = false;    
+          form.reset();      
+          this.router.navigate(['/uk-life-essential/quiz-results']);
+
+        }, errorResponse => {
+          loadingEl.dismiss();
+          const errorCode = errorResponse.error.message;
+
+          this.showAlert(errorCode);
+          this.isLoading = false;
+        });      
+      });  
   }  
 
- 
-  private async presentLoading() {
-    const loading = await this.loadingCtrl.create({
-      message: 'Please wait...',
-      duration: 1000
-    });
-    await loading.present();
-
-    const { role, data } = await loading.onDidDismiss();
-  }
-
+  
   private showAlert(data: any) {
     this.alertCtrl.create({       
       subHeader: data.message,
