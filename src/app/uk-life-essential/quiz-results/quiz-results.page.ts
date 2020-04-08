@@ -91,9 +91,25 @@ export class QuizResultsPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.authSub) {
       this.authSub.unsubscribe();
+      
+    }
+    if (this.totalUserSub) {
+      this.totalUserSub.unsubscribe();
+      
+    }
+    if (this.quizResultsSub) {
+      
       this.quizResultsSub.unsubscribe();
+      
+    }
+    if (this.statusSub) {
+      
       this.statusSub.unsubscribe();
      
+    }
+    if (this.userNameSub) {
+      this.userNameSub.unsubscribe();
+      
     }
   }
 
