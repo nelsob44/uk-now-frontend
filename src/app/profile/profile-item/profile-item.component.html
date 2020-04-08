@@ -5,8 +5,8 @@
     </ion-avatar>
     <ion-button [routerLink]="[
       '/', 'edit-profile',
-      profile.id]">
-      <ion-icon name="create" slot="icon-only" *ngIf="isRightUser || isAdmin"></ion-icon>
+      profile.id]" *ngIf="isRightUser || isAdmin">
+      <ion-icon name="create" slot="icon-only"></ion-icon>
     </ion-button>  
   </ion-buttons>
   
