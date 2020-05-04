@@ -4,12 +4,8 @@
       <ion-back-button defaultHref="/featured/tabs/stories"></ion-back-button>
     </ion-buttons>
     <ion-title>Edit story</ion-title>
-    <ion-buttons slot="primary" *ngIf="!isEditing">
-      <ion-button (click)="onEditStory()" [disabled]="!form?.valid">
-        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-buttons slot="primary" *ngIf="isEditing">
+    
+    <ion-buttons slot="primary">
       <ion-button (click)="onCreateStory()" [disabled]="!form?.valid">
         <ion-icon name="create" slot="icon-only"></ion-icon>
       </ion-button>
