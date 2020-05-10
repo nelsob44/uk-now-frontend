@@ -23,6 +23,7 @@ export class Results {
         public id: string,        
         public userName: string,
         public userId: string,
+        public isWinner: boolean,
         public subject: string,
         public score: string,
         public resultTime: Date       

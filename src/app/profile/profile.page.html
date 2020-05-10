@@ -130,6 +130,15 @@
     <ion-col size-sm="12" size-md="8" size-lg="8"> 
       <ion-grid>
         <ion-row>
+          <ion-card>
+            <ion-item (click)="onClickVerifyEmail(profile.email)">
+              <ion-chip color="tertiary">
+                <ion-label color="dark"><ion-card-title>Resend verification email</ion-card-title></ion-label>
+              </ion-chip>
+            </ion-item>                    
+          </ion-card>
+        </ion-row>
+        <ion-row>
           <ion-col size="12">
             <app-profile-item [profile]="profile" [isRightUser]="isRightUser" [isAdmin]="isAdmin"></app-profile-item>
           </ion-col>

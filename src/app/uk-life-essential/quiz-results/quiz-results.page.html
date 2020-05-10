@@ -55,7 +55,7 @@
           </ion-row>
           <ion-row align-items-start>
             <ion-col>
-              <ion-card-subtitle color="primary"><i><b>Please retake the quiz if you had taken it before the results were deleted to correct a bug in the system. deadline is still saturday 1pm</b></i></ion-card-subtitle> 
+              <ion-card-subtitle color="primary"><i><b>The ticked names are the last held quiz's winners</b></i></ion-card-subtitle> 
             </ion-col>                   
           </ion-row>
                   
@@ -82,7 +82,7 @@
                 <tbody>
                   <tr *ngFor="let result of loadedResults; let i = index">
                     <td>
-                      {{ i + 1 }}
+                      <ion-checkbox (click)="updateWinner(result.userId)" [(ngModel)]="result.isWinner" [disabled]="!isAdmin" color="tertiary"></ion-checkbox>{{ i + 1 }}
                     </td>
                     <td>                      
                       <ion-button (click)="getUser(result.userId)" size="small" color="secondary" 

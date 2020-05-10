@@ -5,7 +5,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { User } from '../auth/user.model';
-import { NavController, IonContent } from '@ionic/angular';
+import { NavController, IonContent, LoadingController, AlertController } from '@ionic/angular';
 import { FeaturedService } from '../featured.service';
 import { Message } from './message.model';
 // import { SocketioService } from '../socketio.service';
@@ -31,6 +31,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   private unreadSub: Subscription;
   private userSub: Subscription;
   private messageSub: Subscription;
+  private resendEmailSub: Subscription;
   profile: User;
   idprofile: User;
   isMessaging = false;
@@ -54,6 +55,8 @@ export class ProfilePage implements OnInit, OnDestroy {
   constructor(private featuredService: FeaturedService,
     private router: Router, 
     private authService: AuthService,
+    private loadingCtrl: LoadingController,
+    private alertCtrl: AlertController,
     private route: ActivatedRoute,
     
     private navCtrl: NavController) { }
@@ -211,6 +214,37 @@ export class ProfilePage implements OnInit, OnDestroy {
       }
     }
     
+  }
+
+  onClickVerifyEmail(email: string) {
+    
+    this.loadingCtrl.create({keyboardClose: true, message: 'Resending verification email....'})
+    .then(loadingEl => {
+      loadingEl.present();
+
+      this.resendEmailSub = this.featuredService.resendEmailVerification(email).subscribe(data => {
+        
+        if(data) {
+          this.showAlert(data);
+        } 
+      loadingEl.dismiss();   
+      }, errorResponse => {
+        loadingEl.dismiss();
+        
+        const errorCode = errorResponse.error.errors;
+                
+        this.showAlert(errorCode);
+       
+        this.isLoading = false;
+      });
+    });    
+  }  
+
+  private showAlert(message: string) {
+    this.alertCtrl.create({      
+      message: message,
+      buttons: ['Okay']
+    }).then(alertEl => alertEl.present());
   }
 
   onSendMessage() {
@@ -394,6 +428,10 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
     if (this.messageSub) {      
       this.messageSub.unsubscribe();
+    }
+
+    if (this.resendEmailSub) {      
+      this.resendEmailSub.unsubscribe();
     }
   }
 

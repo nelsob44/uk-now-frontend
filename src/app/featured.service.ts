@@ -512,7 +512,8 @@ export class FeaturedService {
                 new Results(
                   data.results[key]._id,
                   data.results[key].userName,
-                  data.results[key].userId,                  
+                  data.results[key].userId,  
+                  data.results[key].isWinner,                
                   data.results[key].subject,
                   data.results[key].score,
                   data.results[key].createdAt                                              
@@ -1264,6 +1265,95 @@ export class FeaturedService {
           })
         );
       })
+    );
+  }
+
+  verifyEmail(
+    email: string,
+    token: string
+  ) {
+    
+    const url = environment.baseUrl + '/email/verify-email';
+    const uploadData = new FormData();
+    
+    uploadData.append('email', email);
+    uploadData.append('token', token);
+    
+      return this.http.post<any>(url, uploadData)
+      .pipe(
+        map(data => {
+                            
+        return data.message;       
+        })
+      );    
+  }
+
+  resendEmailVerification(email: string) {
+    
+    const url = environment.baseUrl + '/email/resend';
+       
+    const uploadData = new FormData();
+    uploadData.append('email', email);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<any>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }),
+      map(data => {      
+           
+          return data.message;
+    }));       
+  }
+
+  onUpdateWinner(userId: string) {
+    const url = environment.baseUrl + '/essential/update-result';
+       
+    const uploadData = new FormData();
+    uploadData.append('userId', userId);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<any>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }),
+      map(data => {     
+          let totalArray = [];
+          
+          for (const key in data) {
+            if(data.hasOwnProperty(key)) {
+              totalArray.push(
+                data.totalItems
+              );
+            }
+          }     
+          const results = [];
+          for (const key in data.results) {
+            if(data.results.hasOwnProperty(key)) {
+              results.push(
+                new Results(
+                  data.results[key]._id,
+                  data.results[key].userName,
+                  data.results[key].userId,
+                  data.results[key].isWinner,                  
+                  data.results[key].subject,
+                  data.results[key].score,
+                  data.results[key].createdAt                                              
+                )
+              );
+            }
+          }
+          this._resultsTotalItems.next(totalArray);
+           
+          return results;
+        }),
+        tap(results => {
+          this._results.next(results);
+        })     
     );
   }
 

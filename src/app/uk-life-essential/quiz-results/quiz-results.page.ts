@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Results } from 'src/app/blog/blog.model';
 import { FeaturedService } from 'src/app/featured.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 export class QuizResultsPage implements OnInit, OnDestroy {
   private authSub: Subscription;
   private statusSub: Subscription;
+  private updateResultSub: Subscription;
   private quizResultsSub: Subscription;
   loadedResults: Results[];
   isLoading = false;
@@ -25,7 +26,8 @@ export class QuizResultsPage implements OnInit, OnDestroy {
 
   constructor(private featuredService: FeaturedService,
   private alertCtrl: AlertController,
-  private authService: AuthService,  
+  private authService: AuthService, 
+  private loadingCtrl: LoadingController,  
   private router: Router) { }
 
   ngOnInit() {
@@ -45,6 +47,42 @@ export class QuizResultsPage implements OnInit, OnDestroy {
 
   getUser(userId: string) {
     this.router.navigateByUrl('/profile/' + userId);
+  }
+
+  updateWinner(userId: string) {
+    if(!this.isAdmin) {
+      return;
+    }
+    
+    this.loadingCtrl.create({keyboardClose: true, message: 'Updating results....'})
+    .then(loadingEl => {
+      loadingEl.present();
+
+      this.quizResultsSub = this.featuredService.onUpdateWinner(userId).subscribe(results => {
+      
+        if(results) {
+          
+          this.loadedResults = results;
+          this.showAlert('Updated results');
+        } 
+      loadingEl.dismiss();   
+      }, errorResponse => {
+        loadingEl.dismiss();
+        
+        const errorCode = errorResponse.error.errors;
+                
+        this.showAlert(errorCode);
+       
+        this.isLoading = false;
+      });
+    });    
+  }
+
+  private showAlert(message: string) {
+    this.alertCtrl.create({      
+      message: message,
+      buttons: ['Okay']
+    }).then(alertEl => alertEl.present());
   }
 
   onTakeQuiz() {    
@@ -95,6 +133,10 @@ export class QuizResultsPage implements OnInit, OnDestroy {
     }
     if (this.totalUserSub) {
       this.totalUserSub.unsubscribe();
+      
+    }
+    if (this.updateResultSub) {
+      this.updateResultSub.unsubscribe();
       
     }
     if (this.quizResultsSub) {

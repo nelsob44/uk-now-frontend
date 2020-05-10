@@ -157,7 +157,11 @@ const routes: Routes = [
     loadChildren: './profile/edit-profile/edit-profile.module#EditProfilePageModule',
     canLoad: [AuthGuard]
   },
-  ];
+  { 
+    path: 'verify-email/:email/:tokenString', 
+    loadChildren: './verify-email/verify-email.module#VerifyEmailPageModule' 
+  }
+];
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
