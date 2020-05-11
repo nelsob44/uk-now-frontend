@@ -10,7 +10,7 @@ const routes: Routes = [
   { 
     path: 'featured', 
     loadChildren: './featured/featured.module#FeaturedPageModule',
-    canLoad: [AuthGuard]
+    canActivate: [AuthGuard]
   }, 
   { 
     path: 'about', 
@@ -22,7 +22,7 @@ const routes: Routes = [
       { 
         path: 'about-edit', 
         loadChildren: './about/about-edit/about-edit.module#AboutEditPageModule',
-        canLoad: [AuthGuard]
+        canActivate: [AuthGuard]
       }
     ]    
   },  
@@ -32,12 +32,12 @@ const routes: Routes = [
         {
             path: '',
             loadChildren: './ask-a-question/ask-a-question.module#AskAQuestionPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         }, 
         { 
             path: 'edit-question/:questionId', 
             loadChildren: './ask-a-question/edit-question/edit-question.module#EditQuestionPageModule',
-            canLoad: [AuthGuard] 
+            canActivate: [AuthGuard] 
         }                                   
     ]
   },
@@ -47,17 +47,17 @@ const routes: Routes = [
         {
             path: '',
             loadChildren: './find-a-mentor/find-a-mentor.module#FindAMentorPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         },
         {
             path: 'mentor-details/:mentorId',
             loadChildren: './find-a-mentor/mentor-details/mentor-details.module#MentorDetailsPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         }, 
         { 
             path: 'edit-mentor/:mentorId', 
             loadChildren: './find-a-mentor/edit-mentor/edit-mentor.module#EditMentorPageModule',
-            canLoad: [AuthGuard] 
+            canActivate: [AuthGuard] 
         }
         
     ]
@@ -68,32 +68,32 @@ const routes: Routes = [
         {
             path: '',
             loadChildren: './uk-life-essential/uk-life-essential.module#UkLifeEssentialPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         },
         { 
             path: 'quiz-results', 
             loadChildren: './uk-life-essential/quiz-results/quiz-results.module#QuizResultsPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         },
         { 
             path: 'delete-quiz', 
             loadChildren: './uk-life-essential/delete-quiz/delete-quiz.module#DeleteQuizPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         },
         {
             path: 'uk-quiz-details',
             loadChildren: './uk-life-essential/uk-quiz-details/uk-quiz-details.module#UkQuizDetailsPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         }, 
         { 
             path: 'edit-quiz/:quizId', 
             loadChildren: './uk-life-essential/edit-quiz/edit-quiz.module#EditQuizPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         },  
         { 
             path: 'edit-life-essential/:essentialId', 
             loadChildren: './uk-life-essential/edit-life-essential/edit-life-essential.module#EditLifeEssentialPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         }                   
     ]
   },
@@ -103,17 +103,17 @@ const routes: Routes = [
         {
             path: '',
             loadChildren: './your-local/your-local.module#YourLocalPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         },
         {
             path: 'your-local-details/:yourLocalId',
             loadChildren: './your-local/your-local-details/your-local-details.module#YourLocalDetailsPageModule',
-            canLoad: [AuthGuard]
+            canActivate: [AuthGuard]
         },
         { 
             path: 'edit-your-local/:yourLocalId', 
             loadChildren: './your-local/edit-your-local/edit-your-local.module#EditYourLocalPageModule',
-            canLoad: [AuthGuard] 
+            canActivate: [AuthGuard] 
         }        
     ]
   },  
@@ -128,7 +128,7 @@ const routes: Routes = [
       { 
         path: 'blog-edit/:blogId', 
         loadChildren: './blog/blog-edit/blog-edit.module#BlogEditPageModule',
-        canLoad: [AuthGuard] 
+        canActivate: [AuthGuard] 
       },
       { 
         path: 'blog-detail/:blogId', 
@@ -140,26 +140,34 @@ const routes: Routes = [
   { 
     path: 'contact', 
     loadChildren: './contact/contact.module#ContactPageModule',
-    canLoad: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   { 
     path: 'profile', 
     loadChildren: './profile/profile.module#ProfilePageModule',
-    canLoad: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   { 
     path: 'profile/:userId', 
     loadChildren: './profile/profile.module#ProfilePageModule',
-    canLoad: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   { 
     path: 'edit-profile/:userId', 
     loadChildren: './profile/edit-profile/edit-profile.module#EditProfilePageModule',
-    canLoad: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   { 
     path: 'verify-email/:email/:tokenString', 
     loadChildren: './verify-email/verify-email.module#VerifyEmailPageModule' 
+  },
+  { 
+    path: 'request-reset', 
+    loadChildren: './auth/request-reset/request-reset.module#RequestResetPageModule' 
+  },
+  { 
+    path: 'response-reset/:token', 
+    loadChildren: './auth/response-reset/response-reset.module#ResponseResetPageModule' 
   }
 ];
 @NgModule({

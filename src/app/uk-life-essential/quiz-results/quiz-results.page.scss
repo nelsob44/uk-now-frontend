@@ -9,7 +9,7 @@ tr {
     
 th, td { 
     text-align: left; 
-    padding: 8px; 
+    padding: 8px 2px 8px 2px; 
     .smallText {
         font-size: 0.3rem;
     }
@@ -50,5 +50,5 @@ ion-button.buttonRight {
 }
 
 ion-col.second-column {
-  min-width: 310px;
+   min-width: 310px;
 }

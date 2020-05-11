@@ -20,6 +20,10 @@ export interface AuthResponseData {
   profilePic: string;
 }
 
+export interface ResetData {  
+  message: string;  
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -289,6 +293,38 @@ export class AuthService {
     })
     .pipe(tap(resData => {
       return resData;
+    }));
+  }
+
+  //Send request to reset password
+  sendPasswordResetLink(email: string) {
+    let user = { email: email };
+    
+    const url = environment.baseUrl + '/auth/sendpasswordresetlink';
+    return this.http.post<ResetData>(url, JSON.stringify(user), {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    })
+    .pipe(map(resData => {
+      
+      return resData;
+    }));
+  }
+
+  //Change old password
+  changePassword(password: string, email: string, resetToken: string) {
+    let user = { password: password, email: email, resetToken:resetToken };
+    
+    const url = environment.baseUrl + '/auth/resetpassword';
+    return this.http.post<any>(url, JSON.stringify(user), {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    })
+    .pipe(map(resData => {
+      
+      return resData.message;
     }));
   }
 
