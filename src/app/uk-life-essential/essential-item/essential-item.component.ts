@@ -47,6 +47,10 @@ export class EssentialItemComponent implements OnInit {
     })   
   }
 
+  onTakeQuiz() {    
+    this.router.navigate(['/', 'uk-life-essential', 'uk-quiz-details']);    
+  }
+
   ngOnDestroy() {
     if (this.statusSub) {     
       this.statusSub.unsubscribe();

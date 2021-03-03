@@ -1,3 +1,26 @@
 ion-card-subtitle {
     font-family: cursive;
 }
+
+ion-col.first-column {
+    
+    @media only screen and (max-width: 768px) {
+        display: none;        
+    }
+}
+
+ion-row.first-column {
+    display: block;
+
+    @media only screen and (min-width: 576px) {
+        display: none;        
+    }
+       
+}
+
+ion-col.toHide {
+    
+    @media only screen and (max-width: 576px) {
+        display: none;        
+    }   
+}

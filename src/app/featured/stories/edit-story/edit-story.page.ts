@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
-
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { FeaturedService } from 'src/app/featured.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
@@ -37,7 +36,7 @@ function base64toBlob(dataUrl, contentType) {
   styleUrls: ['./edit-story.page.scss'],
 })
 export class EditStoryPage implements OnInit {
-  public Editor = DecoupledEditor;
+  public Editor = ClassicEditor;
   public onReady( editor ) {
       editor.ui.getEditableElement().parentElement.insertBefore(
           editor.ui.view.toolbar.element,

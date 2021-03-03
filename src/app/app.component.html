@@ -56,9 +56,9 @@
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle>
-          <ion-item lines="none" routerLink="/ask-a-question">
+          <ion-item lines="none" routerLink="/privacy-policy">
             <ion-icon name="help" slot="start"></ion-icon>
-            <ion-label>Ask A Question</ion-label>
+            <ion-label>Privacy Policy</ion-label>
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle>
@@ -69,10 +69,10 @@
         </ion-menu-toggle>
         <ion-menu-toggle>
           <ion-item lines="none" routerLink="/contact">
-            <ion-icon name="contact" slot="start"></ion-icon>
+            <ion-icon name="help" slot="start"></ion-icon>
             <ion-label>Contact Us</ion-label>
           </ion-item>
-        </ion-menu-toggle>
+        </ion-menu-toggle>        
         <ion-menu-toggle>
           <ion-item lines="none" (click)="previousAuthState ? onLogout() : login()">
             <ion-icon name="{{previousAuthState ? 'log-out' : 'log-in'}}" slot="start"></ion-icon>

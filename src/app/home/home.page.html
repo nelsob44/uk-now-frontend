@@ -26,6 +26,21 @@
         </ion-card>
       </ion-col>
     </ion-row>
+    <ion-row>      
+      <ion-col align-self: center [routerLink]="[
+        '/', 'auth']">
+        <ion-card class="loginBackground">             
+            <ion-card-title><b>Login/Signup <span style="color: blue;">here</span></b></ion-card-title>          
+        </ion-card>
+      </ion-col>
+      <ion-col align-self: center (click)="redirectLogin('Contact us', 'contact')">
+        <ion-card class="contactBackground">              
+            
+            <ion-card-title>Contact us</ion-card-title>
+          
+        </ion-card>
+      </ion-col>
+    </ion-row>
 
     <ion-row>      
       <ion-col align-self: center (click)="redirectLogin('Your Local', 'local')">
@@ -50,30 +65,13 @@
           
         </ion-card>
       </ion-col>
-      <ion-col align-self: center (click)="redirectLogin('UK Essentials', 'essential')">
+      <ion-col align-self: center (click)="redirectLogin('Quiz', 'essential')">
         <ion-card class="essentialsBackground">              
             
-            <ion-card-title>Essentials</ion-card-title>
+            <ion-card-title>Quiz</ion-card-title>
           
         </ion-card>
       </ion-col>
     </ion-row>
-
-    <ion-row>      
-      <ion-col align-self: center [routerLink]="[
-        '/', 'auth']">
-        <ion-card class="loginBackground">             
-            <ion-card-title>Login/Signup</ion-card-title>          
-        </ion-card>
-      </ion-col>
-      <ion-col align-self: center (click)="redirectLogin('Contact us', 'contact')">
-        <ion-card class="contactBackground">              
-            
-            <ion-card-title>Contact us</ion-card-title>
-          
-        </ion-card>
-      </ion-col>
-    </ion-row>
-
   </ion-grid>
 </ion-content>

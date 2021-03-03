@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "59238196498",
+    "firebase_url": "https://uknow-mobile.firebaseio.com",
+    "project_id": "uknow-mobile",
+    "storage_bucket": "uknow-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59238196498:android:a843810200f0f16952ffcb",
+        "android_client_info": {
+          "package_name": "com.nelson.uknow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "59238196498-g4ltkqb3qpius08uv9p16trhjct6b6jc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGzuimI-cMbfgSm_uM5todFhpnLqNWQYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "59238196498-g4ltkqb3qpius08uv9p16trhjct6b6jc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

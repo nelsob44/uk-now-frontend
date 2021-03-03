@@ -28,8 +28,8 @@ export class UkQuizDetailsPage implements OnInit, OnDestroy {
   isAdmin = false;
   isLoading = false;
   private totalUserSub: Subscription;
-  private totalUsers: number;
-  private userName: string;
+  totalUsers: number;
+  userName: string;
   private userNameSub: Subscription;
 
 

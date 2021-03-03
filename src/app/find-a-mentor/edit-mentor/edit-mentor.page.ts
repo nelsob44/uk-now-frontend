@@ -68,6 +68,10 @@ export class EditMentorPage implements OnInit {
             updateOn: 'blur',
             validators: [Validators.required]
           }),
+          mentorLinkedIn: new FormControl(null, {
+            updateOn: 'blur',
+            validators: []
+          }),
           mentorProfile: new FormControl(null, {
             updateOn: 'blur',
             validators: [Validators.required, Validators.min(2)]
@@ -96,6 +100,10 @@ export class EditMentorPage implements OnInit {
             mentorEmail: new FormControl(this.mentor.mentorEmail, {
               updateOn: 'blur',
               validators: [Validators.required]
+            }),
+            mentorLinkedIn: new FormControl(null, {
+              updateOn: 'blur',
+              validators: []
             }),
             mentorProfile: new FormControl(this.mentor.mentorProfile, {
               updateOn: 'blur',
@@ -130,7 +138,8 @@ export class EditMentorPage implements OnInit {
           this.form.value.mentorProfile,
           this.form.value.mentorField,
           uploadRes.imageUrl,
-          this.form.value.mentorEmail    
+          this.form.value.mentorEmail,
+          this.form.value.mentorLinkedIn
         );
       })
     ).subscribe(() => {       

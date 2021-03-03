@@ -16,7 +16,7 @@ th, td {
 } 
     
 tr:nth-child(even) { 
-    background-color: rgb(172, 113, 176); 
+    background-color: rgb(89, 151, 213); 
 } 
 
 ion-icon {
@@ -51,4 +51,13 @@ ion-button.buttonRight {
 
 ion-col.second-column {
    min-width: 310px;
+}
+
+ion-content {
+    --background: url('../../../assets/background-images/bridge_pay_background5.jpeg'); 
+    color: white; 
+     
+    ion-item {
+      --background: url('../../../assets/background-images/bridge_pay_background5.jpeg');
+    }  
 }

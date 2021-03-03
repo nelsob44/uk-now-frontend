@@ -379,7 +379,8 @@ export class FeaturedService {
                   data.mentors[key].mentorProfile,
                   data.mentors[key].mentorField,
                   data.mentors[key].mentorImage,
-                  data.mentors[key].mentorEmail                  
+                  data.mentors[key].mentorEmail,
+                  data.mentors[key].mentorLinkedIn                
                 )
               );
             }
@@ -814,7 +815,8 @@ export class FeaturedService {
                   data.mentors[key].mentorProfile,
                   data.mentors[key].mentorField,
                   data.mentors[key].mentorImage,
-                  data.mentors[key].mentorEmail                  
+                  data.mentors[key].mentorEmail,
+                  data.mentors[key].mentorLinkedIn           
                 )
               );
             }
@@ -912,7 +914,8 @@ export class FeaturedService {
               mentorData.mentor.mentorProfile,
               mentorData.mentor.mentorField,
               mentorData.mentor.mentorImage,
-              mentorData.mentor.mentorEmail                  
+              mentorData.mentor.mentorEmail,
+              mentorData.mentor.mentorLinkedIn
             )
     }));       
   }
@@ -1308,6 +1311,27 @@ export class FeaturedService {
     }));       
   }
 
+  sendMentorConnectionEmail(email: string, mentorEmail: string) {
+    
+    const url = environment.baseUrl + '/email/connect-mentor';
+       
+    const uploadData = new FormData();
+    uploadData.append('mentorEmail', mentorEmail);
+    uploadData.append('email', email);
+
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.post<any>(url, uploadData,
+          {headers: {Authorization: 'Bearer ' + token}}
+        )
+      }),
+      map(data => {      
+           
+          return data.message;
+    }));       
+  }
+
   onUpdateWinner(userId: string) {
     const url = environment.baseUrl + '/essential/update-result';
        
@@ -1618,7 +1642,8 @@ export class FeaturedService {
     mentorProfile: string,
     mentorField: string,
     mentorImage: string,
-    mentorEmail: string
+    mentorEmail: string,
+    mentorLinkedIn: string
   ) {
 
     const uploadData = new FormData();
@@ -1627,6 +1652,7 @@ export class FeaturedService {
     uploadData.append('mentorField', mentorField);
     uploadData.append('mentorImage', mentorImage);
     uploadData.append('mentorEmail', mentorEmail);
+    uploadData.append('mentorLinkedIn', mentorLinkedIn);
 
     
     const urlAdd = environment.baseUrl + '/mentor/add';

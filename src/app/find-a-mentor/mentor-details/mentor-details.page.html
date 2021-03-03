@@ -20,16 +20,51 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-subtitle color="primary">{{ mentor.mentorUserName }}</ion-card-subtitle>
-      <ion-card-title>Field: {{ mentor.mentorField }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-img [src]="mentor.mentorImage"></ion-img>
-      {{ mentor.mentorProfile }} 
-    <ion-card-subtitle>{{ ' ' }}</ion-card-subtitle>  
-    <ion-card-subtitle>Email: {{ mentor.mentorEmail }}</ion-card-subtitle> 
-    </ion-card-content>    
-  </ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-sm="4" class="first-column">
+        <ion-button size="default" color="tertiary" (click)="onBackToMentors()">Back to Mentors list</ion-button>
+        <ion-text color="tertiary">
+          <h2>You can connect with {{ mentor.mentorUserName }} for mentorship in the field of {{ mentor.mentorField }}</h2>
+        </ion-text>
+
+        
+      </ion-col>
+      <ion-col size-sm="12" size-md="8" size-lg="8" class="second-column">
+        <ion-row>
+          <ion-col size="12" class="toHide">
+            
+            <ion-text color="tertiary">
+              <h3>You can connect with {{ mentor.mentorUserName }} for mentorship in the field of {{ mentor.mentorField }}</h3>
+            </ion-text>
+            
+          </ion-col>
+        </ion-row>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle color="primary">{{ mentor.mentorUserName }}</ion-card-subtitle>
+            <ion-card-title>
+              <b>Field:</b> {{ mentor.mentorField }}
+              <ion-button size="small" expand="block" color="tertiary" (click)="onConnectMentor()">Connect with {{ mentor.mentorUserName }}</ion-button>
+
+            </ion-card-title>
+          </ion-card-header>
+          
+          
+            <ion-card>
+              <ion-img [src]="mentor.mentorImage"></ion-img>
+            </ion-card>
+          <ion-card-content>
+            <p><ion-card-title>Profile</ion-card-title></p><br>
+            
+            <p><ion-card-subtitle color="primary">LinkedIn Profile: <a [href]="mentor.mentorLinkedIn">{{ mentor.mentorLinkedIn }}</a></ion-card-subtitle></p>
+            <p>{{ mentor.mentorProfile }}</p><br>
+          <ion-card-subtitle>{{ ' ' }}</ion-card-subtitle><br><br>
+          <ion-card-title><b>Email:</b> {{ mentor.mentorEmail }}</ion-card-title> 
+          </ion-card-content> 
+             
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>   
 </ion-content>

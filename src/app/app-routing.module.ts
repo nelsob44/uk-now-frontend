@@ -168,6 +168,10 @@ const routes: Routes = [
   { 
     path: 'response-reset/:token', 
     loadChildren: './auth/response-reset/response-reset.module#ResponseResetPageModule' 
+  },
+  { 
+    path: 'privacy-policy', 
+    loadChildren: './privacy-policy/privacy-policy.module#PrivacyPolicyPageModule' 
   }
 ];
 @NgModule({

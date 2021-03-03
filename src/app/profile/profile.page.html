@@ -16,8 +16,8 @@
       <div>
         <ion-card *ngIf="isAdmin">
           <ion-item (click)="onEditProfile(profile.id)">
-            <ion-chip color="tertiary">
-              <ion-label color="dark"><ion-card-title>Edit Profile</ion-card-title></ion-label>
+            <ion-chip>
+              <ion-label><ion-card-title>Edit Profile</ion-card-title></ion-label>
             </ion-chip>
           </ion-item>                    
         </ion-card>
@@ -35,8 +35,8 @@
         </ion-card>
         <ion-card *ngIf="!isAdmin && isRightUser">
           <ion-item (click)="onEditProfile(profile.id)">
-            <ion-chip color="tertiary">
-              <ion-label color="dark"><ion-card-title>Edit Profile</ion-card-title></ion-label>
+            <ion-chip>
+              <ion-label><ion-card-title>Edit Profile</ion-card-title></ion-label>
             </ion-chip>
           </ion-item>                    
         </ion-card>    
@@ -132,8 +132,8 @@
         <ion-row>
           <ion-card>
             <ion-item (click)="onClickVerifyEmail(profile.email)">
-              <ion-chip color="tertiary">
-                <ion-label color="dark"><ion-text>Resend verification email</ion-text></ion-label>
+              <ion-chip>
+                <ion-label><ion-text>Resend verification email</ion-text></ion-label>
               </ion-chip>
             </ion-item>                    
           </ion-card>

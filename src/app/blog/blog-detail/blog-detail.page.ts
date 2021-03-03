@@ -49,6 +49,7 @@ export class BlogDetailPage implements OnInit, OnDestroy {
       if(!paramMap.has('blogId')) {
         this.navCtrl.navigateBack('/blog');
       }
+      
       this.blogSub = this.featuredService.getBlog(paramMap.get('blogId')).subscribe(blog => {
         
         firstStory = blog;

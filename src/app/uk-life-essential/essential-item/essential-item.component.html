@@ -1,21 +1,9 @@
 <ion-card>
-  <ion-card-header>
-    <ion-card-subtitle>Posted at: {{ essential.essentialsTime | date:'medium' }}</ion-card-subtitle>    
-    
-  </ion-card-header>
-
+  
   <ion-card-content>
-    <ion-img [src]="essential.essentialsImage" *ngIf="essential.essentialsImage.length > 0"></ion-img>
-    {{ essential.essentialsDetails }}    
+    <section>
+      <ion-button color="success" (click)="onTakeQuiz()">Click here to go to the quiz</ion-button>
+    </section>
   </ion-card-content>
-  <ion-buttons slot="end" *ngIf="isAdmin">
-    <ion-button [routerLink]="[
-      '/', 'uk-life-essential', 'edit-life-essential',
-      essential.id]">
-      <ion-icon name="create"></ion-icon>
-    </ion-button>  
-    <ion-button (click)="onDelete(essential.id)">
-      <ion-icon name="trash" slot="icon-only"></ion-icon>
-    </ion-button>      
-  </ion-buttons>  
+   
 </ion-card>

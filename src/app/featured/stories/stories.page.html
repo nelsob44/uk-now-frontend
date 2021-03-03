@@ -22,14 +22,14 @@
           <ion-card *ngIf="isAdmin">
             <ion-item (click)="onCreateStory()">
               <ion-chip color="tertiary">
-                <ion-label color="dark"><ion-card-title>Create New Story</ion-card-title></ion-label>
+                <ion-label><ion-card-title>Create New Story</ion-card-title></ion-label>
               </ion-chip>
             </ion-item>                    
           </ion-card>
           <ion-card>
             <ion-item>
               <ion-chip color="tertiary">
-                <ion-label color="dark"><ion-card-title>Latest Stories</ion-card-title></ion-label>
+                <ion-label><ion-card-title>Latest Stories</ion-card-title></ion-label>
               </ion-chip>
             </ion-item>                    
           </ion-card>
@@ -37,7 +37,7 @@
           <ion-card *ngFor="let storyTitle of loadedStoryTitles">          
             <ion-item (click)="onSearchStoryFilter(storyTitle)">
               <ion-chip color="primary">
-                <ion-label color="dark">{{storyTitle}}</ion-label>
+                <ion-label>{{storyTitle}}</ion-label>
               </ion-chip>
             </ion-item>          
           </ion-card>
@@ -59,7 +59,7 @@
           </ion-row>        
         </ion-grid>
         <ion-card>
-          <ion-card-header> {{loadedStories[0].storyTitle}}</ion-card-header>
+          <ion-card-title class="main">{{loadedStories[0].storyTitle}}</ion-card-title>
           <ion-card-header>      
               <ion-img [src]="loadedStories[0].storyImage"></ion-img>     
           </ion-card-header>    

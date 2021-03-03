@@ -14,30 +14,24 @@
 </ion-header>
 
 
-<ion-content *ngIf="loadedBlogs.length > 0">
+<ion-content *ngIf="loadedBlogs.length > 0" class="background">
   <ion-grid>
     <ion-row>
       <ion-col size="4" class="first-column">
-        <div>
-          <ion-card *ngIf="isAdmin">
-            <ion-item (click)="onCreateBlog()">
-              <ion-chip color="tertiary">
-                <ion-label color="dark"><ion-card-title>Create New Blog</ion-card-title></ion-label>
-              </ion-chip>
-            </ion-item>                    
-          </ion-card>
+        <ion-button *ngIf="isAdmin" size="small" color="tertiary" (click)="onCreateBlog()">Create New Blog</ion-button>
+                
           <ion-card>
             <ion-item>
               <ion-chip color="tertiary">
-                <ion-label color="dark"><ion-card-title>Latest Blogs</ion-card-title></ion-label>
+                <ion-label><ion-card-title>Latest Blogs</ion-card-title></ion-label>
               </ion-chip>
             </ion-item>                    
           </ion-card>
-          
+         <div> 
           <ion-card *ngFor="let blogTitle of loadedBlogTitles">          
             <ion-item (click)="onSearchBlogFilter(blogTitle)">
               <ion-chip color="primary">
-                <ion-label color="dark">{{blogTitle}}</ion-label>
+                <ion-label>{{blogTitle}}</ion-label>
               </ion-chip>
             </ion-item>          
           </ion-card>
@@ -59,7 +53,7 @@
           </ion-row>        
         </ion-grid>
         <ion-card>
-          <ion-card-header>{{loadedBlogs[0].blogTitle}}</ion-card-header>
+          <ion-card-title class="main">{{loadedBlogs[0].blogTitle}}</ion-card-title>
           <ion-card-header>
             <ion-img [src]="loadedBlogs[0].blogImage"></ion-img>
           </ion-card-header>

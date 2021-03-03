@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { MenuController, AlertController } from '@ionic/angular';
 
 import { Platform } from '@ionic/angular';
-import { Plugins, Capacitor } from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthService } from './auth/auth.service';
@@ -19,14 +19,15 @@ export class AppComponent implements OnInit, OnDestroy {
   private totalUserSub: Subscription;
   public previousAuthState = false;
   public totalUsers: number;
-   
+     
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private menu: MenuController,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private alertCtrl: AlertController
   ) {
     this.initializeApp();
   }
@@ -44,7 +45,15 @@ export class AppComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('/home');
       }   
       this.previousAuthState = isAuth;      
-    });
+    });   
+    
+  }
+
+  private showAlert(message: string) {
+    this.alertCtrl.create({      
+      message: "Sorry, you need to login or signup to access the " + message + " page",
+      buttons: ['Okay']
+    }).then(alertEl => alertEl.present());
   }
 
   ionWiewWillEnter() {

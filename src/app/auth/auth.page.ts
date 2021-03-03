@@ -4,6 +4,7 @@ import { AuthService, AuthResponseData } from './auth.service';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-auth',
@@ -13,8 +14,9 @@ import { Observable } from 'rxjs';
 export class AuthPage implements OnInit {
   isLogin = true;
   isLoading = false;
-
+  
   constructor(
+    private platform: Platform,
     private authService: AuthService, 
     private router: Router,
     private loadingCtrl: LoadingController,
@@ -22,6 +24,7 @@ export class AuthPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    
   }
 
   //Begin action to process submitted login or signup form

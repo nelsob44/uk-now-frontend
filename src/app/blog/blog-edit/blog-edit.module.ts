@@ -6,7 +6,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { IonicModule } from '@ionic/angular';
 
 import { BlogEditPage } from './blog-edit.page';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 const routes: Routes = [
   {

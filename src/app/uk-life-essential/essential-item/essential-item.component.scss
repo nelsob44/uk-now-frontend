@@ -1,3 +1,24 @@
 ion-icon {
   color: brown;
 }
+
+ion-card-subtitle {
+  color: black;
+}
+
+ion-card {
+    --background: url('../../../assets/background-images/bridge_pay_background5.jpeg'); 
+    color: white; 
+          
+}
+
+section {
+  margin-top: 1em;
+  margin-bottom: 2.5em;
+}
+
+section:not(.full-width),
+.full-width > header {
+  padding: 0 10px;
+}
+

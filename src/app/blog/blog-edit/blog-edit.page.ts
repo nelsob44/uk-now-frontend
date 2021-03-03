@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { FeaturedService } from 'src/app/featured.service';
 import { switchMap, map, take } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
-import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { Blog } from '../blog.model';
 import { AlertController } from '@ionic/angular';
@@ -36,7 +36,7 @@ function base64toBlob(base64Data, contentType) {
   styleUrls: ['./blog-edit.page.scss'],
 })
 export class BlogEditPage implements OnInit, OnDestroy {
-  public Editor = DecoupledEditor;
+  public Editor = ClassicEditor;
   public onReady( editor ) {
       editor.ui.getEditableElement().parentElement.insertBefore(
           editor.ui.view.toolbar.element,
@@ -60,7 +60,7 @@ export class BlogEditPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.paramMap.subscribe(paramMap => {
       if(paramMap.has('blogId') && paramMap.get('blogId') == '') {
-
+        
         this.isEditing = false;
         this.form = new FormGroup({
           blogTitle: new FormControl(null, {
@@ -78,6 +78,7 @@ export class BlogEditPage implements OnInit, OnDestroy {
         });
         
       } else {
+        
         this.blogId = paramMap.get('blogId');
         this.isLoading = true;
         this.isEditing = true;

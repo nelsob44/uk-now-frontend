@@ -30,11 +30,11 @@ export class YourLocalPage implements OnInit, OnDestroy {
   previousPage: number;
   private authSub: Subscription;
   private totalUserSub: Subscription;
-  private totalUsers: number;
-  private userName: string;
+  totalUsers: number;
+  userName: string;
   private userNameSub: Subscription;  
   myGroup: FormGroup;
-  private loadedLocalTypes = [];
+  loadedLocalTypes = [];
 
   constructor(private featuredService: FeaturedService, 
   private router: Router,

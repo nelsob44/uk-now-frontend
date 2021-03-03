@@ -4,3 +4,19 @@
 // styles are for the entire app and not just one component. Additionally, this 
 // file can hold Sass mixins, functions, and placeholder classes to be imported 
 // and used throughout the application.
+
+
+ion-content {
+    --background: url('../assets/background-images/bridge_pay_background5.jpeg');
+    ion-list {
+        ion-item {
+            --background: url('../assets/background-images/bridge_pay_background5.jpeg');
+            ion-label {
+                color: rgb(181, 31, 31);
+            }
+            ion-icon {
+                color: blue;
+            }
+        }
+    }        
+}

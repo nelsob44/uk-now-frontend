@@ -56,7 +56,8 @@ export class Mentor {
         public mentorProfile: string,
         public mentorField: string,
         public mentorImage: string,
-        public mentorEmail: string        
+        public mentorEmail: string,
+        public mentorLinkedIn: string    
     ) {}    
 }
 

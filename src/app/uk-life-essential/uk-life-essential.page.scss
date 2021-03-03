@@ -21,3 +21,12 @@ ion-button.buttonRight {
 ion-col.second-column {
   min-width: 310px;
 }
+
+ion-content {
+    --background: url('../../assets/background-images/bridge_pay_background5.jpeg'); 
+    color: black; 
+     
+    ion-item {
+      --background: url('../../assets/background-images/bridge_pay_background5.jpeg');
+    }  
+}

@@ -29,8 +29,8 @@ export class AskAQuestionPage implements OnInit, OnDestroy {
   private pageSub: Subscription;
   private authSub: Subscription;
   private totalUserSub: Subscription;
-  private totalUsers: number;
-  private userName: string;
+  totalUsers: number;
+  userName: string;
   private userNameSub: Subscription;
 
   constructor(private router: Router, 

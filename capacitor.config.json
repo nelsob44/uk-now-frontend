@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "UKnow",
+  "appId": "com.nelson.uknow",
+  "appName": "uknow",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www"

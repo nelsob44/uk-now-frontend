@@ -28,11 +28,11 @@ export class FindAMentorPage implements OnInit, OnDestroy {
   lastPage: number;
   previousPage: number;
   private totalUserSub: Subscription;
-  private totalUsers: number;
+  totalUsers: number;
   myGroup: FormGroup;
-  private userName: string;
+  userName: string;
   private userNameSub: Subscription;
-  private loadedMentorFields = [];
+  loadedMentorFields = [];
 
   constructor(private featuredService: FeaturedService,
   private authService: AuthService,

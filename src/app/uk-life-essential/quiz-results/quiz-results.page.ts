@@ -20,8 +20,8 @@ export class QuizResultsPage implements OnInit, OnDestroy {
   isLoading = false;
   isAdmin = false;
   private totalUserSub: Subscription;
-  private totalUsers: number;
-  private userName: string;
+  totalUsers: number;
+  userName: string;
   private userNameSub: Subscription;
 
   constructor(private featuredService: FeaturedService,
